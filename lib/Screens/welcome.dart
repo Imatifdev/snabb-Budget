@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
