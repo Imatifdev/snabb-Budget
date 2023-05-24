@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:snabbudget/Screens/dashboard_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:snabbudget/Screens/welcome.dart';
 
 void main() {
   runApp(const MyApp());
@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: GoogleFonts.montserrat().fontFamily,
       ),
-      home: const DashboardScreen(),
+      home: const Welcome(),
     );
   }
 }
