@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:snabbudget/Screens/login.dart';
 import 'package:snabbudget/Screens/welcome.dart';
 
+import 'Screens/dashboard_screen.dart';
 import 'Screens/signup.dart';
 
 void main() {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.blue,
         fontFamily: GoogleFonts.montserrat().fontFamily,
       ),
-      home: SignupScreen(),
+      home: DashboardScreen(),
     );
   }
 }
