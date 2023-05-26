@@ -97,7 +97,7 @@ class _ExpandableFloatingActionButtonState
                 ),
                 //  heroTag: null,
                 child: AnimatedIcon(
-                  icon: AnimatedIcons.menu_close,
+                  icon: AnimatedIcons.add_event,
                   progress: _animation,
                 ),
               ))),
