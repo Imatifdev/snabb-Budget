@@ -213,7 +213,7 @@ class SignupScreen extends StatelessWidget {
                   SizedBox(
                     height: height / 7,
                   ),
-                  MyButton(title: "sign in", onaction: _submitForm),
+                  MyButton(title: "SIGN UP", onaction: _submitForm),
                   SizedBox(
                     height: height / 42,
                   ),

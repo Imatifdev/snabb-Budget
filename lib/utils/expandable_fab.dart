@@ -62,8 +62,7 @@ class _ExpandableFloatingActionButtonState
             heroTag: null,
             child: const ImageIcon(AssetImage("assets/images/transfer.png")),
           ),
-        if (_isExpanded)
-          const SizedBox(height: 16),
+        if (_isExpanded) const SizedBox(height: 16),
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
@@ -73,8 +72,7 @@ class _ExpandableFloatingActionButtonState
             backgroundColor: Colors.red,
             child: const ImageIcon(AssetImage("assets/images/minus.png")),
           ),
-          if (_isExpanded)
-          const SizedBox(height: 16),
+        if (_isExpanded) const SizedBox(height: 16),
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
@@ -88,20 +86,21 @@ class _ExpandableFloatingActionButtonState
         Padding(
           padding: const EdgeInsets.only(bottom: 40),
           child: SizedBox(
-          height: 80,
-          width: 80,
-          child: FittedBox(
-            child:FloatingActionButton(
-            backgroundColor:const Color.fromRGBO(46, 166, 193, 1),
-            onPressed: _toggleExpanded,
-                  shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(40.0),), 
-            //  heroTag: null,
-            child: AnimatedIcon(
-              icon: AnimatedIcons.menu_close,
-              progress: _animation,
-            ),
-          ))),
+              height: 60,
+              width: 60,
+              child: FittedBox(
+                  child: FloatingActionButton(
+                backgroundColor: const Color.fromRGBO(46, 166, 193, 1),
+                onPressed: _toggleExpanded,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(40.0),
+                ),
+                //  heroTag: null,
+                child: AnimatedIcon(
+                  icon: AnimatedIcons.add_event,
+                  progress: _animation,
+                ),
+              ))),
         ),
       ],
     );

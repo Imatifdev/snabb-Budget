@@ -2,8 +2,11 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:snabbudget/Screens/signup.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import 'login.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -50,8 +53,8 @@ class Welcome extends StatelessWidget {
             Image.asset(
               'assets/images/logo.png',
               fit: BoxFit.contain,
-              height: height / 3.5,
-              width: width / 1.3,
+              height: height / 3.3,
+              width: width / 1.1,
               color: Colors.white,
             ),
             SizedBox(
@@ -59,10 +62,13 @@ class Welcome extends StatelessWidget {
             ),
             MyButton(
               title: "Signup",
-              onaction: () {},
+              onaction: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => SignupScreen()));
+              },
             ),
             SizedBox(
-              height: height / 40,
+              height: height / 50,
             ),
             CustomText(
               fontsize: 16,
@@ -70,14 +76,20 @@ class Welcome extends StatelessWidget {
               text: "Already have an account?",
             ).centered(),
             SizedBox(
-              height: height / 40,
+              height: height / 50,
             ),
-            CustomText(
-              fontWeight: FontWeight.bold,
-              fontsize: 14,
-              color: Colors.white,
-              text: "Sign in",
-            ).centered(),
+            InkWell(
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
+              },
+              child: CustomText(
+                fontWeight: FontWeight.bold,
+                fontsize: 14,
+                color: Colors.white,
+                text: "Sign in",
+              ).centered(),
+            ),
             SizedBox(
               height: height / 35,
             ),
