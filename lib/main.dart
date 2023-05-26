@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snabbudget/Screens/welcome.dart';
 
-import 'Screens/dashboard_screen.dart';
 import 'utils/materialColor.dart';
 
 void main() {
@@ -23,7 +22,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: GoogleFonts.montserrat().fontFamily,
       ),
-      home: Welcome(),
+      home: const Welcome(),
     );
   }
 }

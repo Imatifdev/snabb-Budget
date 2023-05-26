@@ -53,7 +53,6 @@ class SignupScreen extends StatelessWidget {
         String email = _emailController.text;
         String password = _passwordController.text;
 
-        String name = _name.text;
         // Process the login credentials
         Navigator.push(context,
             MaterialPageRoute(builder: (context) => DashboardScreen()));
