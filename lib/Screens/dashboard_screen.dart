@@ -151,6 +151,34 @@ class DashboardScreen extends StatelessWidget {
     type: TransactionType.expense, 
     category: TransactionCat.bills, 
     amount: 1000),
+    Transaction(
+    name: "Salary", 
+    time: "10:26 AM", 
+    imgUrl: "assets/images/income.png", 
+    type: TransactionType.income, 
+    category: TransactionCat.moneyTransfer, 
+    amount: 2000),
+    Transaction(
+    name: "Bills", 
+    time: "09:26 PM", 
+    imgUrl: "assets/images/others.png", 
+    type: TransactionType.expense, 
+    category: TransactionCat.bills, 
+    amount: 1000),
+    Transaction(
+    name: "Salary", 
+    time: "10:26 AM", 
+    imgUrl: "assets/images/income.png", 
+    type: TransactionType.income, 
+    category: TransactionCat.moneyTransfer, 
+    amount: 2000),
+    Transaction(
+    name: "Bills", 
+    time: "09:26 PM", 
+    imgUrl: "assets/images/others.png", 
+    type: TransactionType.expense, 
+    category: TransactionCat.bills, 
+    amount: 1000),
 ];
 
   DashboardScreen({super.key});
@@ -306,7 +334,7 @@ class DashboardScreen extends StatelessWidget {
                               color: Colors.grey),),
                     ),
                     SizedBox(
-                      height: 400,
+                      height: 410,
                       child: ListView.builder(
                         itemCount: transactions.length,
                         itemBuilder: (context, index) {
