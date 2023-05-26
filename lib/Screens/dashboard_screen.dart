@@ -110,9 +110,11 @@ import 'package:snabbudget/utils/mycolors.dart';
 
 import '../models/transaction.dart';
 import '../utils/custom_bottombar.dart';
+import '../utils/expandable_fab.dart';
 
 
 class DashboardScreen extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Transaction> transactions = [
   Transaction(
     name: "Money Transfer", 
@@ -156,23 +158,26 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size; 
     return Scaffold(
-      extendBody: true, 
-      backgroundColor: Colors.grey[50],
+      key: _scaffoldKey,
+      extendBody: true,
+      drawer: CustomDrawer(), 
+      backgroundColor: Colors.grey[100],
       bottomNavigationBar: CustomBottomBar(),
-       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: SizedBox(
-        height: 80,
-        width: 80,
-        child: FittedBox(
-          child: FloatingActionButton(
-            onPressed: (){},
-            shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(40.0), // Adjust the border radius as needed
-          ), 
-            backgroundColor:const Color.fromRGBO(46, 166, 193, 1),
-            child: const Icon(Icons.add),),
-        ),
-      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      floatingActionButton: ExpandableFloatingActionButton(), 
+      // SizedBox(
+      //   height: 80,
+      //   width: 80,
+      //   child: FittedBox(
+      //     child: FloatingActionButton(
+      //       onPressed: (){},
+      //       shape: RoundedRectangleBorder(
+      //       borderRadius: BorderRadius.circular(40.0), // Adjust the border radius as needed
+      //     ), 
+      //       backgroundColor:const Color.fromRGBO(46, 166, 193, 1),
+      //       child: const Icon(Icons.add),),
+      //   ),
+      // ),
       body: SingleChildScrollView(
         child: SafeArea(child: Padding(
           padding: const EdgeInsets.all(8.0),
@@ -183,12 +188,14 @@ class DashboardScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    IconButton(onPressed: (){}, icon: const ImageIcon(AssetImage("assets/images/menu.png"),size: 40,)),
+                    IconButton(onPressed: (){
+                      _scaffoldKey.currentState?.openDrawer();
+                    }, icon: const ImageIcon(AssetImage("assets/images/menu.png"),size: 40,)),
                      ShaderMask(
                       shaderCallback: (bounds) => const LinearGradient(
                       colors: [Color(0xff9B710F),Color.fromRGBO(243,215,42,1), Color(0xff9B710F),],
                     ).createShader(bounds),
-                    child: const Text("Snab Budget",
+                    child: const Text("Snabb Budget",
                       style: TextStyle(
                           color: Colors.white,
                            fontSize: 14
@@ -311,7 +318,7 @@ class DashboardScreen extends StatelessWidget {
                             leading: Image.asset(transaction.imgUrl),
                             title: Text(transaction.name, style: const TextStyle(fontWeight: FontWeight.bold),),
                             subtitle: Text(transaction.time),
-                            trailing: Text(transaction.type == TransactionType.income?"+\$${transaction.amount}":"-\$${transaction.amount}",style: TextStyle(color:transaction.type == TransactionType.income? Colors.green:Colors.red)),
+                            trailing: Text(transaction.type == TransactionType.income?"+\$${transaction.amount}":"-\$${transaction.amount}",style: TextStyle(color:transaction.type == TransactionType.income? Colors.green:Colors.red,fontWeight: FontWeight.bold)),
                         
                           ),
                         );
@@ -325,5 +332,48 @@ class DashboardScreen extends StatelessWidget {
         ),
       ),
     ));
+  }
+
+  Drawer CustomDrawer() {
+    return Drawer(
+      child: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+          colors: [
+            gradient1,
+            gradient2,
+          ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        ),
+        
+      child:Column(
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(top:55.0,bottom: 20),
+            child: Text("Snabb", style: TextStyle(fontSize: 20,color: Colors.white, fontWeight: FontWeight.bold)),
+          ),
+          const Divider(color:Colors.white,thickness: 2,indent: 40,endIndent: 40,),
+          const SizedBox(height: 20,),
+          drawerTile("assets/images/home-icon.png","Dashboard"),
+          drawerTile("assets/images/user.png","Accounts"),
+          drawerTile("assets/images/dollar.png","Debt"),
+          drawerTile("assets/images/box.png","Budget"),
+          drawerTile("assets/images/calender.png","Calendar"),
+          drawerTile("assets/images/clock.png","Scheduled Transactions"),
+          drawerTile("assets/images/settings.png","Settings"),
+          drawerTile("assets/images/settings-2.png","Preferences"),
+        ],
+      ),
+      ),
+    );
+  }
+
+  ListTile drawerTile(String imgUrl,String title) {
+    return ListTile(
+            leading: ImageIcon(AssetImage(imgUrl),color: Colors.white,size: 38,),
+            title: Text(title, style: const TextStyle(fontSize: 14, color: Colors.white),)
+          );
   }
 }

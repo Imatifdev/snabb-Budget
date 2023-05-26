@@ -18,7 +18,10 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
   Widget build(BuildContext context) {
     return  Container(
       height: 80,
+      decoration: const BoxDecoration(
       color: Colors.white,
+      borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15))
+      ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
