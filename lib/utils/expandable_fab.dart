@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:snabbudget/Screens/add_income.dart';
+import 'package:snabbudget/Screens/addexpanse.dart';
+import 'package:snabbudget/Screens/addincome.dart';
 
 class ExpandableFloatingActionButton extends StatefulWidget {
   @override
@@ -67,7 +68,7 @@ class _ExpandableFloatingActionButtonState
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
-              // Handle second action
+              Navigator.of(context).pushNamed(AddExpanse.routeName);
             },
             heroTag: null,
             backgroundColor: Colors.red,
@@ -77,7 +78,7 @@ class _ExpandableFloatingActionButtonState
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(AddIncome.routeName);
+              Navigator.of(context).pushNamed(AddExpanse.routeName);
             },
             heroTag: null,
             backgroundColor: Colors.green,
