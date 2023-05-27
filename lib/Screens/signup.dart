@@ -75,14 +75,21 @@ class SignupScreen extends StatelessWidget {
           child: Container(
             height: height,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  gradient1,
-                  gradient2,
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              gradient:LinearGradient(
+  begin: Alignment.topLeft,
+  end: Alignment.bottomRight,
+  stops: const [0.20, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1],
+  colors: const [
+    Color(0xFF335BAA),
+    Color(0xFF2E77BB),
+    Color(0xFF306CB5),
+    Color(0xFF2D7CBE),
+    Color(0xFF2C92C3),
+    Color(0xFF31C3B6),
+    Color(0xFF31C3B6),
+    Color(0xFFFBFF2B),
+  ],
+)
             ),
             child: SingleChildScrollView(
               child: Column(

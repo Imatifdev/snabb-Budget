@@ -85,19 +85,6 @@ class DashboardScreen extends StatelessWidget {
         bottomNavigationBar: CustomBottomBar(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: ExpandableFloatingActionButton(),
-        // SizedBox(
-        //   height: 80,
-        //   width: 80,
-        //   child: FittedBox(
-        //     child: FloatingActionButton(
-        //       onPressed: (){},
-        //       shape: RoundedRectangleBorder(
-        //       borderRadius: BorderRadius.circular(40.0), // Adjust the border radius as needed
-        //     ),
-        //       backgroundColor:const Color.fromRGBO(46, 166, 193, 1),
-        //       child: const Icon(Icons.add),),
-        //   ),
-        // ),
         body: SingleChildScrollView(
           child: SafeArea(
             child: Padding(
@@ -126,7 +113,7 @@ class DashboardScreen extends StatelessWidget {
                             ],
                           ).createShader(bounds),
                           child: const Text(
-                            "Snabb Budget",
+                            "SNABB BUDGET",
                             style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 18,
@@ -149,13 +136,24 @@ class DashboardScreen extends StatelessWidget {
                     height: 220,
                     width: size.width - 40,
                     decoration: BoxDecoration(
-                        gradient: LinearGradient(
-                          colors: [
-                            gradient1,
-                            gradient2,
-                          ],
+                        gradient: const LinearGradient(
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
+                          stops: [
+                                    0.20, 
+                                    //0.40, 
+                                    0.50, 0.60, 0.70, 0.80, 0.90, 1
+                                 ],
+                          colors: [
+                                 Color(0xFF335BAA),
+                                 //Color(0xFF2E77BB),
+                                 Color(0xFF306CB5),
+                                 Color(0xFF2D7CBE),
+                                 Color(0xFF2C92C3),
+                                 Color(0xFF31C3B6),
+                                 Color(0xFF31C3B6),
+                                 Color(0xFFFBFF2B),
+                                            ],
                         ),
                         borderRadius: BorderRadius.circular(20)),
                     child: Padding(
@@ -166,9 +164,9 @@ class DashboardScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Padding(
-                                padding: const EdgeInsets.only(left: 10),
-                                child: const Column(
+                              const Padding(
+                                padding: EdgeInsets.only(left: 10),
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
@@ -361,8 +359,10 @@ class DashboardScreen extends StatelessWidget {
           ),
         ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
-            const Padding(
+            Column(children: [
+              const Padding(
               padding: EdgeInsets.only(top: 55.0, bottom: 20),
               child: Text("Snabb",
                   style: TextStyle(
@@ -387,6 +387,27 @@ class DashboardScreen extends StatelessWidget {
             drawerTile("assets/images/clock.png", "Scheduled Transactions"),
             drawerTile("assets/images/settings.png", "Settings"),
             drawerTile("assets/images/settings-2.png", "Preferences"),
+            ]),
+            const Column(
+              children: [
+              Divider(
+              color: Colors.white,
+              thickness: 2,
+              indent: 40,
+              endIndent: 40,
+            ),
+            ListTile(
+        leading: Icon(
+          Icons.logout_rounded,
+          color: Colors.white,
+          size: 38,
+        ),
+        title: Text(
+          "Logout",
+          style: TextStyle(fontSize: 14, color: Colors.white),
+        )),
+              ],
+            ),
           ],
         ),
       ),

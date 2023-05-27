@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snabbudget/Screens/add_income.dart';
 
 class ExpandableFloatingActionButton extends StatefulWidget {
   @override
@@ -76,7 +77,7 @@ class _ExpandableFloatingActionButtonState
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
-              // Handle second action
+              Navigator.of(context).pushNamed(AddIncome.routeName);
             },
             heroTag: null,
             backgroundColor: Colors.green,
