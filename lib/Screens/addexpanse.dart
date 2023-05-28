@@ -6,7 +6,7 @@ import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AddExpanse extends StatefulWidget {
-  static const routeName = "add-income";
+  static const routeName = "add-expense";
   const AddExpanse({super.key});
 
   @override
@@ -14,10 +14,12 @@ class AddExpanse extends StatefulWidget {
 }
 
 class _AddExpanseState extends State<AddExpanse> {
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
   DropdownItem? _selectedItem;
 
-  List<DropdownItem> _dropdownItems = [
+  final List<DropdownItem> _dropdownItems = [
     DropdownItem('Pets', 'assets/images/pets.png'),
     DropdownItem('Others', 'assets/images/others.png'),
     DropdownItem('Transport', 'assets/images/transport.png'),
@@ -70,15 +72,11 @@ class _AddExpanseState extends State<AddExpanse> {
     FloatingActionButton.extended(
         onPressed: () {}, label: Text("Add").pSymmetric(h: 60));
     return Scaffold(
-      // floatingActionButton: Center(
-      //   child: FloatingActionButton.extended(
-      //       onPressed: () {}, label: Text("Add").pSymmetric(h: 60)),
-      // ),
       appBar: AppBar(
         toolbarHeight: 100,
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Text("ADD Expanse",
+        title: Text("ADD EXPENSE",
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -133,7 +131,7 @@ class _AddExpanseState extends State<AddExpanse> {
                         }
                         return null;
                       },
-                      controller: _passwordController,
+                      controller: _nameController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         errorStyle: TextStyle(color: Colors.black),
@@ -175,7 +173,7 @@ class _AddExpanseState extends State<AddExpanse> {
                               }
                               return null;
                             },
-                            controller: _passwordController,
+                            controller: _amountController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               errorStyle: TextStyle(color: Colors.black),
@@ -209,7 +207,7 @@ class _AddExpanseState extends State<AddExpanse> {
                     SizedBox(
                       height: height / 80,
                     ),
-                    Container(
+                    SizedBox(
                       width: width / 1.3,
                       child: DropdownButtonFormField<DropdownItem>(
                         hint: Text("Category"),
@@ -297,7 +295,7 @@ class _AddExpanseState extends State<AddExpanse> {
                         Expanded(
                           child: TextFormField(
                             maxLines: 4,
-                            controller: _passwordController,
+                            controller: _noteController,
                             keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               errorStyle: TextStyle(color: Colors.black),
@@ -337,7 +335,7 @@ class _AddExpanseState extends State<AddExpanse> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
+                      children: const [
                         Text(
                           "Scheduled?",
                           style: TextStyle(
@@ -350,17 +348,17 @@ class _AddExpanseState extends State<AddExpanse> {
                   ],
                 ).pSymmetric(h: 20),
                 SizedBox(
-                  height: 100,
+                  height: height/12,
                 ),
                 Center(
-                  child: Container(
+                  child: SizedBox(
                     width: width / 2,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: Text("Add File"),
                       style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50))),
+                      child: Text("Add"),
                     ),
                   ),
                 ),

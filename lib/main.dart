@@ -25,7 +25,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: GoogleFonts.montserrat().fontFamily,
       ),
-      home: DashboardScreen(),
+      home: const Welcome(),
       routes: {
         AddExpanse.routeName: (ctx) => const AddExpanse(),
         AddIncome.routeName: (ctx) => const AddIncome(),

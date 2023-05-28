@@ -14,7 +14,9 @@ class AddIncome extends StatefulWidget {
 }
 
 class _AddIncomeState extends State<AddIncome> {
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+  final TextEditingController _noteController = TextEditingController();
   DropdownItem? _selectedItem;
 
   List<DropdownItem> _dropdownItems = [
@@ -127,7 +129,7 @@ class _AddIncomeState extends State<AddIncome> {
                         }
                         return null;
                       },
-                      controller: _passwordController,
+                      controller: _nameController,
                       keyboardType: TextInputType.text,
                       decoration: InputDecoration(
                         errorStyle: TextStyle(color: Colors.black),
@@ -169,7 +171,7 @@ class _AddIncomeState extends State<AddIncome> {
                               }
                               return null;
                             },
-                            controller: _passwordController,
+                            controller: _amountController,
                             keyboardType: TextInputType.number,
                             decoration: InputDecoration(
                               errorStyle: TextStyle(color: Colors.black),
@@ -203,7 +205,7 @@ class _AddIncomeState extends State<AddIncome> {
                     SizedBox(
                       height: height / 80,
                     ),
-                    Container(
+                    SizedBox(
                       width: width / 1.3,
                       child: DropdownButtonFormField<DropdownItem>(
                         hint: Text("Category"),
@@ -291,7 +293,7 @@ class _AddIncomeState extends State<AddIncome> {
                         Expanded(
                           child: TextFormField(
                             maxLines: 4,
-                            controller: _passwordController,
+                            controller: _noteController,
                             keyboardType: TextInputType.text,
                             decoration: InputDecoration(
                               errorStyle: TextStyle(color: Colors.black),
@@ -331,7 +333,7 @@ class _AddIncomeState extends State<AddIncome> {
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
+                      children: const [
                         Text(
                           "Scheduled?",
                           style: TextStyle(
@@ -344,17 +346,17 @@ class _AddIncomeState extends State<AddIncome> {
                   ],
                 ).pSymmetric(h: 20),
                 SizedBox(
-                  height: 100,
+                  height: height/12,
                 ),
                 Center(
-                  child: Container(
+                  child: SizedBox(
                     width: width / 2,
                     child: ElevatedButton(
                       onPressed: () {},
-                      child: Text("Add File"),
                       style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50))),
+                      child: Text("Add File"),
                     ),
                   ),
                 ),
