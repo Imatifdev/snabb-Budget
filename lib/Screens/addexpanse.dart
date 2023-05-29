@@ -1,8 +1,6 @@
-// ignore_for_file: unused_local_variable, prefer_const_constructors
+// ignore_for_file: unused_local_variable, prefer_const_constructors, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
-
-import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AddExpanse extends StatefulWidget {
@@ -168,7 +166,7 @@ class _AddExpanseState extends State<AddExpanse> {
                               if (value!.isEmpty) {
                                 return 'Please enter a valid amount';
                               }
-                              if (value.length < 1) {
+                              if (value.isEmpty) {
                                 return 'Password must be at least 1 digit long';
                               }
                               return null;
@@ -226,18 +224,16 @@ class _AddExpanseState extends State<AddExpanse> {
                         items: _dropdownItems.map((DropdownItem item) {
                           return DropdownMenuItem<DropdownItem>(
                             value: item,
-                            child: Container(
-                              child: Row(
-                                children: [
-                                  Image.asset(
-                                    item.imagePath,
-                                    width: 30,
-                                    height: 30,
-                                  ),
-                                  SizedBox(width: 10),
-                                  Text(item.name),
-                                ],
-                              ),
+                            child: Row(
+                              children: [
+                                Image.asset(
+                                  item.imagePath,
+                                  width: 30,
+                                  height: 30,
+                                ),
+                                SizedBox(width: 10),
+                                Text(item.name),
+                              ],
                             ),
                           );
                         }).toList(),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snabbudget/Screens/addexpanse.dart';
-import 'package:snabbudget/Screens/dashboard_screen.dart';
 import 'package:snabbudget/Screens/welcome.dart';
 
 import 'Screens/addincome.dart';

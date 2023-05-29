@@ -1,3 +1,5 @@
+// ignore_for_file: non_constant_identifier_names
+
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 
@@ -82,9 +84,9 @@ class DashboardScreen extends StatelessWidget {
         extendBody: true,
         drawer: CustomDrawer(),
         backgroundColor: Colors.grey[100],
-        bottomNavigationBar: CustomBottomBar(),
+        bottomNavigationBar: const CustomBottomBar(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        floatingActionButton: ExpandableFloatingActionButton(),
+        floatingActionButton: const ExpandableFloatingActionButton(),
         body: SingleChildScrollView(
           child: SafeArea(
             child: Padding(

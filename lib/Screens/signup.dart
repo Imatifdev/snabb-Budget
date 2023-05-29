@@ -1,6 +1,5 @@
-// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages
+// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages, unused_element, no_leading_underscores_for_local_identifiers, avoid_print, sort_child_properties_last
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/mycolors.dart';
@@ -15,6 +14,8 @@ class SignupScreen extends StatelessWidget {
   final TextEditingController _name = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
+
+  SignupScreen({super.key});
   String _validateEmail(String value) {
     if (value.isEmpty) {
       return 'Please enter an email';
@@ -76,20 +77,21 @@ class SignupScreen extends StatelessWidget {
             height: height,
             decoration: BoxDecoration(
               gradient:LinearGradient(
-  begin: Alignment.topLeft,
-  end: Alignment.bottomRight,
-  stops: const [0.20, 0.40, 0.50, 0.60, 0.70, 0.80, 0.90, 1],
-  colors: const [
-    Color(0xFF335BAA),
-    Color(0xFF2E77BB),
-    Color(0xFF306CB5),
-    Color(0xFF2D7CBE),
-    Color(0xFF2C92C3),
-    Color(0xFF31C3B6),
-    Color(0xFF31C3B6),
-    Color(0xFFFBFF2B),
-  ],
-)
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          stops: const [0.2,0.31 ,0.31 , 0.51,0.51,0.95,0.95, 1,],
+          colors: const [
+            Color.fromRGBO(47, 110, 182, 1), // Dark blue
+            Color.fromRGBO(47, 110, 182, 1), // Dark blue
+            Color.fromRGBO(44, 133, 192, 1),  // Blue
+            Color.fromRGBO(44, 133, 192, 1), // Blue
+            Color.fromRGBO(49, 194, 170, 1), // Sea green
+            Color.fromRGBO(47, 183, 187, 1), // Sea green
+            Colors.yellow, // Yellow
+            Colors.yellow, // Yellow
+          ],
+          tileMode: TileMode.clamp,
+        ) 
             ),
             child: SingleChildScrollView(
               child: Column(

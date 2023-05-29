@@ -1,8 +1,12 @@
+// ignore_for_file: library_private_types_in_public_api
+
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/addexpanse.dart';
 import 'package:snabbudget/Screens/addincome.dart';
 
 class ExpandableFloatingActionButton extends StatefulWidget {
+  const ExpandableFloatingActionButton({super.key});
+
   @override
   _ExpandableFloatingActionButtonState createState() =>
       _ExpandableFloatingActionButtonState();
@@ -60,7 +64,7 @@ class _ExpandableFloatingActionButtonState
             onPressed: () {
               // Handle first action
             },
-            backgroundColor: Color.fromRGBO(86, 111, 245, 1),
+            backgroundColor: const Color.fromRGBO(86, 111, 245, 1),
             heroTag: null,
             child: const ImageIcon(AssetImage("assets/images/transfer.png")),
           ),
