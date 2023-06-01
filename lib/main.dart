@@ -1,8 +1,10 @@
+// ignore_for_file: unused_import
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snabbudget/Screens/addexpanse.dart';
 import 'package:snabbudget/Screens/welcome.dart';
-
+import 'package:snabbudget/Screens/transactions_screen.dart';
 import 'Screens/addincome.dart';
 import 'utils/materialColor.dart';
 
@@ -24,7 +26,7 @@ class MyApp extends StatelessWidget {
         ),
         fontFamily: GoogleFonts.montserrat().fontFamily,
       ),
-      home: const Welcome(),
+      home: TransactionsScreen(),
       routes: {
         AddExpanse.routeName: (ctx) => const AddExpanse(),
         AddIncome.routeName: (ctx) => const AddIncome(),
