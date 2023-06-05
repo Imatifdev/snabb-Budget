@@ -342,7 +342,7 @@ class _AddIncomeState extends State<AddIncome> {
                   ],
                 ).pSymmetric(h: 20),
                 SizedBox(
-                  height: height/12,
+                  height: height / 12,
                 ),
                 Center(
                   child: SizedBox(
@@ -352,7 +352,7 @@ class _AddIncomeState extends State<AddIncome> {
                       style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50))),
-                      child: Text("Add File"),
+                      child: Text("Add "),
                     ),
                   ),
                 ),
