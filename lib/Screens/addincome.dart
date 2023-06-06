@@ -1,15 +1,12 @@
 // ignore_for_file: unused_local_variable, prefer_const_constructors, prefer_final_fields, depend_on_referenced_packages
 
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:snabbudget/Screens/testsc.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
 
-import '../controller/IncomeProvider.dart';
 import '../models/IncomeDataMode.dart';
-import '../models/selectedItemdata.dart';
 import 'addexpanse.dart';
+import 'displaydata.dart';
 
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
@@ -60,29 +57,50 @@ class _AddIncomeState extends State<AddIncome> {
     }
   }
 
+  IncomeDataCategory? selectedCategory;
+  List<IncomeData> incomeDatList = [];
+
 //function for storing data and passing to another screen
-  void _addIncomeData(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
-      final name = _nameController.text;
-      final amount = double.parse(_amountController.text);
-      final date = DateTime(
+  void _saveExpense() {
+    if (_amountController.text.isNotEmpty &&
+        _nameController.text.isNotEmpty &&
+        selectedCategory != null) {
+      double amount = double.parse(_amountController.text);
+      String name = _nameController.text;
+      DateTime dateTime = DateTime(
         _selectedDate.year,
         _selectedDate.month,
         _selectedDate.day,
-        _selectedTime.hour,
-        _selectedTime.minute,
+      );
+      DateTime time = DateTime(
+        _selectedDate.hour,
+        _selectedDate.minute,
       );
 
-      final incomeData =
-          IncomeData(name: name, amount: amount, date: date, time: date);
+      String image = selectedCategory!.image;
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DisplayIncomeScreen(incomeData: incomeData),
-        ),
+      IncomeData expense = IncomeData(
+        amount: amount,
+        name: name,
+        time: time,
+        date: dateTime,
+        category: selectedCategory!.name,
+        imageurl: image,
       );
+
+      setState(() {
+        incomeDatList.add(expense);
+        _amountController.clear();
+        _nameController.clear();
+        selectedCategory = null;
+      });
     }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DisplayIncomeScreen(incomeDatList),
+      ),
+    );
   }
 
   @override
@@ -238,42 +256,60 @@ class _AddIncomeState extends State<AddIncome> {
                       ),
                       SizedBox(
                         width: width / 1.3,
-                        child: DropdownButtonFormField<DropdownItem>(
-                          hint: Text("Category"),
-                          value: _selectedItem,
-                          onChanged: (DropdownItem? newValue) {
-                            final selectedItemProvider =
-                                Provider.of<SelectedItemProvider>(context,
-                                    listen: false);
-                            selectedItemProvider.setSelectedItem(
-                                newValue != null
-                                    ? SelectedItemData(
-                                        newValue.imagePath, newValue.name)
-                                    : null);
+                        child: DropdownButtonFormField<IncomeDataCategory>(
+                          value: selectedCategory,
+                          hint: Text('Category'),
+                          onChanged: (IncomeDataCategory? newValue) {
+                            setState(() {
+                              selectedCategory = newValue;
+                            });
                           },
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(10),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                          ),
-                          items: _dropdownItems.map((DropdownItem item) {
-                            return DropdownMenuItem<DropdownItem>(
-                              value: item,
+                          items: incomeCategories
+                              .map((IncomeDataCategory category) {
+                            return DropdownMenuItem<IncomeDataCategory>(
+                              value: category,
                               child: Row(
                                 children: [
                                   Image.asset(
-                                    item.imagePath,
+                                    category.image,
                                     width: 30,
                                     height: 30,
                                   ),
                                   SizedBox(width: 10),
-                                  Text(item.name),
+                                  Text(category.name),
                                 ],
                               ),
                             );
                           }).toList(),
                         ),
+
+                        // DropdownButtonFormField<DropdownItem>(
+                        //   hint: Text("Category"),
+                        //   value: _selectedItem,
+
+                        //   decoration: InputDecoration(
+                        //     contentPadding: EdgeInsets.all(10),
+                        //     border: OutlineInputBorder(
+                        //       borderRadius: BorderRadius.circular(10),
+                        //     ),
+                        //   ),
+                        //   items: _dropdownItems.map((DropdownItem item) {
+                        //     return DropdownMenuItem<DropdownItem>(
+                        //       value: item,
+                        //       child: Row(
+                        //         children: [
+                        //           Image.asset(
+                        //             item.imagePath,
+                        //             width: 30,
+                        //             height: 30,
+                        //           ),
+                        //           SizedBox(width: 10),
+                        //           Text(item.name),
+                        //         ],
+                        //       ),
+                        //     );
+                        //   }).toList(),
+                        // ),
                       ),
                       SizedBox(
                         height: height / 30,
@@ -389,7 +425,7 @@ class _AddIncomeState extends State<AddIncome> {
                       width: width / 2,
                       child: ElevatedButton(
                         onPressed: () {
-                          _addIncomeData(context);
+                          _saveExpense();
                         },
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(

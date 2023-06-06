@@ -1,219 +1,214 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
-import '../controller/IncomeProvider.dart';
-import '../models/IncomeDataMode.dart';
+class Expense {
+  final double amount;
+  final String name;
+  final DateTime dateTime;
+  final String category;
+  final IconData icon;
 
-class AddIncomeScreen extends StatelessWidget {
-  final _formKey = GlobalKey<FormState>();
+  Expense({
+    required this.amount,
+    required this.name,
+    required this.dateTime,
+    required this.category,
+    required this.icon,
+  });
+}
 
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _amountController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  TimeOfDay _selectedTime = TimeOfDay.now();
+class ExpenseCategory {
+  final String name;
+  final IconData icon;
 
-  void _addIncomeData(BuildContext context) {
-    if (_formKey.currentState!.validate()) {
-      final name = _nameController.text;
-      final amount = double.parse(_amountController.text);
-      final category =
-          Provider.of<IncomeProvider>(context, listen: false).selectedCategory;
-      final date = DateTime(
-        _selectedDate.year,
-        _selectedDate.month,
-        _selectedDate.day,
-        _selectedTime.hour,
-        _selectedTime.minute,
+  ExpenseCategory({required this.name, required this.icon});
+}
+
+List<ExpenseCategory> expenseCategories = [
+  ExpenseCategory(name: 'Food', icon: Icons.fastfood),
+  ExpenseCategory(name: 'Shopping', icon: Icons.shopping_cart),
+  ExpenseCategory(name: 'Transportation', icon: Icons.directions_car),
+  ExpenseCategory(name: 'Entertainment', icon: Icons.movie),
+  ExpenseCategory(name: 'Utilities', icon: Icons.lightbulb),
+];
+
+class ExpenseScreen extends StatefulWidget {
+  @override
+  _ExpenseScreenState createState() => _ExpenseScreenState();
+}
+
+class _ExpenseScreenState extends State<ExpenseScreen> {
+  List<Expense> expenses = [];
+  TextEditingController amountController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+  TimeOfDay selectedTime = TimeOfDay.now();
+  ExpenseCategory? selectedCategory;
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    nameController.dispose();
+    super.dispose();
+  }
+
+  void _selectDate() async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2021),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
+  }
+
+  void _selectTime() async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: selectedTime,
+    );
+    if (picked != null && picked != selectedTime) {
+      setState(() {
+        selectedTime = picked;
+      });
+    }
+  }
+
+  void _saveExpense() {
+    if (amountController.text.isNotEmpty &&
+        nameController.text.isNotEmpty &&
+        selectedCategory != null) {
+      double amount = double.parse(amountController.text);
+      String name = nameController.text;
+      DateTime dateTime = DateTime(
+        selectedDate.year,
+        selectedDate.month,
+        selectedDate.day,
+        selectedTime.hour,
+        selectedTime.minute,
       );
+      IconData icon = selectedCategory!.icon;
 
-      final incomeData = IncomeData(
-        name: name,
+      Expense expense = Expense(
         amount: amount,
-        date: date,
-        time: date,
+        name: name,
+        dateTime: dateTime,
+        category: selectedCategory!.name,
+        icon: icon,
       );
 
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => DisplayIncomeScreen(incomeData: incomeData),
-        ),
-      );
+      setState(() {
+        expenses.add(expense);
+        amountController.clear();
+        nameController.clear();
+        selectedCategory = null;
+      });
     }
-  }
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ExpenseListScreen(expenses),
+      ),
     );
-
-    if (pickedDate != null) {
-      _selectedDate = pickedDate;
-    }
-  }
-
-  Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? pickedTime = await showTimePicker(
-      context: context,
-      initialTime: _selectedTime,
-    );
-
-    if (pickedTime != null) {
-      _selectedTime = pickedTime;
-    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Income'),
+        title: Text('Expense Tracker'),
       ),
       body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextFormField(
-                controller: _nameController,
-                decoration: InputDecoration(labelText: 'Name'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16.0),
-              TextFormField(
-                controller: _amountController,
-                keyboardType: TextInputType.numberWithOptions(decimal: true),
-                decoration: InputDecoration(labelText: 'Amount'),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter an amount';
-                  }
-                  return null;
-                },
-              ),
-              SizedBox(height: 16.0),
-              Consumer<IncomeProvider>(
-                builder: (context, incomeProvider, _) {
-                  return DropdownButtonFormField<String>(
-                    value: incomeProvider.selectedCategory,
-                    items: incomeProvider.categories.map((String category) {
-                      return DropdownMenuItem<String>(
-                        value: category,
-                        child: Text(category),
-                      );
-                    }).toList(),
-                    onChanged: (String? value) {
-                      if (value != null) {
-                        incomeProvider.setSelectedCategory(value);
-                      }
-                    },
-                    decoration: InputDecoration(labelText: 'Category'),
-                  );
-                },
-              ),
-              SizedBox(height: 16.0),
-              InkWell(
-                onTap: () => _selectDate(context),
-                child: IgnorePointer(
-                  child: TextFormField(
-                    controller: TextEditingController(
-                      text: DateFormat.yMMMd().format(_selectedDate),
-                    ),
-                    decoration: InputDecoration(
-                      labelText: 'Date',
-                      suffixIcon: Icon(Icons.calendar_today),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              InkWell(
-                onTap: () => _selectTime(context),
-                child: IgnorePointer(
-                  child: TextFormField(
-                    controller: TextEditingController(
-                      text: _selectedTime.format(context),
-                    ),
-                    decoration: InputDecoration(
-                      labelText: 'Time',
-                      suffixIcon: Icon(Icons.access_time),
-                    ),
-                  ),
-                ),
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () => _addIncomeData(context),
-                child: Text('Add'),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class IncomeProvider with ChangeNotifier {
-  List<String> _categories = ['Category 1', 'Category 2', 'Category 3'];
-  String _selectedCategory = 'Category 1';
-
-  List<String> get categories => _categories;
-  String get selectedCategory => _selectedCategory;
-
-  void setSelectedCategory(String category) {
-    _selectedCategory = category;
-    notifyListeners();
-  }
-}
-
-class DisplayIncomeScreen extends StatelessWidget {
-  final IncomeData incomeData;
-
-  DisplayIncomeScreen({required this.incomeData});
-
-  @override
-  Widget build(BuildContext context) {
-    final selectedItemProvider = Provider.of<SelectedItemProvider>(context);
-    final selectedItem = selectedItemProvider.selectedItem;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Income Details'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            if (selectedItem != null)
-              Image.asset(
-                selectedItem.imagePath,
-                width: 100,
-                height: 100,
-              ),
-            if (selectedItem != null) SizedBox(height: 10),
-            if (selectedItem != null) Text(selectedItem.title),
-            Text('Name: ${incomeData.name}'),
-            SizedBox(height: 8.0),
-            Text('Amount: ${incomeData.amount}'),
-            SizedBox(height: 8.0),
-            SizedBox(height: 8.0),
-            Text('Date: ${DateFormat.yMMMd().format(incomeData.date)}'),
-            Text('Date: ${(incomeData.time)}'),
+            TextField(
+              controller: amountController,
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(labelText: 'Amount'),
+            ),
+            TextField(
+              controller: nameController,
+              decoration: InputDecoration(labelText: 'Name'),
+            ),
+            SizedBox(height: 16),
+            Row(
+              children: [
+                Expanded(
+                  child: TextButton(
+                    onPressed: _selectDate,
+                    child: Text('Select Date'),
+                  ),
+                ),
+                SizedBox(width: 16),
+                Expanded(
+                  child: TextButton(
+                    onPressed: _selectTime,
+                    child: Text('Select Time'),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            DropdownButtonFormField<ExpenseCategory>(
+              value: selectedCategory,
+              hint: Text('Category'),
+              onChanged: (ExpenseCategory? newValue) {
+                setState(() {
+                  selectedCategory = newValue;
+                });
+              },
+              items: expenseCategories.map((ExpenseCategory category) {
+                return DropdownMenuItem<ExpenseCategory>(
+                  value: category,
+                  child: Row(
+                    children: [
+                      Icon(category.icon),
+                      SizedBox(width: 10),
+                      Text(category.name),
+                    ],
+                  ),
+                );
+              }).toList(),
+            ),
+            SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: _saveExpense,
+              child: Text('Save Expense'),
+            ),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class ExpenseListScreen extends StatelessWidget {
+  final List<Expense> expenses;
+
+  ExpenseListScreen(this.expenses);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Expense List'),
+      ),
+      body: ListView.builder(
+        itemCount: expenses.length,
+        itemBuilder: (context, index) {
+          Expense expense = expenses[index];
+          return ListTile(
+            leading: Icon(expense.icon),
+            title: Text(expense.name),
+            subtitle: Text('${expense.amount.toStringAsFixed(2)}'),
+            trailing: Text(expense.dateTime.toString()),
+          );
+        },
       ),
     );
   }

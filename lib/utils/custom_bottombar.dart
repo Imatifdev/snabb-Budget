@@ -20,34 +20,50 @@ class _CustomBottomBarState extends State<CustomBottomBar> {
 
   @override
   Widget build(BuildContext context) {
-    return  Container(
+    return Container(
       height: 80,
       decoration: const BoxDecoration(
-      color: Colors.white,
-      borderRadius: BorderRadius.only(topLeft: Radius.circular(15),topRight: Radius.circular(15))
-      ),
+          color: Colors.white,
+          borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(15), topRight: Radius.circular(15))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: <Widget>[
           IconButton(
-            icon: const ImageIcon(AssetImage("assets/images/home-icon.png"),size: 40,),
+            icon: const ImageIcon(
+              AssetImage("assets/images/home-icon.png"),
+              size: 40,
+            ),
             onPressed: () => _onItemTapped(0),
-            color: _selectedIndex == 0 ? const Color.fromRGBO(46, 166, 193, 1) : Colors.grey,
+            color: _selectedIndex == 0
+                ? const Color.fromRGBO(46, 166, 193, 1)
+                : Colors.grey,
           ),
           IconButton(
-            icon: const ImageIcon(AssetImage("assets/images/bar-chart.png"),size: 40,),
+            icon: const ImageIcon(
+              AssetImage("assets/images/bar-chart.png"),
+              size: 40,
+            ),
             onPressed: () => _onItemTapped(1),
-            color: _selectedIndex == 1 ? const Color.fromRGBO(46, 166, 193, 1): Colors.grey,
+            color: _selectedIndex == 1
+                ? const Color.fromRGBO(46, 166, 193, 1)
+                : Colors.grey,
           ),
           IconButton(
-            icon: const ImageIcon(AssetImage("assets/images/user.png"),size: 40,),
+            icon: const ImageIcon(
+              AssetImage("assets/images/user.png"),
+              size: 40,
+            ),
             onPressed: () => _onItemTapped(2),
-            color: _selectedIndex == 2 ? const Color.fromRGBO(46, 166, 193, 1) : Colors.grey,
+            color: _selectedIndex == 2
+                ? const Color.fromRGBO(46, 166, 193, 1)
+                : Colors.grey,
           ),
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => _onItemTapped(3),
-            color: _selectedIndex == 3 ? Colors.transparent : Colors.transparent,
+            color:
+                _selectedIndex == 3 ? Colors.transparent : Colors.transparent,
           ),
         ],
       ),
