@@ -6,8 +6,10 @@ import 'package:snabbudget/Screens/addexpanse.dart';
 import 'package:snabbudget/Screens/welcome.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
 import 'Screens/addincome.dart';
-import 'Screens/balance.dart';
-import 'Screens/dept.dart';
+import 'Screens/debt.dart';
+import 'testingfiles/dept.dart';
+import 'controller/IncomeProvider.dart';
+import 'controller/balanceProvider.dart';
 import 'utils/materialColor.dart';
 import 'package:provider/provider.dart';
 
@@ -24,6 +26,9 @@ class MyApp extends StatelessWidget {
         ChangeNotifierProvider(
           create: (context) => BalanceProvider(),
         ),
+        ChangeNotifierProvider(
+          create: (context) => SelectedItemProvider(),
+        ),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -34,7 +39,7 @@ class MyApp extends StatelessWidget {
             const Color.fromRGBO(46, 166, 193, 1),
           ),
         ),
-        home: BalanceScreen(),
+        home: AddIncome(),
         routes: {
           AddExpanse.routeName: (ctx) => const AddExpanse(),
           AddIncome.routeName: (ctx) => const AddIncome(),

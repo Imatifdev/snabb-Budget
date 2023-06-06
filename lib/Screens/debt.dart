@@ -4,37 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
+import '../controller/balanceProvider.dart';
+import '../models/balance_data.dart';
 import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
-
-class BalanceProvider extends ChangeNotifier {
-  List<BalanceData> balanceList = [];
-  double totalBalance = 0;
-
-  void addBalance(BalanceData balanceData) {
-    balanceList.add(balanceData);
-    calculateTotalBalance();
-    notifyListeners();
-  }
-
-  void deleteBalance(int index) {
-    balanceList.removeAt(index);
-    calculateTotalBalance();
-    notifyListeners();
-  }
-
-  void calculateTotalBalance() {
-    double total = 0;
-    for (var balanceData in balanceList) {
-      if (balanceData.balanceType == "Credit") {
-        total += balanceData.balance;
-      } else if (balanceData.balanceType == "Debit") {
-        total -= balanceData.balance;
-      }
-    }
-    totalBalance = total;
-  }
-}
 
 class BalanceScreen extends StatefulWidget {
   @override
@@ -808,19 +781,4 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
       ],
     );
   }
-}
-
-class BalanceData {
-  final String balanceType;
-  final double balance;
-  final DateTime currentDate;
-  final DateTime dueDate;
-  final String person;
-
-  BalanceData(
-      {required this.balanceType,
-      required this.balance,
-      required this.currentDate,
-      required this.dueDate,
-      required this.person});
 }
