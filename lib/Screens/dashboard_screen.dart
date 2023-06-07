@@ -5,86 +5,86 @@ import 'package:snabbudget/utils/mycolors.dart';
 
 import '../models/transaction.dart';
 import '../utils/custom_bottombar.dart';
+import '../utils/custom_drawer.dart';
 import '../utils/expandable_fab.dart';
 
 final List<Transaction> transactions = [
-    Transaction(
-        name: "Money Transfer",
-        time: "06:20 PM",
-        date: DateTime.now(),
-        imgUrl: "assets/images/home.png",
-        type: TransactionType.expense,
-        category: TransactionCat.moneyTransfer,
-        amount: 22),
-    Transaction(
-        name: "Shopping",
-        time: "02:26 PM",
-        date: DateTime.now().subtract(const Duration(days: 1)),
-        imgUrl: "assets/images/shopping.png",
-        type: TransactionType.expense,
-        category: TransactionCat.shopping,
-        amount: 100),
-    Transaction(
-        name: "Taxi",
-        time: "02:00 PM",
-        date: DateTime.now().subtract(const Duration(days: 2)),
-        imgUrl: "assets/images/travel.png",
-        type: TransactionType.expense,
-        category: TransactionCat.taxi,
-        amount: 80),
-    Transaction(
-        name: "Salary",
-        time: "10:26 AM",
-        imgUrl: "assets/images/income.png",
-        date: DateTime.now().subtract(const Duration(days: 3)),
-        type: TransactionType.income,
-        category: TransactionCat.moneyTransfer,
-        amount: 2000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        date: DateTime.now().subtract(const Duration(days: 3)),
-        imgUrl: "assets/images/others.png",
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),
-    Transaction(
-        name: "Salary",
-        time: "10:26 AM",
-        date: DateTime.now().subtract(const Duration(days: 3)),
-        imgUrl: "assets/images/income.png",
-        type: TransactionType.income,
-        category: TransactionCat.moneyTransfer,
-        amount: 2000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        date: DateTime.now().subtract(const Duration(days: 1)),
-        imgUrl: "assets/images/others.png",
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),
-    Transaction(
-        name: "Salary",
-        time: "10:26 AM",
-        date: DateTime.now().subtract(const Duration(days: 1)),
-        imgUrl: "assets/images/income.png",
-        type: TransactionType.income,
-        category: TransactionCat.moneyTransfer,
-        amount: 2000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        imgUrl: "assets/images/others.png",
-        date: DateTime.now().subtract(const Duration(days: 2)),
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),
-  ];
-
+  Transaction(
+      name: "Money Transfer",
+      time: "06:20 PM",
+      date: DateTime.now(),
+      imgUrl: "assets/images/home.png",
+      type: TransactionType.expense,
+      category: TransactionCat.moneyTransfer,
+      amount: 22),
+  Transaction(
+      name: "Shopping",
+      time: "02:26 PM",
+      date: DateTime.now().subtract(const Duration(days: 1)),
+      imgUrl: "assets/images/shopping.png",
+      type: TransactionType.expense,
+      category: TransactionCat.shopping,
+      amount: 100),
+  Transaction(
+      name: "Taxi",
+      time: "02:00 PM",
+      date: DateTime.now().subtract(const Duration(days: 2)),
+      imgUrl: "assets/images/travel.png",
+      type: TransactionType.expense,
+      category: TransactionCat.taxi,
+      amount: 80),
+  Transaction(
+      name: "Salary",
+      time: "10:26 AM",
+      imgUrl: "assets/images/income.png",
+      date: DateTime.now().subtract(const Duration(days: 3)),
+      type: TransactionType.income,
+      category: TransactionCat.moneyTransfer,
+      amount: 2000),
+  Transaction(
+      name: "Bills",
+      time: "09:26 PM",
+      date: DateTime.now().subtract(const Duration(days: 3)),
+      imgUrl: "assets/images/others.png",
+      type: TransactionType.expense,
+      category: TransactionCat.bills,
+      amount: 1000),
+  Transaction(
+      name: "Salary",
+      time: "10:26 AM",
+      date: DateTime.now().subtract(const Duration(days: 3)),
+      imgUrl: "assets/images/income.png",
+      type: TransactionType.income,
+      category: TransactionCat.moneyTransfer,
+      amount: 2000),
+  Transaction(
+      name: "Bills",
+      time: "09:26 PM",
+      date: DateTime.now().subtract(const Duration(days: 1)),
+      imgUrl: "assets/images/others.png",
+      type: TransactionType.expense,
+      category: TransactionCat.bills,
+      amount: 1000),
+  Transaction(
+      name: "Salary",
+      time: "10:26 AM",
+      date: DateTime.now().subtract(const Duration(days: 1)),
+      imgUrl: "assets/images/income.png",
+      type: TransactionType.income,
+      category: TransactionCat.moneyTransfer,
+      amount: 2000),
+  Transaction(
+      name: "Bills",
+      time: "09:26 PM",
+      imgUrl: "assets/images/others.png",
+      date: DateTime.now().subtract(const Duration(days: 2)),
+      type: TransactionType.expense,
+      category: TransactionCat.bills,
+      amount: 1000),
+];
 
 class DashboardScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();  
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   DashboardScreen({super.key});
   @override
@@ -153,20 +153,20 @@ class DashboardScreen extends StatelessWidget {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           stops: [
-                                    0.20, 
-                                    //0.40, 
-                                    0.50, 0.60, 0.70, 0.80, 0.90, 1
-                                 ],
+                            0.20,
+                            //0.40,
+                            0.50, 0.60, 0.70, 0.80, 0.90, 1
+                          ],
                           colors: [
-                                 Color(0xFF335BAA),
-                                 //Color(0xFF2E77BB),
-                                 Color(0xFF306CB5),
-                                 Color(0xFF2D7CBE),
-                                 Color(0xFF2C92C3),
-                                 Color(0xFF31C3B6),
-                                 Color(0xFF31C3B6),
-                                 Color(0xFFFBFF2B),
-                                            ],
+                            Color(0xFF335BAA),
+                            //Color(0xFF2E77BB),
+                            Color(0xFF306CB5),
+                            Color(0xFF2D7CBE),
+                            Color(0xFF2C92C3),
+                            Color(0xFF31C3B6),
+                            Color(0xFF31C3B6),
+                            Color(0xFFFBFF2B),
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(20)),
                     child: Padding(
@@ -355,88 +355,6 @@ class DashboardScreen extends StatelessWidget {
               ),
             ),
           ),
-        ));
-  }
-
-  Drawer CustomDrawer() {
-    return Drawer(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              gradient1,
-              gradient2,
-            ],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(children: [
-              const Padding(
-              padding: EdgeInsets.only(top: 55.0, bottom: 20),
-              child: Text("Snabb",
-                  style: TextStyle(
-                      fontSize: 20,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold)),
-            ),
-            const Divider(
-              color: Colors.white,
-              thickness: 2,
-              indent: 40,
-              endIndent: 40,
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            drawerTile("assets/images/home-icon.png", "Dashboard"),
-            drawerTile("assets/images/user.png", "Accounts"),
-            drawerTile("assets/images/dollar.png", "Debt"),
-            drawerTile("assets/images/box.png", "Budget"),
-            drawerTile("assets/images/calender.png", "Calendar"),
-            drawerTile("assets/images/clock.png", "Scheduled Transactions"),
-            drawerTile("assets/images/settings.png", "Settings"),
-            drawerTile("assets/images/settings-2.png", "Preferences"),
-            ]),
-            const Column(
-              children: [
-              Divider(
-              color: Colors.white,
-              thickness: 2,
-              indent: 40,
-              endIndent: 40,
-            ),
-            ListTile(
-        leading: Icon(
-          Icons.logout_rounded,
-          color: Colors.white,
-          size: 38,
-        ),
-        title: Text(
-          "Logout",
-          style: TextStyle(fontSize: 14, color: Colors.white),
-        )),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  ListTile drawerTile(String imgUrl, String title) {
-    return ListTile(
-        leading: ImageIcon(
-          AssetImage(imgUrl),
-          color: Colors.white,
-          size: 38,
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 14, color: Colors.white),
         ));
   }
 }

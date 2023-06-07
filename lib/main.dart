@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snabbudget/Screens/addexpanse.dart';
+import 'package:snabbudget/Screens/dashboard_screen.dart';
 import 'package:snabbudget/Screens/welcome.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
 import 'package:snabbudget/testingfiles/testsc.dart';
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
             const Color.fromRGBO(46, 166, 193, 1),
           ),
         ),
-        home: BalanceScreen(),
+        home: Welcome(),
         routes: {
           AddExpanse.routeName: (ctx) => const AddExpanse(),
           AddIncome.routeName: (ctx) => const AddIncome(),

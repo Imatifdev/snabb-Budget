@@ -3,6 +3,10 @@
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import '../models/IncomeDataMode.dart';
+import '../models/expanseDataModel.dart';
+import 'dashboard_screen.dart';
+
 class AddExpanse extends StatefulWidget {
   static const routeName = "add-expense";
   const AddExpanse({super.key});
@@ -12,51 +16,91 @@ class AddExpanse extends StatefulWidget {
 }
 
 class _AddExpanseState extends State<AddExpanse> {
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _amountController = TextEditingController();
-  final TextEditingController _noteController = TextEditingController();
-  DropdownItem? _selectedItem;
-
-  final List<DropdownItem> _dropdownItems = [
-    DropdownItem('Pets', 'assets/images/pets.png'),
-    DropdownItem('Others', 'assets/images/others.png'),
-    DropdownItem('Transport', 'assets/images/transport.png'),
-    DropdownItem('Home', 'assets/images/home.png'),
-    DropdownItem('Health', 'assets/images/health.png'),
-    DropdownItem('Family', 'assets/images/family.png'),
-    DropdownItem('Food/Drink', 'assets/images/food.png'),
-    DropdownItem('Shopping', 'assets/images/shopping.png'),
-    DropdownItem('Travelling', 'assets/images/travel.png'),
-  ];
+  TextEditingController _nameController = TextEditingController();
+  TextEditingController _amountController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
   TimeOfDay _selectedTime = TimeOfDay.now();
 
+  final TextEditingController _noteController = TextEditingController();
+  DropdownItem? _selectedItem;
+
   Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
+    final DateTime? pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDate,
-      firstDate: DateTime(2010),
-      lastDate: DateTime(2030),
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
     );
 
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
+    if (pickedDate != null) {
+      _selectedDate = pickedDate;
     }
   }
 
   Future<void> _selectTime(BuildContext context) async {
-    final TimeOfDay? picked = await showTimePicker(
+    final TimeOfDay? pickedTime = await showTimePicker(
       context: context,
       initialTime: _selectedTime,
     );
 
-    if (picked != null && picked != _selectedTime) {
+    if (pickedTime != null) {
+      _selectedTime = pickedTime;
+    }
+  }
+
+  ExpanseDataCategory? selectedCategory;
+  List<ExpanseData> incomeDatList = [];
+
+//function for storing data and passing to another screen
+  void _saveExpense() {
+    if (_amountController.text.isNotEmpty &&
+        _nameController.text.isNotEmpty &&
+        selectedCategory != null) {
+      double amount = double.parse(_amountController.text);
+      String name = _nameController.text;
+      DateTime dateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+      );
+      DateTime time = DateTime(
+        _selectedDate.hour,
+        _selectedDate.minute,
+      );
+
+      String image = selectedCategory!.image;
+
+      ExpanseData expense = ExpanseData(
+        amount: amount,
+        name: name,
+        time: time,
+        date: dateTime,
+        category: selectedCategory!.name,
+        imageurl: image,
+      );
+
       setState(() {
-        _selectedTime = picked;
+        incomeDatList.add(expense);
+        selectedCategory = null;
+        transactions.add(Transaction(
+          amount: int.parse(_amountController.text),
+          category: TransactionCat.moneyTransfer,
+          type: TransactionType.income,
+          date: _selectedDate,
+          imgUrl: image,
+          name: _nameController.text,
+          time: _selectedTime.toString(),
+        ));
+        _nameController.clear();
+        _amountController.clear();
       });
     }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DashboardScreen(),
+      ),
+    );
   }
 
   @override
@@ -207,32 +251,27 @@ class _AddExpanseState extends State<AddExpanse> {
                     ),
                     SizedBox(
                       width: width / 1.3,
-                      child: DropdownButtonFormField<DropdownItem>(
-                        hint: Text("Category"),
-                        value: _selectedItem,
-                        onChanged: (DropdownItem? newValue) {
+                      child: DropdownButtonFormField<ExpanseDataCategory>(
+                        value: selectedCategory,
+                        hint: Text('Category'),
+                        onChanged: (ExpanseDataCategory? newValue) {
                           setState(() {
-                            _selectedItem = newValue;
+                            selectedCategory = newValue;
                           });
                         },
-                        decoration: InputDecoration(
-                          contentPadding: EdgeInsets.all(10),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                        ),
-                        items: _dropdownItems.map((DropdownItem item) {
-                          return DropdownMenuItem<DropdownItem>(
-                            value: item,
+                        items: expanseCategories
+                            .map((ExpanseDataCategory category) {
+                          return DropdownMenuItem<ExpanseDataCategory>(
+                            value: category,
                             child: Row(
                               children: [
                                 Image.asset(
-                                  item.imagePath,
+                                  category.image,
                                   width: 30,
                                   height: 30,
                                 ),
                                 SizedBox(width: 10),
-                                Text(item.name),
+                                Text(category.name),
                               ],
                             ),
                           );
@@ -344,7 +383,7 @@ class _AddExpanseState extends State<AddExpanse> {
                   ],
                 ).pSymmetric(h: 20),
                 SizedBox(
-                  height: height/12,
+                  height: height / 12,
                 ),
                 Center(
                   child: SizedBox(

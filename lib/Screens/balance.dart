@@ -10,18 +10,21 @@ import '../utils/balance_ex.dart';
 import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import 'dashboard_screen.dart';
+
 class BalanceScreen extends StatefulWidget {
   @override
   State<BalanceScreen> createState() => _BalanceScreenState();
 }
 
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+final GlobalKey<ScaffoldState> _scaffoldKey2 = GlobalKey<ScaffoldState>();
 
 class _BalanceScreenState extends State<BalanceScreen> {
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        // key: _scaffoldKey2,
         extendBody: true,
         drawer: CustomDrawer(),
         backgroundColor: Colors.grey[100],
@@ -34,7 +37,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                 children: [
                   IconButton(
                       onPressed: () {
-                        _scaffoldKey.currentState?.openDrawer();
+                        _scaffoldKey2.currentState?.openDrawer();
                       },
                       icon: const ImageIcon(
                         AssetImage("assets/images/menu.png"),
@@ -437,9 +440,20 @@ class _BalanceScreenState extends State<BalanceScreen> {
               const SizedBox(
                 height: 20,
               ),
-              drawerTile("assets/images/home-icon.png", "Dashboard"),
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => DashboardScreen()));
+                  },
+                  child:
+                      drawerTile("assets/images/home-icon.png", "Dashboard")),
               drawerTile("assets/images/user.png", "Accounts"),
-              drawerTile("assets/images/dollar.png", "Debt"),
+              InkWell(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => BalanceScreen()));
+                  },
+                  child: drawerTile("assets/images/dollar.png", "Debit")),
               drawerTile("assets/images/box.png", "Budget"),
               drawerTile("assets/images/calender.png", "Calendar"),
               drawerTile("assets/images/clock.png", "Scheduled Transactions"),
@@ -652,122 +666,123 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      content: Form(
-        key: _formKey,
-        child: Container(
-          height: 440,
-          width: 400,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'New ${widget.balanceType}',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              Row(
-                children: [
-                  Expanded(
+      content: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: Container(
+            height: 440,
+            width: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'New ${widget.balanceType}',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: _balanceController,
+                        keyboardType:
+                            TextInputType.numberWithOptions(decimal: true),
+                        decoration:
+                            InputDecoration(labelText: 'Balance Amount'),
+                        validator: (value) {
+                          if (value == null || value.isEmpty) {
+                            return 'Please enter the balance amount';
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    Image.asset(
+                      "assets/images/cal.png",
+                      height: 50,
+                      width: 50,
+                    ),
+                  ],
+                ).pSymmetric(v: 10),
+                Row(
+                  children: [
+                    Text(
+                      "Create the associated \ntransaction (Expanse)",
+                      style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(onPressed: () {}, icon: Icon(Icons.wallet)),
+                        Text(
+                          "Wallet:",
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+                InkWell(
+                  onTap: () => _selectDate(
+                      context, _currentDateController, _currentDate),
+                  child: IgnorePointer(
                     child: TextFormField(
-                      controller: _balanceController,
-                      keyboardType:
-                          TextInputType.numberWithOptions(decimal: true),
-                      decoration: InputDecoration(labelText: 'Balance Amount'),
+                      controller: _currentDateController,
+                      decoration: InputDecoration(
+                        labelText: 'Date',
+                        prefixIcon: Icon(Icons.calendar_today),
+                      ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Please enter the balance amount';
+                          return 'Please enter the current date';
                         }
                         return null;
                       },
                     ),
                   ),
-                  Image.asset(
-                    "assets/images/cal.png",
-                    height: 50,
-                    width: 50,
-                  ),
-                ],
-              ).pSymmetric(v: 10),
-              Row(
-                children: [
-                  Text(
-                    "Create the associated \ntransaction (Expanse)",
-                    style: TextStyle(fontSize: 18),
-                  ),
-                ],
-              ),
-              Column(
-                children: [
-                  Row(
-                    children: [
-                      IconButton(onPressed: () {}, icon: Icon(Icons.wallet)),
-                      Text(
-                        "Wallet:",
-                        style: TextStyle(fontSize: 20),
-                      ),
-                    ],
-                  )
-                ],
-              ),
-              InkWell(
-                onTap: () =>
-                    _selectDate(context, _currentDateController, _currentDate),
-                child: IgnorePointer(
-                  child: TextFormField(
-                    controller: _currentDateController,
-                    decoration: InputDecoration(
-                      labelText: 'Date',
-                      prefixIcon: Icon(Icons.calendar_today),
-                    ),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the current date';
-                      }
-                      return null;
-                    },
-                  ),
                 ),
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () =>
-                          _selectDate(context, _dueDateController, _dueDate),
-                      child: IgnorePointer(
-                        child: TextFormField(
-                          controller: _dueDateController,
-                          decoration: InputDecoration(
-                            labelText: 'Payback Date',
-                            prefixIcon: Icon(Icons.calendar_today),
+                Row(
+                  children: [
+                    Expanded(
+                      child: InkWell(
+                        onTap: () =>
+                            _selectDate(context, _dueDateController, _dueDate),
+                        child: IgnorePointer(
+                          child: TextFormField(
+                            controller: _dueDateController,
+                            decoration: InputDecoration(
+                              labelText: 'Payback Date',
+                              prefixIcon: Icon(Icons.calendar_today),
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter the due date';
+                              }
+                              return null;
+                            },
                           ),
-                          validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return 'Please enter the due date';
-                            }
-                            return null;
-                          },
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              TextFormField(
-                controller: _person,
-                decoration: InputDecoration(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                  labelText: 'To',
-                  prefixIcon: Icon(Icons.person_2),
+                  ],
                 ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a name';
-                  }
-                  return null;
-                },
-              ),
-            ],
+                TextFormField(
+                  controller: _person,
+                  decoration: InputDecoration(
+                    labelText: 'To',
+                    prefixIcon: Icon(Icons.person_2),
+                  ),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a name';
+                    }
+                    return null;
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
