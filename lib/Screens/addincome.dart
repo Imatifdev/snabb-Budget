@@ -5,7 +5,9 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
 
 import '../models/IncomeDataMode.dart';
+import '../models/transaction.dart';
 import 'addexpanse.dart';
+import 'dashboard_screen.dart';
 import 'displaydata.dart';
 
 class AddIncome extends StatefulWidget {
@@ -90,15 +92,25 @@ class _AddIncomeState extends State<AddIncome> {
 
       setState(() {
         incomeDatList.add(expense);
-        _amountController.clear();
-        _nameController.clear();
         selectedCategory = null;
+        transactions.add( Transaction(
+          amount: int.parse(_amountController.text),
+          category: TransactionCat.moneyTransfer,
+          type: TransactionType.income,
+          date: _selectedDate,
+          imgUrl: image,
+          name: _nameController.text,
+          time: _selectedTime.toString(),
+          
+        ) );
+        _nameController.clear();
+        _amountController.clear();
       });
     }
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DisplayIncomeScreen(incomeDatList),
+        builder: (context) => DashboardScreen(),
       ),
     );
   }
@@ -400,7 +412,9 @@ class _AddIncomeState extends State<AddIncome> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: () {}, child: Text("Add File"))
+                              onPressed: () {
+                                print(_amountController.text);
+                              }, child: Text("Add File"))
                         ],
                       ),
                       Row(

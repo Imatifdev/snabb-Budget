@@ -7,12 +7,11 @@ import '../models/transaction.dart';
 import '../utils/custom_bottombar.dart';
 import '../utils/expandable_fab.dart';
 
-class DashboardScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final List<Transaction> transactions = [
+final List<Transaction> transactions = [
     Transaction(
         name: "Money Transfer",
         time: "06:20 PM",
+        date: DateTime.now(),
         imgUrl: "assets/images/home.png",
         type: TransactionType.expense,
         category: TransactionCat.moneyTransfer,
@@ -20,6 +19,7 @@ class DashboardScreen extends StatelessWidget {
     Transaction(
         name: "Shopping",
         time: "02:26 PM",
+        date: DateTime.now().subtract(const Duration(days: 1)),
         imgUrl: "assets/images/shopping.png",
         type: TransactionType.expense,
         category: TransactionCat.shopping,
@@ -27,6 +27,7 @@ class DashboardScreen extends StatelessWidget {
     Transaction(
         name: "Taxi",
         time: "02:00 PM",
+        date: DateTime.now().subtract(const Duration(days: 2)),
         imgUrl: "assets/images/travel.png",
         type: TransactionType.expense,
         category: TransactionCat.taxi,
@@ -35,12 +36,14 @@ class DashboardScreen extends StatelessWidget {
         name: "Salary",
         time: "10:26 AM",
         imgUrl: "assets/images/income.png",
+        date: DateTime.now().subtract(const Duration(days: 3)),
         type: TransactionType.income,
         category: TransactionCat.moneyTransfer,
         amount: 2000),
     Transaction(
         name: "Bills",
         time: "09:26 PM",
+        date: DateTime.now().subtract(const Duration(days: 3)),
         imgUrl: "assets/images/others.png",
         type: TransactionType.expense,
         category: TransactionCat.bills,
@@ -48,6 +51,23 @@ class DashboardScreen extends StatelessWidget {
     Transaction(
         name: "Salary",
         time: "10:26 AM",
+        date: DateTime.now().subtract(const Duration(days: 3)),
+        imgUrl: "assets/images/income.png",
+        type: TransactionType.income,
+        category: TransactionCat.moneyTransfer,
+        amount: 2000),
+    Transaction(
+        name: "Bills",
+        time: "09:26 PM",
+        date: DateTime.now().subtract(const Duration(days: 1)),
+        imgUrl: "assets/images/others.png",
+        type: TransactionType.expense,
+        category: TransactionCat.bills,
+        amount: 1000),
+    Transaction(
+        name: "Salary",
+        time: "10:26 AM",
+        date: DateTime.now().subtract(const Duration(days: 1)),
         imgUrl: "assets/images/income.png",
         type: TransactionType.income,
         category: TransactionCat.moneyTransfer,
@@ -56,24 +76,15 @@ class DashboardScreen extends StatelessWidget {
         name: "Bills",
         time: "09:26 PM",
         imgUrl: "assets/images/others.png",
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),
-    Transaction(
-        name: "Salary",
-        time: "10:26 AM",
-        imgUrl: "assets/images/income.png",
-        type: TransactionType.income,
-        category: TransactionCat.moneyTransfer,
-        amount: 2000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        imgUrl: "assets/images/others.png",
+        date: DateTime.now().subtract(const Duration(days: 2)),
         type: TransactionType.expense,
         category: TransactionCat.bills,
         amount: 1000),
   ];
+
+
+class DashboardScreen extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();  
 
   DashboardScreen({super.key});
   @override
