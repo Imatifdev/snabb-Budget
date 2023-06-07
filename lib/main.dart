@@ -44,7 +44,7 @@ class MyApp extends StatelessWidget {
             const Color.fromRGBO(46, 166, 193, 1),
           ),
         ),
-        home: DashboardScreen() ,
+        home: const Welcome() ,
         routes: {
           AddExpanse.routeName: (ctx) => const AddExpanse(),
           AddIncome.routeName: (ctx) => const AddIncome(),
