@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/balance.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
+import 'package:snabbudget/Screens/setting_screen.dart';
 
 import 'mycolors.dart';
 
@@ -59,7 +60,12 @@ class CustomDrawer extends StatelessWidget {
               drawerTile("assets/images/box.png", "Budget"),
               drawerTile("assets/images/calender.png", "Calendar"),
               drawerTile("assets/images/clock.png", "Scheduled Transactions"),
-              drawerTile("assets/images/settings.png", "Settings"),
+              InkWell(
+                onTap: (){
+                  Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => SettingScreen()));
+                },
+                child: drawerTile("assets/images/settings.png", "Settings")),
               drawerTile("assets/images/settings-2.png", "Preferences"),
             ]),
             const Column(
