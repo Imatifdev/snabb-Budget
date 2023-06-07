@@ -10,6 +10,8 @@ import 'package:snabbudget/testingfiles/testsc.dart';
 import 'Screens/addincome.dart';
 import 'Screens/balance.dart';
 import 'Screens/dept.dart';
+import 'Screens/dashboard_screen.dart';
+import 'Screens/setting_screen.dart';
 import 'controller/IncomeProvider.dart';
 import 'controller/balanceProvider.dart';
 import 'utils/materialColor.dart';
@@ -42,7 +44,7 @@ class MyApp extends StatelessWidget {
             const Color.fromRGBO(46, 166, 193, 1),
           ),
         ),
-        home: Welcome(),
+        home: DashboardScreen() ,
         routes: {
           AddExpanse.routeName: (ctx) => const AddExpanse(),
           AddIncome.routeName: (ctx) => const AddIncome(),

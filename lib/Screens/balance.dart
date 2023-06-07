@@ -37,12 +37,14 @@ class _BalanceScreenState extends State<BalanceScreen> {
                 children: [
                   IconButton(
                       onPressed: () {
-                        _scaffoldKey2.currentState?.openDrawer();
+                        Navigator.of(context).pop();
                       },
-                      icon: const ImageIcon(
-                        AssetImage("assets/images/menu.png"),
-                        size: 40,
-                      )),
+                      icon: Icon(Icons.arrow_back_ios_new_rounded) 
+                      // const ImageIcon(
+                      //   AssetImage("assets/images/menu.png"),
+                      //   size: 40,
+                      // )
+                      ),
                   ShaderMask(
                     shaderCallback: (bounds) => const LinearGradient(
                       colors: [Colors.black, Colors.black],

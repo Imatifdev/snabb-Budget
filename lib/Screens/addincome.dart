@@ -99,7 +99,7 @@ class _AddIncomeState extends State<AddIncome> {
           date: _selectedDate,
           imgUrl: image,
           name: _nameController.text,
-          time: _selectedTime.toString(),
+          time: _selectedTime.format(context),
           
         ) );
         _nameController.clear();
@@ -156,11 +156,11 @@ class _AddIncomeState extends State<AddIncome> {
                   bottomLeft: Radius.circular(18))),
         ),
       ),
-      body: Form(
-        key: _formKey,
-        child: SafeArea(
-          child: SizedBox(
-            child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: Form(
+          key: _formKey,
+          child: SafeArea(
+            child: SizedBox(
               child: Column(
                 children: [
                   SizedBox(
@@ -293,11 +293,11 @@ class _AddIncomeState extends State<AddIncome> {
                             );
                           }).toList(),
                         ),
-
+      
                         // DropdownButtonFormField<DropdownItem>(
                         //   hint: Text("Category"),
                         //   value: _selectedItem,
-
+      
                         //   decoration: InputDecoration(
                         //     contentPadding: EdgeInsets.all(10),
                         //     border: OutlineInputBorder(
@@ -431,7 +431,7 @@ class _AddIncomeState extends State<AddIncome> {
                     ],
                   ).pSymmetric(h: 20),
                   SizedBox(
-                    height: height / 12,
+                    height: height / 20,
                   ),
                   Center(
                     child: SizedBox(
@@ -446,9 +446,6 @@ class _AddIncomeState extends State<AddIncome> {
                         child: Text("Add "),
                       ),
                     ),
-                  ),
-                  SizedBox(
-                    height: 100,
                   ),
                 ],
               ),

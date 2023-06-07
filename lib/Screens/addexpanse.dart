@@ -7,6 +7,7 @@ import 'package:snabbudget/models/transaction.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../models/expanseDataModel.dart';
+import '../models/transaction.dart';
 import 'dashboard_screen.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -88,7 +89,7 @@ class _AddExpanseState extends State<AddExpanse> {
         transactions.add(Transaction(
           amount: int.parse(_amountController.text),
           category: TransactionCat.moneyTransfer,
-          type: TransactionType.income,
+          type: TransactionType.expense,
           date: _selectedDate,
           imgUrl: image,
           name: _nameController.text,
@@ -261,9 +262,9 @@ class _AddExpanseState extends State<AddExpanse> {
                   bottomLeft: Radius.circular(18))),
         ),
       ),
-      body: SafeArea(
-        child: SizedBox(
-          child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: SizedBox(
             child: Column(
               children: [
                 SizedBox(
@@ -273,7 +274,11 @@ class _AddExpanseState extends State<AddExpanse> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
+<<<<<<< HEAD
                       "Expanse Name",
+=======
+                      "Expense Name",
+>>>>>>> 9a1ee8fd34ac246763c73ba31de57df7e44a4259
                       style: TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                     ),
                     SizedBox(
@@ -296,7 +301,11 @@ class _AddExpanseState extends State<AddExpanse> {
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                         fillColor: Colors.black.withOpacity(0.2),
+<<<<<<< HEAD
                         hintText: "Expanse Name ",
+=======
+                        hintText: "Expense Name ",
+>>>>>>> 9a1ee8fd34ac246763c73ba31de57df7e44a4259
                         alignLabelWithHint: true,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -502,13 +511,13 @@ class _AddExpanseState extends State<AddExpanse> {
                   ],
                 ).pSymmetric(h: 20),
                 SizedBox(
-                  height: height / 12,
+                  height: height / 20,
                 ),
                 Center(
                   child: SizedBox(
                     width: width / 2,
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {_saveExpense();},
                       style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(50))),
@@ -516,10 +525,13 @@ class _AddExpanseState extends State<AddExpanse> {
                     ),
                   ),
                 ),
+<<<<<<< HEAD
                 SizedBox(
                   height: 20,
                 ),
                 Container(height: 500, child: _buildFilePreview1()),
+=======
+>>>>>>> 9a1ee8fd34ac246763c73ba31de57df7e44a4259
               ],
             ),
           ),
