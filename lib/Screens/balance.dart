@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 
 import '../controller/balanceProvider.dart';
 import '../models/balance_data.dart';
+import '../utils/balance_ex.dart';
 import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -374,20 +375,21 @@ class _BalanceScreenState extends State<BalanceScreen> {
             ),
           ],
         ),
-        floatingActionButton: Column(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            FloatingActionButton(
-              onPressed: () => _openAddBalanceDialog(context, 'Credit'),
-              child: Icon(Icons.add),
-            ),
-            SizedBox(height: 16),
-            FloatingActionButton(
-              onPressed: () => _openAddBalanceDialog(context, 'Debit'),
-              child: Icon(Icons.remove),
-            ),
-          ],
-        ),
+        floatingActionButton: BlanceExpandableFloating(),
+        //  Column(
+        //   mainAxisAlignment: MainAxisAlignment.end,
+        //   children: [
+        //     FloatingActionButton(
+        //     onPressed: () => _openAddBalanceDialog(context, 'Credit'),
+        //       child: Icon(Icons.add),
+        //     ),
+        //     SizedBox(height: 16),
+        //     FloatingActionButton(
+        //       onPressed: () => _openAddBalanceDialog(context, 'Debit'),
+        //       child: Icon(Icons.remove),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }
@@ -753,6 +755,8 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
               TextFormField(
                 controller: _person,
                 decoration: InputDecoration(
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   labelText: 'To',
                   prefixIcon: Icon(Icons.person_2),
                 ),
