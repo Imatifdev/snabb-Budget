@@ -35,6 +35,7 @@ class MyApp extends StatelessWidget {
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
+          fontFamily: GoogleFonts.montserrat().fontFamily,
           primaryColor: const Color.fromRGBO(46, 166, 193, 1),
           primarySwatch: generateMaterialColor(
             const Color.fromRGBO(46, 166, 193, 1),
