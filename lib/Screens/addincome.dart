@@ -1,5 +1,6 @@
 // ignore_for_file: unused_local_variable, prefer_const_constructors, prefer_final_fields, depend_on_referenced_packages
 
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
@@ -23,6 +24,7 @@ class _AddIncomeState extends State<AddIncome> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
+  String file = "";
   TimeOfDay _selectedTime = TimeOfDay.now();
 
   final TextEditingController _noteController = TextEditingController();
@@ -411,9 +413,17 @@ class _AddIncomeState extends State<AddIncome> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: () {
-                                print(_amountController.text);
-                              }, child: Text("Add File"))
+                              onPressed: () async{
+                            FilePickerResult? result = await FilePicker.platform.pickFiles();
+                            if (result != null) {
+                              setState(() {
+                                file = result.names[0] as String;
+                              });
+                            }  
+                            },child: Text("Add File")),
+                            SizedBox(
+                              width: 200,
+                              child: Text(file, softWrap: true,)),
                         ],
                       ),
                       Row(

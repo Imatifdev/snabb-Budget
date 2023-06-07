@@ -23,6 +23,7 @@ class _AddExpanseState extends State<AddExpanse> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
+  String file = "";
   TimeOfDay _selectedTime = TimeOfDay.now();
 
   final TextEditingController _noteController = TextEditingController();
@@ -111,7 +112,6 @@ class _AddExpanseState extends State<AddExpanse> {
 
   Future<void> _pickFiles() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
-      allowMultiple: true,
     );
 
     if (result != null && result.files.isNotEmpty) {
@@ -274,11 +274,7 @@ class _AddExpanseState extends State<AddExpanse> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-<<<<<<< HEAD
-                      "Expanse Name",
-=======
                       "Expense Name",
->>>>>>> 9a1ee8fd34ac246763c73ba31de57df7e44a4259
                       style: TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                     ),
                     SizedBox(
@@ -301,11 +297,7 @@ class _AddExpanseState extends State<AddExpanse> {
                         contentPadding:
                             EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                         fillColor: Colors.black.withOpacity(0.2),
-<<<<<<< HEAD
-                        hintText: "Expanse Name ",
-=======
                         hintText: "Expense Name ",
->>>>>>> 9a1ee8fd34ac246763c73ba31de57df7e44a4259
                         alignLabelWithHint: true,
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -490,10 +482,18 @@ class _AddExpanseState extends State<AddExpanse> {
                           width: 20,
                         ),
                         ElevatedButton(
-                            onPressed: () {
-                              _pickFiles;
+                            onPressed: () async{
+                            FilePickerResult? result = await FilePicker.platform.pickFiles();
+                            if (result != null) {
+                              setState(() {
+                                file = result.names[0] as String;
+                              });
+                            }  
                             },
-                            child: Text("Add File"))
+                            child: Text("Add File")),
+                            SizedBox(
+                              width: 200,
+                              child: Text(file, softWrap: true,)),
                       ],
                     ),
                     Row(
@@ -525,13 +525,6 @@ class _AddExpanseState extends State<AddExpanse> {
                     ),
                   ),
                 ),
-<<<<<<< HEAD
-                SizedBox(
-                  height: 20,
-                ),
-                Container(height: 500, child: _buildFilePreview1()),
-=======
->>>>>>> 9a1ee8fd34ac246763c73ba31de57df7e44a4259
               ],
             ),
           ),
