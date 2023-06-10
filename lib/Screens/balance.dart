@@ -7,17 +7,21 @@ import 'package:provider/provider.dart';
 import '../controller/balanceProvider.dart';
 import '../models/balance_data.dart';
 import '../utils/balance_ex.dart';
+import '../utils/custom_drawer.dart';
 import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
+import '../globals.dart' as globals;
 
 import 'dashboard_screen.dart';
 
 class BalanceScreen extends StatefulWidget {
+  final GlobalKey<ScaffoldState> scaffoldKey;
+
+  const BalanceScreen({super.key, required this.scaffoldKey});
   @override
   State<BalanceScreen> createState() => _BalanceScreenState();
 }
 
-final GlobalKey<ScaffoldState> _scaffoldKey2 = GlobalKey<ScaffoldState>();
 
 class _BalanceScreenState extends State<BalanceScreen> {
   @override
@@ -26,7 +30,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
       child: Scaffold(
         // key: _scaffoldKey2,
         extendBody: true,
-        drawer: CustomDrawer(),
+        drawer: CustomDrawer(scaffoldKey: widget.scaffoldKey),
         backgroundColor: Colors.grey[100],
         body: Column(
           children: [
@@ -407,87 +411,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
       },
     );
   }
-
-  Drawer CustomDrawer() {
-    return Drawer(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              gradient1,
-              gradient2,
-            ],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 55.0, bottom: 20),
-                child: Text("Snabb",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold)),
-              ),
-              const Divider(
-                color: Colors.white,
-                thickness: 2,
-                indent: 40,
-                endIndent: 40,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => DashboardScreen()));
-                  },
-                  child:
-                      drawerTile("assets/images/home-icon.png", "Dashboard")),
-              drawerTile("assets/images/user.png", "Accounts"),
-              InkWell(
-                  onTap: () {
-                    Navigator.of(context).push(MaterialPageRoute(
-                        builder: (context) => BalanceScreen()));
-                  },
-                  child: drawerTile("assets/images/dollar.png", "Debit")),
-              drawerTile("assets/images/box.png", "Budget"),
-              drawerTile("assets/images/calender.png", "Calendar"),
-              drawerTile("assets/images/clock.png", "Scheduled Transactions"),
-              drawerTile("assets/images/settings.png", "Settings"),
-              drawerTile("assets/images/settings-2.png", "Preferences"),
-            ]),
-            const Column(
-              children: [
-                Divider(
-                  color: Colors.white,
-                  thickness: 2,
-                  indent: 40,
-                  endIndent: 40,
-                ),
-                ListTile(
-                    leading: Icon(
-                      Icons.logout_rounded,
-                      color: Colors.white,
-                      size: 38,
-                    ),
-                    title: Text(
-                      "Logout",
-                      style: TextStyle(fontSize: 14, color: Colors.white),
-                    )),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
+  
   ListTile drawerTile(String imgUrl, String title) {
     return ListTile(
         leading: ImageIcon(

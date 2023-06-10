@@ -2,7 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/mycolors.dart';
-
+import 'package:snabbudget/main.dart';
 import '../models/transaction.dart';
 import '../utils/custom_bottombar.dart';
 import '../utils/custom_drawer.dart';
@@ -84,16 +84,16 @@ final List<Transaction> transactions = [
 ];
 
 class DashboardScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
 
   DashboardScreen({super.key});
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-        key: _scaffoldKey,
+      key: scaffoldKey,
         extendBody: true,
-        drawer: CustomDrawer(),
+        drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
         backgroundColor: Colors.grey[100],
         bottomNavigationBar: const CustomBottomBar(),
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
@@ -111,7 +111,7 @@ class DashboardScreen extends StatelessWidget {
                       children: [
                         IconButton(
                             onPressed: () {
-                              _scaffoldKey.currentState?.openDrawer();
+                              scaffoldKey.currentState?.openDrawer();
                             },
                             icon: const ImageIcon(
                               AssetImage("assets/images/menu.png"),

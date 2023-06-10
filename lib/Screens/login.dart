@@ -9,11 +9,12 @@ import 'package:velocity_x/velocity_x.dart';
 import 'dashboard_screen.dart';
 
 class LoginScreen extends StatelessWidget {
+  final GlobalKey<ScaffoldState> scaffoldKey;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  LoginScreen({super.key});
+  LoginScreen({super.key, required this.scaffoldKey});
 
   String _validateEmail(String value) {
     if (value.isEmpty) {
@@ -238,7 +239,7 @@ class LoginScreen extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignupScreen()));
+                                    builder: (context) => SignupScreen(scaffoldKey: scaffoldKey,)));
                           },
                         style: TextStyle(
                           fontWeight: FontWeight.bold,

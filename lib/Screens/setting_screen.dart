@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
 class SettingScreen extends StatelessWidget {
-  const SettingScreen({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
+ SettingScreen({super.key,});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: const CustomDrawer(),
+      key: scaffoldKey,
+      drawer: CustomDrawer(scaffoldKey: scaffoldKey),
       body: SafeArea(child: 
       SizedBox(
         width: double.infinity,
@@ -21,9 +23,10 @@ class SettingScreen extends StatelessWidget {
               children: [
                IconButton(
                             onPressed: () {
-                              Navigator.of(context).pop();
+                              scaffoldKey.currentState?.openDrawer();
+                              //Navigator.of(context).pop();
                             },
-                            icon: const Icon(Icons.arrow_back_ios_new_rounded)
+                            icon: const Icon(Icons.menu)
                             // const ImageIcon(
                             //   AssetImage("assets/images/menu.png"),
                             //   size: 40,

@@ -13,7 +13,8 @@ import 'displaydata.dart';
 
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
-  const AddIncome({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  const AddIncome({super.key, required this.scaffoldKey});
 
   @override
   State<AddIncome> createState() => _AddIncomeState();
@@ -21,7 +22,6 @@ class AddIncome extends StatefulWidget {
 
 class _AddIncomeState extends State<AddIncome> {
   final _formKey = GlobalKey<FormState>();
-
   TextEditingController _nameController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
@@ -65,7 +65,7 @@ class _AddIncomeState extends State<AddIncome> {
   List<IncomeData> incomeDatList = [];
 
 //function for storing data and passing to another screen
-  void _saveExpense() {
+  void _saveExpense(GlobalKey<ScaffoldState> scaffoldKey) {
     if (_amountController.text.isNotEmpty &&
         _nameController.text.isNotEmpty &&
         selectedCategory != null) {
@@ -449,7 +449,7 @@ class _AddIncomeState extends State<AddIncome> {
                       width: width / 2,
                       child: ElevatedButton(
                         onPressed: () {
-                          _saveExpense();
+                          _saveExpense(widget.scaffoldKey);
                         },
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(

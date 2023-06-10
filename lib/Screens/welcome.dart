@@ -9,7 +9,8 @@ import 'package:velocity_x/velocity_x.dart';
 import 'login.dart';
 
 class Welcome extends StatelessWidget {
-  const Welcome({super.key});
+  final GlobalKey<ScaffoldState> scaffoldKey;
+  const Welcome({super.key, required this.scaffoldKey});
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +98,7 @@ class Welcome extends StatelessWidget {
               title: "Signup",
               onaction: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SignupScreen()));
+                    MaterialPageRoute(builder: (context) => SignupScreen(scaffoldKey: scaffoldKey,)));
               },
             ),
             SizedBox(
@@ -114,7 +115,7 @@ class Welcome extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen()));
+                    MaterialPageRoute(builder: (context) => LoginScreen(scaffoldKey: scaffoldKey,)));
               },
               child: CustomText(
                 fontWeight: FontWeight.bold,

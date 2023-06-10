@@ -9,13 +9,14 @@ import 'dashboard_screen.dart';
 import 'login.dart';
 
 class SignupScreen extends StatelessWidget {
+  final GlobalKey<ScaffoldState> scaffoldKey;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _name = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
 
-  SignupScreen({super.key});
+  SignupScreen({super.key, required this.scaffoldKey});
   String _validateEmail(String value) {
     if (value.isEmpty) {
       return 'Please enter an email';
@@ -283,7 +284,7 @@ class SignupScreen extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginScreen()));
+                                      builder: (context) => LoginScreen(scaffoldKey: scaffoldKey,)));
                             },
                           style: TextStyle(
                             fontWeight: FontWeight.bold,
