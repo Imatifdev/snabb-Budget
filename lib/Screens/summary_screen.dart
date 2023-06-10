@@ -8,7 +8,7 @@ import '../models/transaction.dart';
 import 'dashboard_screen.dart';
 
 class SummaryScreen extends StatefulWidget {
-
+  static const routeName = "summary-screen";
   SummaryScreen({super.key});
 
   @override
@@ -21,6 +21,20 @@ class _SummaryScreenState extends State<SummaryScreen> {
     "Expense": 3,
     "Income": 1,
   };
+  List<String> months = [
+    "Janvary",
+    "Feburary",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+  ];
   int _currentSelection = 0;
     final Map<int, Widget> _children = {
   0: Text('Summary',style: GoogleFonts.montserrat(),),
@@ -33,6 +47,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     Map<DateTime, List<Transaction>> transactionsByMonth = {};
     for (var transaction in transactions) {
       DateTime month = DateTime(transaction.date.year, transaction.date.month);
@@ -44,7 +59,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
     }
     return Scaffold(
       key: scaffoldKey,
-      drawer: CustomDrawer(scaffoldKey: scaffoldKey),
+      drawer: CustomDrawer(),
       body: SafeArea(child: SizedBox(
         width: double.infinity,
         child: Column(
@@ -91,13 +106,33 @@ class _SummaryScreenState extends State<SummaryScreen> {
           children: _children,
       ),
       const SizedBox(height: 10,),
-      Padding(
+      SizedBox(
+      height: size.height-150,
+      child: ListView.builder(
+        itemCount: 12,
+        itemBuilder: (BuildContext context, int index) {
+          double totalIncome = 0;
+          double totalExpense = 0;
+          DateTime selectedMonth = DateTime(DateTime.now().year, index + 1);
+          List<Transaction> selectedMonthTransactions = transactions.where((transaction) =>
+      transaction.date.year == selectedMonth.year &&
+      transaction.date.month == selectedMonth.month).toList();
+          List<Transaction> transactionsForMonth = transactionsByMonth[selectedMonth] ?? [];
+          for (var transaction in selectedMonthTransactions) {
+    if (transaction.type == TransactionType.income) {
+      totalIncome += transaction.amount;
+    } else if (transaction.type == TransactionType.expense) {
+      totalExpense += transaction.amount;
+    }
+  }
+
+  double balance = totalIncome - totalExpense;
+          return transactionsForMonth.isNotEmpty ? Padding(
         padding: const EdgeInsets.all(8.0),
         child: Card(
           elevation: 5,
            shape: RoundedRectangleBorder(
     borderRadius: BorderRadius.circular(10),
-      //set border radius more than 50% of height and width to make circle
   ),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -106,12 +141,15 @@ class _SummaryScreenState extends State<SummaryScreen> {
               children: [
                 Column(
                   children: [
-                    const Text("May 2023",style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text("${months[index]} ${DateTime.now().year}",style: const TextStyle(fontWeight: FontWeight.bold)),
                     SizedBox(
             height: 100,
             width: 100,
             child: PieChart(
-              dataMap: dataMap,
+              dataMap: {
+                "expense":totalExpense,
+                "income":totalIncome,
+              },
               colorList: const [Color.fromRGBO(255, 59, 59, 1), Color.fromRGBO(124, 179, 66,1)],
               legendOptions: const LegendOptions(
                 showLegends: false,
@@ -132,50 +170,75 @@ class _SummaryScreenState extends State<SummaryScreen> {
                     Text("Total      ", style: TextStyle(fontWeight: FontWeight.bold) ,textAlign: TextAlign.left),SizedBox(width: 30,),
                   ],
                 ),
-                const Column(
+                 Column(
                   children: [
-                    Text(" \$770", style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),),
-                    SizedBox(height: 10,),
-                    Text("-\$840", style: TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
-                    SizedBox(height: 10,),
-                    Text(" \$770",style: TextStyle(fontWeight: FontWeight.bold)),
+                    Text(" \$$totalIncome", style: const TextStyle(color: Colors.green,fontWeight: FontWeight.bold),),
+                    const SizedBox(height: 10,),
+                    Text("-\$$totalExpense", style: const TextStyle(color: Colors.red,fontWeight: FontWeight.bold),),
+                    const SizedBox(height: 10,),
+                    Text( balance>0? "+\$$balance":"\$$balance",style: TextStyle(fontWeight: FontWeight.bold, color: balance>0?Colors.green:Colors.red)),
                   ],
                 )
               ],
             ),
           ),
         ),
-      ), 
-      SizedBox(
-      height: 200,
-      child: ListView.builder(
-        itemCount: 12,
-        itemBuilder: (BuildContext context, int index) {
-          DateTime month = DateTime(DateTime.now().year, index + 1);
-          List<Transaction> transactionsForMonth = transactionsByMonth[month] ?? [];
-          
-          return transactionsForMonth.isNotEmpty ? Card(
-            child: Column(
+      ) : Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Card(
+          elevation: 5,
+           shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(10),
+  ),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                ListTile(
-                  title: Text('${month.year}-${month.month}'),
+                Column(
+                  children: [
+                    Text("${months[index]} ${DateTime.now().year}",style: const TextStyle(fontWeight: FontWeight.bold)),
+                    const SizedBox(
+            height: 100,
+            width: 100,
+            child: PieChart(
+              dataMap: {
+                "none":0.0
+              },
+              colorList: [Color.fromRGBO(255, 59, 59, 1), Color.fromRGBO(124, 179, 66,1)],
+              legendOptions: LegendOptions(
+                showLegends: false,
+              ),
+              chartValuesOptions: ChartValuesOptions(
+                showChartValues: false,
+              ),
+              ),
+                )
+                    ]       
                 ),
-                ListView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: transactionsForMonth.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Transaction transaction = transactionsForMonth[index];
-                    
-                    return ListTile(
-                      title: Text('Transaction ID: ${transaction.amount}'),
-                      subtitle: Text('Date: ${transaction.date.toString()}'),
-                    );
-                  },
+                const Column(
+                  children: [
+                    Text("Income ", style: TextStyle(fontWeight: FontWeight.bold), textAlign: TextAlign.left,),SizedBox(width: 30,),
+                    SizedBox(height: 10,),
+                    Text("Expense", style: TextStyle(fontWeight: FontWeight.bold) ,textAlign: TextAlign.left),SizedBox(width: 30,),
+                    SizedBox(height: 10,),
+                    Text("Total      ", style: TextStyle(fontWeight: FontWeight.bold) ,textAlign: TextAlign.left),SizedBox(width: 30,),
+                  ],
                 ),
+                const Column(
+                  children: [
+                    Text(" \$0", style: TextStyle(fontWeight: FontWeight.bold),),
+                    SizedBox(height: 10,),
+                    Text("-\$0", style: TextStyle(fontWeight: FontWeight.bold),),
+                    SizedBox(height: 10,),
+                    Text(" \$0",style: TextStyle(fontWeight: FontWeight.bold)),
+                  ],
+                )
               ],
             ),
-          ) : SizedBox.shrink();
+          ),
+        ),
+      );
         },
       ),
     )

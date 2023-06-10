@@ -2,6 +2,7 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -56,8 +57,7 @@ class SignupScreen extends StatelessWidget {
         String password = _passwordController.text;
 
         // Process the login credentials
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => DashboardScreen()));
+        Navigator.of(context).pushNamed(HomeScreen.routeName);
 
         print('Email: $email');
         print('Password: $password');

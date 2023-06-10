@@ -8,12 +8,13 @@ import '../models/transaction.dart';
 import '../utils/daily_transactions.dart';
 
 class TransactionsScreen extends StatefulWidget {
+  static const routeName = "transactions-screen";
   @override
   _TransactionsScreenState createState() => _TransactionsScreenState();
 }
 
 class _TransactionsScreenState extends State<TransactionsScreen>{
-   final PageController _controller = PageController(initialPage: 0);
+  final PageController _controller = PageController(initialPage: 0);
   int pageIndex = 0;
   final List<Transaction> transactions = [
     Transaction(

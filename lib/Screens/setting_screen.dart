@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
 class SettingScreen extends StatelessWidget {
+  static const routeName = "settings-screen";
   final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
  SettingScreen({super.key,});
 
@@ -8,7 +9,7 @@ class SettingScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      drawer: CustomDrawer(scaffoldKey: scaffoldKey),
+      drawer: CustomDrawer(),
       body: SafeArea(child: 
       SizedBox(
         width: double.infinity,
@@ -24,14 +25,11 @@ class SettingScreen extends StatelessWidget {
                IconButton(
                             onPressed: () {
                               scaffoldKey.currentState?.openDrawer();
-                              //Navigator.of(context).pop();
                             },
-                            icon: const Icon(Icons.menu)
-                            // const ImageIcon(
-                            //   AssetImage("assets/images/menu.png"),
-                            //   size: 40,
-                            // )
-                            ),
+                            icon: const ImageIcon(
+                              AssetImage("assets/images/menu.png"),
+                              size: 40,
+                            )),
                 const Text(
                   "SETTINGS",
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),

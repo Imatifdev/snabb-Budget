@@ -7,6 +7,7 @@ import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'dashboard_screen.dart';
+import 'home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
@@ -46,8 +47,7 @@ class LoginScreen extends StatelessWidget {
         // Process the login credentials
         print('Email: $email');
         print('Password: $password');
-        Navigator.push(context,
-            MaterialPageRoute(builder: (context) => DashboardScreen()));
+        Navigator.of(context).pushNamed(HomeScreen.routeName);
       }
     }
 

@@ -13,8 +13,7 @@ import 'dashboard_screen.dart';
 
 class AddExpanse extends StatefulWidget {
   static const routeName = "add-expense";
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  const AddExpanse({super.key, required this.scaffoldKey});
+  const AddExpanse({super.key});
 
   @override
   State<AddExpanse> createState() => _AddExpanseState();

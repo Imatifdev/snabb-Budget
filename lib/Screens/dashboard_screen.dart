@@ -93,11 +93,8 @@ class DashboardScreen extends StatelessWidget {
     return Scaffold(
       key: scaffoldKey,
         extendBody: true,
-        drawer: CustomDrawer(scaffoldKey: scaffoldKey,),
+        drawer: const CustomDrawer(),
         backgroundColor: Colors.grey[100],
-        bottomNavigationBar: const CustomBottomBar(),
-        floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-        floatingActionButton: const ExpandableFloatingActionButton(),
         body: SingleChildScrollView(
           child: SafeArea(
             child: Padding(

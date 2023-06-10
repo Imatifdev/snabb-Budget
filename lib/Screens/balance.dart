@@ -15,9 +15,10 @@ import '../globals.dart' as globals;
 import 'dashboard_screen.dart';
 
 class BalanceScreen extends StatefulWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
+  static const routeName = "balance-screen";
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
-  const BalanceScreen({super.key, required this.scaffoldKey});
+  BalanceScreen({super.key});
   @override
   State<BalanceScreen> createState() => _BalanceScreenState();
 }
@@ -28,42 +29,34 @@ class _BalanceScreenState extends State<BalanceScreen> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        // key: _scaffoldKey2,
+        key: widget.scaffoldKey,
         extendBody: true,
-        drawer: CustomDrawer(scaffoldKey: widget.scaffoldKey),
+        drawer: CustomDrawer(),
         backgroundColor: Colors.grey[100],
         body: Column(
           children: [
             Card(
-              color: bgcolor,
-              elevation: 3,
-              child: Row(
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      icon: Icon(Icons.arrow_back_ios_new_rounded) 
-                      // const ImageIcon(
-                      //   AssetImage("assets/images/menu.png"),
-                      //   size: 40,
-                      // )
-                      ),
-                  ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(
-                      colors: [Colors.black, Colors.black],
-                    ).createShader(bounds),
-                    child: const Text(
-                      "Debts",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ).pSymmetric(h: 130),
-                  ),
-                ],
-              ),
+              child: SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+               IconButton(
+                            onPressed: () {
+                              widget.scaffoldKey.currentState?.openDrawer();
+                            },
+                            icon: const ImageIcon(
+                              AssetImage("assets/images/menu.png"),
+                              size: 40,
+                            )),
+                const Text(
+                  "DEBTS",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 50,)
+              ],
             ),
+          )),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
