@@ -159,10 +159,15 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CircleAvatar(
-                  child: IconButton(
-                      onPressed: () {},
-                      icon: const Icon(Icons.arrow_back_rounded)),
+                Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: CircleAvatar(
+                    child: IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(Icons.arrow_back_rounded)),
+                  ),
                 ),
                 const Text(
                   "Transactions",
@@ -213,7 +218,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
                         );
                             }, icon: const Icon(Icons.arrow_forward_ios_rounded)),             
         ]),
-        Text("2023"),
+        Text(DateTime.now().year.toString()),
           Expanded(
                 child: PageView.builder(
                   controller: _controller,

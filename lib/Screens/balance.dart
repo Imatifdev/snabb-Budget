@@ -50,7 +50,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                               size: 40,
                             )),
                 const Text(
-                  "DEBTS",
+                  "DEPTS",
                   style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 50,)

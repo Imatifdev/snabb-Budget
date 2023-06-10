@@ -48,7 +48,7 @@ class CustomDrawer extends StatelessWidget {
               ),
               drawerTile(context,"assets/images/home-icon.png", "Dashboard", HomeScreen.routeName),
               drawerTile(context,"assets/images/user.png", "Accounts",""),
-              drawerTile(context,"assets/images/dollar.png", "Debit", BalanceScreen.routeName),
+              drawerTile(context,"assets/images/dollar.png", "Dept", BalanceScreen.routeName),
               drawerTile(context,"assets/images/box.png", "Budget",""),
               drawerTile(context,"assets/images/calender.png", "Calendar",""),
               drawerTile(context,"assets/images/minus.png", "Summary",SummaryScreen.routeName),
