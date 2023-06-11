@@ -51,10 +51,11 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: const HomeScreen(),
+        
         routes: {
           HomeScreen.routeName: (ctx) => const HomeScreen(),
           AddExpanse.routeName: (ctx) => const AddExpanse(),
-          AddIncome.routeName: (ctx) => AddIncome(),
+          AddIncome.routeName: (ctx) => const AddIncome(),
           BalanceScreen.routeName: (ctx) => BalanceScreen(),
           SettingScreen.routeName: (ctx) => SettingScreen(),
           SummaryScreen.routeName: (ctx) => SummaryScreen(),
