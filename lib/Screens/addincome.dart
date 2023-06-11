@@ -13,7 +13,6 @@ import 'displaydata.dart';
 
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
-  const AddIncome({super.key});
 
   @override
   State<AddIncome> createState() => _AddIncomeState();
@@ -28,13 +27,6 @@ class _AddIncomeState extends State<AddIncome> {
   TimeOfDay _selectedTime = TimeOfDay.now();
 
   final TextEditingController _noteController = TextEditingController();
-  DropdownItem? _selectedItem;
-
-  List<DropdownItem> _dropdownItems = [
-    DropdownItem('Others', 'assets/images/others.png'),
-    DropdownItem('Finance', 'assets/images/fiance.png'),
-    DropdownItem('Income', 'assets/images/income.png'),
-  ];
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -94,7 +86,7 @@ class _AddIncomeState extends State<AddIncome> {
       setState(() {
         incomeDatList.add(expense);
         selectedCategory = null;
-        transactions.add( Transaction(
+        transactions.add(Transaction(
           amount: int.parse(_amountController.text),
           category: TransactionCat.moneyTransfer,
           type: TransactionType.income,
@@ -102,12 +94,12 @@ class _AddIncomeState extends State<AddIncome> {
           imgUrl: image,
           name: _nameController.text,
           time: _selectedTime.format(context),
-          
-        ) );
+        ));
         _nameController.clear();
         _amountController.clear();
       });
     }
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -295,34 +287,6 @@ class _AddIncomeState extends State<AddIncome> {
                             );
                           }).toList(),
                         ),
-      
-                        // DropdownButtonFormField<DropdownItem>(
-                        //   hint: Text("Category"),
-                        //   value: _selectedItem,
-      
-                        //   decoration: InputDecoration(
-                        //     contentPadding: EdgeInsets.all(10),
-                        //     border: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //     ),
-                        //   ),
-                        //   items: _dropdownItems.map((DropdownItem item) {
-                        //     return DropdownMenuItem<DropdownItem>(
-                        //       value: item,
-                        //       child: Row(
-                        //         children: [
-                        //           Image.asset(
-                        //             item.imagePath,
-                        //             width: 30,
-                        //             height: 30,
-                        //           ),
-                        //           SizedBox(width: 10),
-                        //           Text(item.name),
-                        //         ],
-                        //       ),
-                        //     );
-                        //   }).toList(),
-                        // ),
                       ),
                       SizedBox(
                         height: height / 30,
@@ -413,17 +377,22 @@ class _AddIncomeState extends State<AddIncome> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: () async{
-                            FilePickerResult? result = await FilePicker.platform.pickFiles();
-                            if (result != null) {
-                              setState(() {
-                                file = result.names[0] as String;
-                              });
-                            }  
-                            },child: Text("Add File")),
-                            SizedBox(
+                              onPressed: () async {
+                                FilePickerResult? result =
+                                    await FilePicker.platform.pickFiles();
+                                if (result != null) {
+                                  setState(() {
+                                    file = result.names[0] as String;
+                                  });
+                                }
+                              },
+                              child: Text("Add File")),
+                          SizedBox(
                               width: 200,
-                              child: Text(file, softWrap: true,)),
+                              child: Text(
+                                file,
+                                softWrap: true,
+                              )),
                         ],
                       ),
                       Row(
@@ -461,23 +430,6 @@ class _AddIncomeState extends State<AddIncome> {
               ),
             ),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class AnotherPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Another Page'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [],
         ),
       ),
     );
