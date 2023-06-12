@@ -1,6 +1,7 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
+import 'package:snabbudget/Screens/seealltransactions.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:snabbudget/main.dart';
 import '../models/transaction.dart';
@@ -84,14 +85,14 @@ final List<Transaction> transactions = [
 ];
 
 class DashboardScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   DashboardScreen({super.key});
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      key: scaffoldKey,
+        key: scaffoldKey,
         extendBody: true,
         drawer: const CustomDrawer(),
         backgroundColor: Colors.grey[100],
@@ -287,7 +288,7 @@ class DashboardScreen extends StatelessWidget {
                     width: size.width - 40,
                     child: Column(
                       children: [
-                        const Row(
+                        Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text(
@@ -297,10 +298,19 @@ class DashboardScreen extends StatelessWidget {
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text(
-                                "See All",
-                                style:
-                                    TextStyle(fontSize: 13, color: Colors.grey),
+                              GestureDetector(
+                                onTap: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (ctx) =>
+                                              SeeAllTransactions()));
+                                },
+                                child: Text(
+                                  "See All",
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.grey),
+                                ),
                               )
                             ]),
                         const SizedBox(

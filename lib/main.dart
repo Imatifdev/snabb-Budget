@@ -3,13 +3,18 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snabbudget/Screens/addexpanse.dart';
+import 'package:snabbudget/Screens/budget.dart';
+import 'package:snabbudget/Screens/calender.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
+import 'package:snabbudget/Screens/preferences.dart';
+import 'package:snabbudget/Screens/schedule-Transactions.dart';
 import 'package:snabbudget/Screens/summary_screen.dart';
 import 'package:snabbudget/Screens/welcome.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
 import 'package:snabbudget/testingfiles/testsc.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
+import 'Screens/accounts.dart';
 import 'Screens/addincome.dart';
 import 'Screens/balance.dart';
 import 'Screens/dept.dart';
@@ -50,12 +55,16 @@ class MyApp extends StatelessWidget {
             const Color.fromRGBO(46, 166, 193, 1),
           ),
         ),
-        home: const HomeScreen(),
-        
+        home: Welcome(),
         routes: {
-          HomeScreen.routeName: (ctx) => const HomeScreen(),
-          AddExpanse.routeName: (ctx) => const AddExpanse(),
-          AddIncome.routeName: (ctx) => const AddIncome(),
+          CalenderScreen.routeName: (context) => CalenderScreen(),
+          ScheduleTransactions.routeName: (context) => ScheduleTransactions(),
+          BudgetScreen.routeName: (context) => BudgetScreen(),
+          PreferencesScreen.routeName: (context) => PreferencesScreen(),
+          Accounts.routeName: (ctx) => Accounts(),
+          HomeScreen.routeName: (ctx) => HomeScreen(),
+          AddExpanse.routeName: (ctx) => AddExpanse(),
+          AddIncome.routeName: (ctx) => AddIncome(),
           BalanceScreen.routeName: (ctx) => BalanceScreen(),
           SettingScreen.routeName: (ctx) => SettingScreen(),
           SummaryScreen.routeName: (ctx) => SummaryScreen(),

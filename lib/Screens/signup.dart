@@ -10,14 +10,12 @@ import 'dashboard_screen.dart';
 import 'login.dart';
 
 class SignupScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _name = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
 
-  SignupScreen({super.key, required this.scaffoldKey});
   String _validateEmail(String value) {
     if (value.isEmpty) {
       return 'Please enter an email';
@@ -77,23 +75,31 @@ class SignupScreen extends StatelessWidget {
           child: Container(
             height: height,
             decoration: BoxDecoration(
-              gradient:LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: const [0.2,0.31 ,0.31 , 0.51,0.51,0.95,0.95, 1,],
-          colors: const [
-            Color.fromRGBO(47, 110, 182, 1), // Dark blue
-            Color.fromRGBO(47, 110, 182, 1), // Dark blue
-            Color.fromRGBO(44, 133, 192, 1),  // Blue
-            Color.fromRGBO(44, 133, 192, 1), // Blue
-            Color.fromRGBO(49, 194, 170, 1), // Sea green
-            Color.fromRGBO(47, 183, 187, 1), // Sea green
-            Colors.yellow, // Yellow
-            Colors.yellow, // Yellow
-          ],
-          tileMode: TileMode.clamp,
-        ) 
-            ),
+                gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: const [
+                0.2,
+                0.31,
+                0.31,
+                0.51,
+                0.51,
+                0.95,
+                0.95,
+                1,
+              ],
+              colors: const [
+                Color.fromRGBO(47, 110, 182, 1), // Dark blue
+                Color.fromRGBO(47, 110, 182, 1), // Dark blue
+                Color.fromRGBO(44, 133, 192, 1), // Blue
+                Color.fromRGBO(44, 133, 192, 1), // Blue
+                Color.fromRGBO(49, 194, 170, 1), // Sea green
+                Color.fromRGBO(47, 183, 187, 1), // Sea green
+                Colors.yellow, // Yellow
+                Colors.yellow, // Yellow
+              ],
+              tileMode: TileMode.clamp,
+            )),
             child: SingleChildScrollView(
               child: Column(
                 children: [
@@ -284,7 +290,7 @@ class SignupScreen extends StatelessWidget {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => LoginScreen(scaffoldKey: scaffoldKey,)));
+                                      builder: (context) => LoginScreen()));
                             },
                           style: TextStyle(
                             fontWeight: FontWeight.bold,

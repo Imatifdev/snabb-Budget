@@ -46,16 +46,26 @@ class CustomDrawer extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              drawerTile(context,"assets/images/home-icon.png", "Dashboard", HomeScreen.routeName),
-              drawerTile(context,"assets/images/user.png", "Accounts",""),
-              drawerTile(context,"assets/images/dollar.png", "Dept", BalanceScreen.routeName),
-              drawerTile(context,"assets/images/box.png", "Budget",""),
-              drawerTile(context,"assets/images/calender.png", "Calendar",""),
-              drawerTile(context,"assets/images/minus.png", "Summary",SummaryScreen.routeName),
-              drawerTile(context,"assets/images/transfer.png", "Transactions",TransactionsScreen.routeName),
-              drawerTile(context,"assets/images/clock.png", "Scheduled Transactions",""),
-              drawerTile(context,"assets/images/settings.png", "Settings",SettingScreen.routeName),
-              drawerTile(context,"assets/images/settings-2.png", "Preferences",""),
+              drawerTile(context, "assets/images/home-icon.png", "Dashboard",
+                  HomeScreen.routeName),
+              drawerTile(context, "assets/images/user.png", "Accounts",
+                  "Account-Screen"),
+              drawerTile(context, "assets/images/dollar.png", "Dept",
+                  BalanceScreen.routeName),
+              drawerTile(
+                  context, "assets/images/box.png", "Budget", "Budget-Screen"),
+              drawerTile(context, "assets/images/calender.png", "Calendar",
+                  "Calender-Screen"),
+              drawerTile(context, "assets/images/minus.png", "Summary",
+                  SummaryScreen.routeName),
+              drawerTile(context, "assets/images/transfer.png", "Transactions",
+                  TransactionsScreen.routeName),
+              drawerTile(context, "assets/images/clock.png",
+                  "Scheduled Transactions", "Schedule-Transactions"),
+              drawerTile(context, "assets/images/settings.png", "Settings",
+                  SettingScreen.routeName),
+              drawerTile(context, "assets/images/settings-2.png", "Preferences",
+                  "Preferences"),
             ]),
             const Column(
               children: [
@@ -83,20 +93,21 @@ class CustomDrawer extends StatelessWidget {
     );
   }
 
-  ListTile drawerTile(BuildContext context, String imgUrl, String title, String routeName) {
+  ListTile drawerTile(
+      BuildContext context, String imgUrl, String title, String routeName) {
     return ListTile(
-        leading: ImageIcon(
-          AssetImage(imgUrl),
-          color: Colors.white,
-          size: 38,
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 14, color: Colors.white),
-         ),
-        onTap:(){
-          Navigator.of(context).pushNamed(routeName);
-        },
-      );
+      leading: ImageIcon(
+        AssetImage(imgUrl),
+        color: Colors.white,
+        size: 38,
+      ),
+      title: Text(
+        title,
+        style: const TextStyle(fontSize: 14, color: Colors.white),
+      ),
+      onTap: () {
+        Navigator.of(context).pushNamed(routeName);
+      },
+    );
   }
 }

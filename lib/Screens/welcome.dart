@@ -9,9 +9,6 @@ import 'package:velocity_x/velocity_x.dart';
 import 'login.dart';
 
 class Welcome extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
-  const Welcome({super.key, required this.scaffoldKey});
-
   @override
   Widget build(BuildContext context) {
     var height = MediaQuery.of(context).size.height;
@@ -20,14 +17,23 @@ class Welcome extends StatelessWidget {
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
+            gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          stops: const [0.2,0.31 ,0.31 , 0.51,0.51,0.95,0.95, 1,],
+          stops: const [
+            0.2,
+            0.31,
+            0.31,
+            0.51,
+            0.51,
+            0.95,
+            0.95,
+            1,
+          ],
           colors: const [
             Color.fromRGBO(47, 110, 182, 1), // Dark blue
             Color.fromRGBO(47, 110, 182, 1), // Dark blue
-            Color.fromRGBO(44, 133, 192, 1),  // Blue
+            Color.fromRGBO(44, 133, 192, 1), // Blue
             Color.fromRGBO(44, 133, 192, 1), // Blue
             Color.fromRGBO(49, 194, 170, 1), // Sea green
             Color.fromRGBO(47, 183, 187, 1), // Sea green
@@ -35,19 +41,19 @@ class Welcome extends StatelessWidget {
             Colors.yellow, // Yellow
           ],
           tileMode: TileMode.clamp,
-        ) 
+        )
 //           LinearGradient(
 //   begin: Alignment.topLeft,
 //   end: Alignment.bottomRight,
-  
+
 //   // stops: const [
-//   //   0.20, 
-//   //   0.40, 
-//   //   0.50, 
-//   //   0.60, 
-//   //   0.70, 
-//   //   0.80, 
-//   //   0.90, 
+//   //   0.20,
+//   //   0.40,
+//   //   0.50,
+//   //   0.60,
+//   //   0.70,
+//   //   0.80,
+//   //   0.90,
 //   //   1
 //   //   ],
 //   colors: const [
@@ -61,7 +67,7 @@ class Welcome extends StatelessWidget {
 //     Color(0xFFFBFF2B),
 //   ],
 // )
-        ),
+            ),
         child: Column(
           children: [
             VxArc(
@@ -98,7 +104,7 @@ class Welcome extends StatelessWidget {
               title: "Signup",
               onaction: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => SignupScreen(scaffoldKey: scaffoldKey,)));
+                    MaterialPageRoute(builder: (context) => SignupScreen()));
               },
             ),
             SizedBox(
@@ -115,7 +121,7 @@ class Welcome extends StatelessWidget {
             InkWell(
               onTap: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => LoginScreen(scaffoldKey: scaffoldKey,)));
+                    MaterialPageRoute(builder: (context) => LoginScreen()));
               },
               child: CustomText(
                 fontWeight: FontWeight.bold,

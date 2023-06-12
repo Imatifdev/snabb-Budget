@@ -10,12 +10,9 @@ import 'dashboard_screen.dart';
 import 'home_screen.dart';
 
 class LoginScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-
-  LoginScreen({super.key, required this.scaffoldKey});
 
   String _validateEmail(String value) {
     if (value.isEmpty) {
@@ -64,23 +61,31 @@ class LoginScreen extends StatelessWidget {
           key: _formKey,
           child: Container(
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          stops: const [0.2,0.31 ,0.31 , 0.51,0.51,0.95,0.95, 1,],
-          colors: const [
-            Color.fromRGBO(47, 110, 182, 1), // Dark blue
-            Color.fromRGBO(47, 110, 182, 1), // Dark blue
-            Color.fromRGBO(44, 133, 192, 1),  // Blue
-            Color.fromRGBO(44, 133, 192, 1), // Blue
-            Color.fromRGBO(49, 194, 170, 1), // Sea green
-            Color.fromRGBO(47, 183, 187, 1), // Sea green
-            Colors.yellow, // Yellow
-            Colors.yellow, // Yellow
-          ],
-          tileMode: TileMode.clamp,
-        ) 
-            ),
+                gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              stops: const [
+                0.2,
+                0.31,
+                0.31,
+                0.51,
+                0.51,
+                0.95,
+                0.95,
+                1,
+              ],
+              colors: const [
+                Color.fromRGBO(47, 110, 182, 1), // Dark blue
+                Color.fromRGBO(47, 110, 182, 1), // Dark blue
+                Color.fromRGBO(44, 133, 192, 1), // Blue
+                Color.fromRGBO(44, 133, 192, 1), // Blue
+                Color.fromRGBO(49, 194, 170, 1), // Sea green
+                Color.fromRGBO(47, 183, 187, 1), // Sea green
+                Colors.yellow, // Yellow
+                Colors.yellow, // Yellow
+              ],
+              tileMode: TileMode.clamp,
+            )),
             child: Column(
               children: [
                 VxArc(
@@ -239,7 +244,7 @@ class LoginScreen extends StatelessWidget {
                             Navigator.push(
                                 context,
                                 MaterialPageRoute(
-                                    builder: (context) => SignupScreen(scaffoldKey: scaffoldKey,)));
+                                    builder: (context) => SignupScreen()));
                           },
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
