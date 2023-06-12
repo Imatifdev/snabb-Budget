@@ -9,80 +9,7 @@ import '../utils/custom_bottombar.dart';
 import '../utils/custom_drawer.dart';
 import '../utils/expandable_fab.dart';
 
-final List<Transaction> transactions = [
-  Transaction(
-      name: "Money Transfer",
-      time: "06:20 PM",
-      date: DateTime.now(),
-      imgUrl: "assets/images/home.png",
-      type: TransactionType.expense,
-      category: TransactionCat.moneyTransfer,
-      amount: 22),
-  Transaction(
-      name: "Shopping",
-      time: "02:26 PM",
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      imgUrl: "assets/images/shopping.png",
-      type: TransactionType.expense,
-      category: TransactionCat.shopping,
-      amount: 100),
-  Transaction(
-      name: "Taxi",
-      time: "02:00 PM",
-      date: DateTime.now().subtract(const Duration(days: 2)),
-      imgUrl: "assets/images/travel.png",
-      type: TransactionType.expense,
-      category: TransactionCat.taxi,
-      amount: 80),
-  Transaction(
-      name: "Salary",
-      time: "10:26 AM",
-      imgUrl: "assets/images/income.png",
-      date: DateTime.now().subtract(const Duration(days: 3)),
-      type: TransactionType.income,
-      category: TransactionCat.moneyTransfer,
-      amount: 2000),
-  Transaction(
-      name: "Bills",
-      time: "09:26 PM",
-      date: DateTime.now().subtract(const Duration(days: 3)),
-      imgUrl: "assets/images/others.png",
-      type: TransactionType.expense,
-      category: TransactionCat.bills,
-      amount: 1000),
-  Transaction(
-      name: "Salary",
-      time: "10:26 AM",
-      date: DateTime.now().subtract(const Duration(days: 3)),
-      imgUrl: "assets/images/income.png",
-      type: TransactionType.income,
-      category: TransactionCat.moneyTransfer,
-      amount: 2000),
-  Transaction(
-      name: "Bills",
-      time: "09:26 PM",
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      imgUrl: "assets/images/others.png",
-      type: TransactionType.expense,
-      category: TransactionCat.bills,
-      amount: 1000),
-  Transaction(
-      name: "Salary",
-      time: "10:26 AM",
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      imgUrl: "assets/images/income.png",
-      type: TransactionType.income,
-      category: TransactionCat.moneyTransfer,
-      amount: 2000),
-  Transaction(
-      name: "Bills",
-      time: "09:26 PM",
-      imgUrl: "assets/images/others.png",
-      date: DateTime.now().subtract(const Duration(days: 2)),
-      type: TransactionType.expense,
-      category: TransactionCat.bills,
-      amount: 1000),
-];
+final List<Transaction> transactions = [];
 
 class DashboardScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -90,6 +17,18 @@ class DashboardScreen extends StatelessWidget {
   DashboardScreen({super.key});
   @override
   Widget build(BuildContext context) {
+    double totalIncomeAmount = 0;
+    double totalexpAmount = 0;
+
+    for (Transaction transaction in transactions) {
+      if (transaction.type == TransactionType.income) {
+        totalIncomeAmount += transaction.amount;
+      }
+
+      if (transaction.type == TransactionType.expense) {
+        totalexpAmount += transaction.amount;
+      }
+    }
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         key: scaffoldKey,
@@ -233,8 +172,8 @@ class DashboardScreen extends StatelessWidget {
                                   const SizedBox(
                                     height: 5,
                                   ),
-                                  const Text(
-                                    "\$2000.00",
+                                  Text(
+                                    totalIncomeAmount.toString(),
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontSize: 15,
@@ -268,7 +207,7 @@ class DashboardScreen extends StatelessWidget {
                                   const SizedBox(
                                     height: 5,
                                   ),
-                                  const Text("\$490.00",
+                                  Text(totalexpAmount.toString(),
                                       style: TextStyle(
                                           color: Colors.white,
                                           fontSize: 15,

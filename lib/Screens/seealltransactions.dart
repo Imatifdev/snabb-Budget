@@ -142,7 +142,7 @@ class SeeAllTransactions extends StatelessWidget {
                 height: 20,
               ),
               SizedBox(
-                height: MediaQuery.of(context).size.height,
+                height: MediaQuery.of(context).size.height / 2,
                 child: ListView.builder(
                   itemCount: transactions.length,
                   itemBuilder: (context, index) {
