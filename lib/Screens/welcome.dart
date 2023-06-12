@@ -6,6 +6,7 @@ import 'package:snabbudget/Screens/signup.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
+import 'home_screen.dart';
 import 'login.dart';
 
 class Welcome extends StatelessWidget {
@@ -140,7 +141,10 @@ class Welcome extends StatelessWidget {
                   fontsize: 16,
                   color: simplefont,
                   text: "Continue without creating an account ",
-                ).centered(),
+                ).centered().onTap(() {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (ctx) => HomeScreen()));
+                }),
                 Icon(
                   CupertinoIcons.arrow_right_circle_fill,
                   color: Colors.grey.shade100,
