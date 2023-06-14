@@ -8,7 +8,7 @@ import 'package:snabbudget/Screens/calender.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/Screens/preferences.dart';
-import 'package:snabbudget/Screens/schedule-Transactions.dart';
+import 'package:snabbudget/Screens/schedule_transactions.dart';
 import 'package:snabbudget/Screens/summary_screen.dart';
 import 'package:snabbudget/Screens/welcome.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
@@ -57,14 +57,14 @@ class MyApp extends StatelessWidget {
         ),
         home: Welcome(),
         routes: {
-          CalenderScreen.routeName: (context) => CalenderScreen(),
-          ScheduleTransactions.routeName: (context) => ScheduleTransactions(),
-          BudgetScreen.routeName: (context) => BudgetScreen(),
-          PreferencesScreen.routeName: (context) => PreferencesScreen(),
+          CalenderScreen.routeName: (context) => const CalenderScreen(),
+          ScheduleTransactions.routeName: (context) => const ScheduleTransactions(),
+          BudgetScreen.routeName: (context) => const BudgetScreen(),
+          PreferencesScreen.routeName: (context) => const PreferencesScreen(),
           Accounts.routeName: (ctx) => Accounts(),
-          HomeScreen.routeName: (ctx) => HomeScreen(),
-          AddExpanse.routeName: (ctx) => AddExpanse(),
-          AddIncome.routeName: (ctx) => AddIncome(),
+          HomeScreen.routeName: (ctx) => const HomeScreen(),
+          AddExpanse.routeName: (ctx) => const AddExpanse(),
+          AddIncome.routeName: (ctx) => const AddIncome(),
           BalanceScreen.routeName: (ctx) => BalanceScreen(),
           SettingScreen.routeName: (ctx) => SettingScreen(),
           SummaryScreen.routeName: (ctx) => SummaryScreen(),

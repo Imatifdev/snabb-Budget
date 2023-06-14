@@ -1,5 +1,6 @@
 enum TransactionType{income,expense}
 enum TransactionCat{moneyTransfer,shopping,taxi,bills}
+
 class Transaction{
   final String name;
   final String time;

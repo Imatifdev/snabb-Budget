@@ -2,12 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/seealltransactions.dart';
-import 'package:snabbudget/utils/mycolors.dart';
-import 'package:snabbudget/main.dart';
 import '../models/transaction.dart';
-import '../utils/custom_bottombar.dart';
 import '../utils/custom_drawer.dart';
-import '../utils/expandable_fab.dart';
 
 final List<Transaction> transactions = [];
 

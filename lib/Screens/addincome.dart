@@ -10,6 +10,7 @@ import '../models/transaction.dart';
 import 'addexpanse.dart';
 import 'dashboard_screen.dart';
 import 'displaydata.dart';
+import 'schedule_transactions.dart';
 
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
@@ -112,6 +113,48 @@ class _AddIncomeState extends State<AddIncome> {
       context,
       MaterialPageRoute(
         builder: (context) => DashboardScreen(),
+      ),
+    );
+  }
+
+  void schedualeTransaction() {
+    if (_amountController.text.isNotEmpty &&
+        _nameController.text.isNotEmpty &&
+        selectedCategory != null) {
+      double amount = double.parse(_amountController.text);
+      String name = _nameController.text;
+      DateTime dateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+      );
+      DateTime time = DateTime(
+        _selectedDate.hour,
+        _selectedDate.minute,
+      );
+
+      String image = selectedCategory!.image;
+
+
+      setState(() {
+        schedualedTransactions.add( Transaction(
+          amount: int.parse(_amountController.text),
+          category: TransactionCat.moneyTransfer,
+          type: TransactionType.income,
+          date: _selectedDate,
+          imgUrl: image,
+          name: _nameController.text,
+          time: _selectedTime.format(context),
+          
+        ) );
+        _nameController.clear();
+        _amountController.clear();
+      });
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ScheduleTransactions(),
       ),
     );
   }
