@@ -9,7 +9,8 @@ import 'package:get/get.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/utils/mycolors.dart';
-
+import 'package:velocity_x/velocity_x.dart';
+import '../../utils/custom_drawer.dart';
 import '../../utils/custombtn.dart';
 import '../../utils/customtextfield.dart';
 
@@ -23,6 +24,7 @@ class EditProfile extends StatefulWidget {
 class _EditProfileState extends State<EditProfile> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   final TextEditingController _emailController = TextEditingController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   final TextEditingController _passController = TextEditingController();
 
@@ -32,14 +34,16 @@ class _EditProfileState extends State<EditProfile> {
   Future<void> updateUserData(String uid, String newUsername, String newEmail,
       String phoneNumber) async {
     try {
-      await FirebaseFirestore.instance.collection('users').doc(uid).update(
-          {'First Name': newUsername, 'Email': newEmail, "Phone": phoneNumber});
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'First Name': newUsername,
+        'Email': newEmail,
+      });
       print('Document updated successfully.');
     } catch (e) {
       print('Error updating document: $e');
     }
     await FirebaseFirestore.instance
-        .collection('users')
+        .collection('UsersData')
         .doc(uid)
         .set({'First Name': newUsername}, SetOptions(merge: true));
   }
@@ -74,132 +78,143 @@ class _EditProfileState extends State<EditProfile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
+      drawer: CustomDrawer(),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 40),
-        child: SingleChildScrollView(
+      body: SingleChildScrollView(
+        child: SafeArea(
           child: Column(
             children: [
-              const SizedBox(
-                height: 30,
-              ),
-              Center(
-                child: Stack(children: [
-                  const CircleAvatar(
-                    radius: 80,
-                    backgroundImage: AssetImage('assets/dp.jpg'),
-                  ),
-                  Positioned(
-                      bottom: -5,
-                      left: 110,
-                      child: IconButton(
-                          onPressed: () {},
-                          icon: const Icon(
-                            CupertinoIcons.photo_camera,
-                            size: 30,
-                          )))
-                ]),
-              ),
-              const SizedBox(
-                height: 40,
-              ),
-              TextFieldInput(
-                validator: (value) {
-                  if (value.length < 2) {
-                    return 'Enter a valid name';
-                  }
-                  return null;
-                },
-                textEditingController: _nameController,
-                hintText: "Abc",
-                textInputType: TextInputType.emailAddress,
-                action: TextInputAction.next,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFieldInput(
-                validator: (value) {
-                  if (!RegExp(r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
-                      .hasMatch(value)) {
-                    return 'Please enter a valid email address';
-                  }
-                  return null;
-                },
-                textEditingController: _emailController,
-                hintText: "abc@gmail.com",
-                textInputType: TextInputType.emailAddress,
-                action: TextInputAction.next,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFieldInput(
-                validator: (value) {
-                  if (value.length < 11) {
-                    return 'Enter a valid phone num';
-                  }
-                  return null;
-                },
-                textEditingController: _mobilecontroller,
-                hintText: "2567388929",
-                textInputType: TextInputType.emailAddress,
-                action: TextInputAction.next,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              TextFieldInput(
-                validator: (value) {
-                  if (value.length < 6) {
-                    return 'Password must be at least 6 characters long';
-                  }
-                  return null;
-                },
-                isPass: true,
-                textEditingController: _passController,
-                hintText: "*********",
-                textInputType: TextInputType.emailAddress,
-                action: TextInputAction.next,
-              ),
-              const SizedBox(
-                height: 30,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: MyCustomButton(
-                        title: "Cancel",
-                        borderrad: 25,
-                        onaction: () {
-                          Navigator.pop(context);
+              Card(
+                color: bgcolor,
+                elevation: 3,
+                child: Row(
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          _scaffoldKey.currentState?.openDrawer();
                         },
-                        color1: Colors.red,
-                        color2: Colors.red,
-                        width: MediaQuery.of(context).size.width),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: MyCustomButton(
-                        title: "Save",
-                        borderrad: 25,
-                        onaction: () {
-                          updateUserData(userId, _nameController.text,
-                              _emailController.text, _mobilecontroller.text);
-                          Get.to(() => HomeScreen());
-                          Get.snackbar("Message", "Your has has been updated",
-                              snackPosition: SnackPosition.BOTTOM,
-                              colorText: Colors.black,
-                              backgroundColor: bgcolor);
-                        },
-                        color1: Colors.green,
-                        color2: Colors.green,
-                        width: MediaQuery.of(context).size.width),
-                  ),
-                ],
-              )
+                        icon: const ImageIcon(
+                          AssetImage("assets/images/menu.png"),
+                          size: 40,
+                        )),
+                    ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [Colors.black, Colors.black],
+                      ).createShader(bounds),
+                      child: const Text(
+                        "Edit Profile",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ).pSymmetric(h: 110),
+                    ),
+                  ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 40),
+                child: Column(
+                  children: [
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    const SizedBox(
+                      height: 40,
+                    ),
+                    TextFieldInput(
+                      validator: (value) {
+                        if (value.length < 2) {
+                          return 'Enter a valid name';
+                        }
+                        return null;
+                      },
+                      textEditingController: _nameController,
+                      hintText: "Abc",
+                      textInputType: TextInputType.emailAddress,
+                      action: TextInputAction.next,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFieldInput(
+                      validator: (value) {
+                        if (!RegExp(
+                                r'^[\w-]+(\.[\w-]+)*@([\w-]+\.)+[a-zA-Z]{2,7}$')
+                            .hasMatch(value)) {
+                          return 'Please enter a valid email address';
+                        }
+                        return null;
+                      },
+                      textEditingController: _emailController,
+                      hintText: "abc@gmail.com",
+                      textInputType: TextInputType.emailAddress,
+                      action: TextInputAction.next,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    TextFieldInput(
+                      validator: (value) {
+                        if (value.length < 11) {
+                          return 'Enter a valid phone num';
+                        }
+                        return null;
+                      },
+                      textEditingController: _mobilecontroller,
+                      hintText: "2567388929",
+                      textInputType: TextInputType.emailAddress,
+                      action: TextInputAction.next,
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    const SizedBox(
+                      height: 30,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: MyCustomButton(
+                              title: "Cancel",
+                              borderrad: 25,
+                              onaction: () {
+                                Navigator.pop(context);
+                              },
+                              color1: Colors.red,
+                              color2: Colors.red,
+                              width: MediaQuery.of(context).size.width),
+                        ),
+                        const SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
+                          child: MyCustomButton(
+                              title: "Save",
+                              borderrad: 25,
+                              onaction: () {
+                                updateUserData(
+                                    userId,
+                                    _nameController.text,
+                                    _emailController.text,
+                                    _mobilecontroller.text);
+                                Get.to(() => HomeScreen());
+                                Get.snackbar(
+                                    "Message", "Your has has been updated",
+                                    snackPosition: SnackPosition.BOTTOM,
+                                    colorText: Colors.black,
+                                    backgroundColor: bgcolor);
+                              },
+                              color1: Colors.green,
+                              color2: Colors.green,
+                              width: MediaQuery.of(context).size.width),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              ),
             ],
           ),
         ),

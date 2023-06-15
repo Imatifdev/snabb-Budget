@@ -2,7 +2,8 @@
 
 import 'dart:async';
 import 'dart:math';
-
+import 'package:snabbudget/Screens/auth/forgot.dart';
+import 'package:velocity_x/velocity_x.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -15,6 +16,9 @@ import '../../../models/usermodel.dart';
 import '../../../utils/mycolors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../../utils/custom_drawer.dart';
+import 'editprofile.dart';
 
 class ProfileView extends StatefulWidget {
   @override
@@ -37,7 +41,7 @@ class _ProfileViewState extends State<ProfileView> {
   String phone = 'loading....';
 
   void getInfo() async {
-    var collection = FirebaseFirestore.instance.collection('users');
+    var collection = FirebaseFirestore.instance.collection('UsersData');
     var docSnapshot = await collection.doc(userId).get();
     if (docSnapshot.exists) {
       print("ok");
@@ -71,6 +75,7 @@ class _ProfileViewState extends State<ProfileView> {
           }
         },
       );
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -86,93 +91,227 @@ class _ProfileViewState extends State<ProfileView> {
     }
     // final controller = Get.put(ProfileController());
     return Scaffold(
-      backgroundColor: bgcolor,
+      extendBody: true,
+      drawer: CustomDrawer(),
+      backgroundColor: Colors.white,
       body: SingleChildScrollView(
-        child: Column(
-          children: [
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 30,
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 1 / 40,
-            ),
-            Center(
-              child: Text(
-                name,
-                //                   user!.email,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.w400),
-              ),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 1 / 20,
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(children: [
-                Container(
-                    height: MediaQuery.of(context).size.height / 14,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: bgcolor,
-                        borderRadius: BorderRadius.circular(50)),
-                    child: ListTile(
-                      leading: Icon(Icons.mark_email_read_sharp),
-                      title: Text(
-                        email,
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    )),
-                SizedBox(
-                  height: MediaQuery.of(context).size.height / 50,
+        child: SafeArea(
+          child: Column(
+            children: [
+              Card(
+                color: bgcolor,
+                elevation: 3,
+                child: Row(
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          _scaffoldKey.currentState?.openDrawer();
+                        },
+                        icon: const ImageIcon(
+                          AssetImage("assets/images/menu.png"),
+                          size: 40,
+                        )),
+                    ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [Colors.black, Colors.black],
+                      ).createShader(bounds),
+                      child: const Text(
+                        "Debts",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ).pSymmetric(h: 130),
+                    ),
+                  ],
                 ),
-                Container(
-                    height: MediaQuery.of(context).size.height / 14,
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                        color: bgcolor,
-                        borderRadius: BorderRadius.circular(50)),
-                    child: ListTile(
-                      leading: Icon(Icons.phone_callback_sharp),
-                      title: Text(
-                        phone,
-                        style: TextStyle(fontSize: 14),
-                      ),
-                    )),
-              ]),
-            ),
-            SizedBox(
-              height: MediaQuery.of(context).size.height / 20,
-            ),
-            InkWell(
-              onTap: () {
-                signOut();
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        //signOut();
-                      },
-                      icon: Icon(
-                        Icons.logout_rounded,
-                        color: Colors.red,
-                        size: 40,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 30,
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 1 / 40,
+              ),
+              CircleAvatar(
+                radius: 50,
+                child: Icon(
+                  Icons.person,
+                  size: 60,
+                ),
+              ),
+              Center(
+                child: Text(
+                  name,
+                  //                   user!.email,
+                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.w400),
+                ),
+              ),
+              SizedBox(
+                height: MediaQuery.of(context).size.height * 1 / 20,
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(children: [
+                  Container(
+                      height: MediaQuery.of(context).size.height / 14,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          color: bgcolor,
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)),
+                        child: ListTile(
+                          leading: Icon(Icons.person),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Change Email",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                email,
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(CupertinoIcons.right_chevron),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (ctx) => EditProfile()));
+                            },
+                          ),
+                        ),
                       )),
                   SizedBox(
-                    width: 10,
+                    height: MediaQuery.of(context).size.height / 50,
                   ),
-                  const Text(
-                    "Log out",
-                    style: TextStyle(
-                        color: Colors.red,
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold),
-                  )
-                ],
+                  Container(
+                    height: MediaQuery.of(context).size.height / 14,
+                    width: MediaQuery.of(context).size.width,
+                    decoration: BoxDecoration(
+                        color: bgcolor,
+                        borderRadius: BorderRadius.circular(50)),
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50)),
+                      child: ListTile(
+                        leading: Icon(Icons.person),
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Change Name",
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              name,
+                              style: TextStyle(fontSize: 14),
+                            ),
+                          ],
+                        ),
+                        trailing: IconButton(
+                          icon: Icon(CupertinoIcons.right_chevron),
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (ctx) => EditProfile()));
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height / 50,
+                  ),
+                  Container(
+                      height: MediaQuery.of(context).size.height / 14,
+                      width: MediaQuery.of(context).size.width,
+                      decoration: BoxDecoration(
+                          color: bgcolor,
+                          borderRadius: BorderRadius.circular(50)),
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50)),
+                        child: ListTile(
+                          leading: Icon(Icons.person),
+                          title: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Change Pass",
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                height: 5,
+                              ),
+                              Text(
+                                "********",
+                                style: TextStyle(fontSize: 14),
+                              ),
+                            ],
+                          ),
+                          trailing: IconButton(
+                            icon: Icon(CupertinoIcons.right_chevron),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (ctx) => ForgitPassword()));
+                            },
+                          ),
+                        ),
+                      )),
+                ]),
               ),
-            ),
-          ],
+              SizedBox(
+                height: MediaQuery.of(context).size.height / 20,
+              ),
+              InkWell(
+                onTap: () {
+                  signOut();
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          //signOut();
+                        },
+                        icon: Icon(
+                          Icons.logout_rounded,
+                          color: Colors.red,
+                          size: 40,
+                        )),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    const Text(
+                      "Log out",
+                      style: TextStyle(
+                          color: Colors.red,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

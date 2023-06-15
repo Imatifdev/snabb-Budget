@@ -7,6 +7,7 @@ import 'package:snabbudget/Screens/profile_screen.dart';
 
 import '../utils/custom_bottombar.dart';
 import '../utils/expandable_fab.dart';
+import 'auth/profileview.dart';
 
 class HomeScreen extends StatefulWidget {
   static const routeName = "home-screen";
@@ -17,13 +18,13 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
   late PageController _pageController;
   final List<Widget> _pages = [
     DashboardScreen(),
     const DailyStats(),
-    const ProfileScreen(),
+    ProfileView(),
   ];
 
   @override
@@ -53,10 +54,10 @@ class _HomeScreenState extends State<HomeScreen> {
           setState(() {
             _selectedIndex = index;
             _pageController.animateToPage(
-        index,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOut,
-      );
+              index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+            );
           });
         },
       ),
