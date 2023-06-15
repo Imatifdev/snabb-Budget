@@ -245,7 +245,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
                           child: ListView.builder(itemBuilder: (context, index) {
                             List specificTrans = [];
                             specificTrans = transactions.where((transaction) => transaction.date.month == index+1 ).toList();
-                            if(specificTrans.isEmpty){return Text("no transactions");}
+                            if(specificTrans.isEmpty){return SizedBox();}
                             Transaction transaction = specificTrans[index];
                             return Card(
                                 color: Colors.white,

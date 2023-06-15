@@ -1,4 +1,4 @@
-package com.example.snabbudget
+package com.codefren.snabbudget
 
 import io.flutter.embedding.android.FlutterActivity
 

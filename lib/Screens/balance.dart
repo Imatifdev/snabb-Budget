@@ -10,7 +10,6 @@ import '../utils/balance_ex.dart';
 import '../utils/custom_drawer.dart';
 import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
-import '../globals.dart' as globals;
 
 import 'dashboard_screen.dart';
 
