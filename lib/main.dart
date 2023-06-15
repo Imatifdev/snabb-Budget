@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -25,7 +26,7 @@ import 'controller/balanceProvider.dart';
 import 'utils/materialColor.dart';
 import 'package:provider/provider.dart';
 
-void main() async{
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(const MyApp());
@@ -54,10 +55,13 @@ class MyApp extends StatelessWidget {
             const Color.fromRGBO(46, 166, 193, 1),
           ),
         ),
-        home: Welcome(),
+        home: FirebaseAuth.instance.currentUser != null
+            ? HomeScreen()
+            : Welcome(),
         routes: {
           CalenderScreen.routeName: (context) => const CalenderScreen(),
-          ScheduleTransactions.routeName: (context) => const ScheduleTransactions(),
+          ScheduleTransactions.routeName: (context) =>
+              const ScheduleTransactions(),
           BudgetScreen.routeName: (context) => const BudgetScreen(),
           PreferencesScreen.routeName: (context) => const PreferencesScreen(),
           Accounts.routeName: (ctx) => Accounts(),

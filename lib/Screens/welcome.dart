@@ -2,12 +2,12 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:snabbudget/Screens/signup.dart';
+import 'package:snabbudget/Screens/auth/signup.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import 'home_screen.dart';
-import 'login.dart';
+import 'auth/login.dart';
 
 class Welcome extends StatelessWidget {
   @override

@@ -2,17 +2,31 @@
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:snabbudget/Screens/signup.dart';
+import 'package:snabbudget/Screens/auth/signup.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import 'dashboard_screen.dart';
-import 'home_screen.dart';
+import '../../models/loginviewmodel.dart';
+import '../dashboard_screen.dart';
+import '../home_screen.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _passwordController = TextEditingController();
+
+  bool obsCheck = false;
+
+  bool _isLoggingIn = false;
+
+  final LoginViewModel _loginVM = LoginViewModel();
 
   String _validateEmail(String value) {
     if (value.isEmpty) {
@@ -182,7 +196,42 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(
                   height: height / 4.3,
                 ),
-                MyButton(title: "SIGN IN", onaction: _submitForm),
+                InkWell(
+                  splashColor: Colors.white,
+                  onTap: _isLoggingIn
+                      ? null
+                      : () async {
+                          if (_formKey.currentState!.validate()) {
+                            setState(() {
+                              _isLoggingIn = true;
+                            });
+                            bool isLoggedIn = await _loginVM.login(
+                                _emailController.text,
+                                _passwordController.text);
+                            if (isLoggedIn) {
+                              Navigator.pushAndRemoveUntil(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (ctx) => HomeScreen()),
+                                  (Route<dynamic> route) => false);
+                            }
+                          }
+                        },
+                  child: Container(
+                    height: 40,
+                    width: 300,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(50),
+                      border: Border.all(width: 1, color: Colors.white),
+                    ),
+                    child: _isLoggingIn
+                        ? const CircularProgressIndicator().centered()
+                        : const Text(
+                            'Sign In',
+                            style: TextStyle(color: Colors.white),
+                          ).centered(),
+                  ),
+                ),
                 SizedBox(
                   height: height / 40,
                 ),
@@ -260,59 +309,6 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-class MyButton extends StatelessWidget {
-  final String title;
-  final VoidCallback onaction;
-  const MyButton({
-    super.key,
-    required this.title,
-    required this.onaction,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      splashColor: Colors.white,
-      onTap: onaction,
-      child: Container(
-        height: 40,
-        width: 300,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(50),
-          border: Border.all(width: 1, color: Colors.white),
-        ),
-        child: Center(
-            child: Text(
-          title,
-          style: TextStyle(fontSize: 16, color: Colors.white),
-        )),
-      ),
-    );
-  }
-}
-
-class CustomText extends StatelessWidget {
-  final String text;
-  final double fontsize;
-  final FontWeight? fontWeight;
-  final Color? color;
-  const CustomText(
-      {super.key,
-      required this.fontsize,
-      this.fontWeight,
-      required this.text,
-      this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style:
-          TextStyle(fontSize: fontsize, fontWeight: fontWeight, color: color),
     );
   }
 }

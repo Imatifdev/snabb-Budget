@@ -1,20 +1,35 @@
-// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages, unused_element, no_leading_underscores_for_local_identifiers, avoid_print, sort_child_properties_last
+// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages, unused_element, no_leading_underscores_for_local_identifiers, avoid_print, sort_child_properties_last, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import 'dashboard_screen.dart';
+import '../../models/registerviewmodel.dart';
+import '../dashboard_screen.dart';
 import 'login.dart';
 
-class SignupScreen extends StatelessWidget {
+class SignupScreen extends StatefulWidget {
+  @override
+  State<SignupScreen> createState() => _SignupScreenState();
+}
+
+class _SignupScreenState extends State<SignupScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController _emailController = TextEditingController();
+
   final TextEditingController _name = TextEditingController();
 
   final TextEditingController _passwordController = TextEditingController();
+
+  final RegisterViewModel _registerVM = RegisterViewModel();
+
+  String errMsg = "";
+  bool _isSigningUp = false;
 
   String _validateEmail(String value) {
     if (value.isEmpty) {
@@ -228,7 +243,59 @@ class SignupScreen extends StatelessWidget {
                   SizedBox(
                     height: height / 7,
                   ),
-                  MyButton(title: "SIGN UP", onaction: _submitForm),
+                  InkWell(
+                    splashColor: Colors.white,
+                    onTap: _isSigningUp
+                        ? null
+                        : () async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _isSigningUp = true;
+                              });
+                              // call Firebase function to sign up user
+                              bool isRegistered = false;
+                              isRegistered = await _registerVM.register(
+                                  _emailController.text.trim(),
+                                  _passwordController.text.trim(),
+                                  _name.text.trim());
+                              if (isRegistered) {
+                                var userId =
+                                    FirebaseAuth.instance.currentUser!.uid;
+                                await FirebaseFirestore.instance
+                                    .collection("UsersData")
+                                    .doc(userId)
+                                    .set({
+                                  "First Name": _name.text.trim(),
+                                  "Email": _emailController.text.trim(),
+                                });
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (ctx) => HomeScreen()),
+                                    (Route<dynamic> route) => false);
+                              } else {
+                                setState(() {
+                                  _isSigningUp = false;
+                                  errMsg = _registerVM.message;
+                                });
+                              }
+                            }
+                          },
+                    child: Container(
+                      height: 40,
+                      width: 300,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(width: 1, color: Colors.white),
+                      ),
+                      child: _isSigningUp
+                          ? const CircularProgressIndicator().centered()
+                          : const Text(
+                              'Sign In',
+                              style: TextStyle(color: Colors.white),
+                            ).centered(),
+                    ),
+                  ),
                   SizedBox(
                     height: height / 42,
                   ),
