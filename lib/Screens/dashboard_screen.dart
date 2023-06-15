@@ -170,7 +170,7 @@ class DashboardScreen extends StatelessWidget {
                                   ),
                                   Text(
                                     totalIncomeAmount.toString(),
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold),
@@ -204,7 +204,7 @@ class DashboardScreen extends StatelessWidget {
                                     height: 5,
                                   ),
                                   Text(totalexpAmount.toString(),
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
                                           fontWeight: FontWeight.bold)),
@@ -226,7 +226,7 @@ class DashboardScreen extends StatelessWidget {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
+                              const Text(
                                 "Transactions",
                                 style: TextStyle(
                                     fontSize: 20,
@@ -241,7 +241,7 @@ class DashboardScreen extends StatelessWidget {
                                           builder: (ctx) =>
                                               SeeAllTransactions()));
                                 },
-                                child: Text(
+                                child: const Text(
                                   "See All",
                                   style: TextStyle(
                                       fontSize: 13, color: Colors.grey),

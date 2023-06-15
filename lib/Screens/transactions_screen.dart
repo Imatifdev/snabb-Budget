@@ -6,6 +6,9 @@ import 'package:material_segmented_control/material_segmented_control.dart';
 
 import '../models/transaction.dart';
 import '../utils/daily_transactions.dart';
+import '../utils/monthly_transactions.dart';
+import '../utils/transaction_card.dart';
+import '../utils/yearly_transactions.dart';
 
 class TransactionsScreen extends StatefulWidget {
   static const routeName = "transactions-screen";
@@ -14,8 +17,6 @@ class TransactionsScreen extends StatefulWidget {
 }
 
 class _TransactionsScreenState extends State<TransactionsScreen>{
-  final PageController _controller = PageController(initialPage: 0);
-  int pageIndex = 0;
   final List<Transaction> transactions = [
     Transaction(
         name: "Money Transfer",
@@ -28,7 +29,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
     Transaction(
         name: "Shopping",
         time: "02:26 PM",
-        date: DateTime.now().subtract(const Duration(days: 1)),
+        date: DateTime.now().subtract(const Duration(days: 365)),
         imgUrl: "assets/images/shopping.png",
         type: TransactionType.expense,
         category: TransactionCat.shopping,
@@ -68,7 +69,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
     Transaction(
         name: "Bills",
         time: "09:26 PM",
-        date: DateTime.now().subtract(const Duration(days: 1)),
+        date: DateTime.now().subtract(const Duration(days: 90)),
         imgUrl: "assets/images/others.png",
         type: TransactionType.expense,
         category: TransactionCat.bills,
@@ -101,7 +102,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
         name: "Bills",
         time: "09:26 PM",
         imgUrl: "assets/images/others.png",
-        date: DateTime.now().subtract(const Duration(days: 2)),
+        date: DateTime.now().subtract(const Duration(days: 30)),
         type: TransactionType.expense,
         category: TransactionCat.bills,
         amount: 1000),
@@ -109,7 +110,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
         name: "Bills",
         time: "09:26 PM",
         imgUrl: "assets/images/others.png",
-        date: DateTime.now().subtract(const Duration(days: 2)),
+        date: DateTime.now().subtract(const Duration(days: 50)),
         type: TransactionType.expense,
         category: TransactionCat.bills,
         amount: 1000),            
@@ -144,8 +145,8 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
 );
     List<Widget> children = [
       DailyTransactions(transactions: transactions, dates: dates, month: month),
-      const Text("monthly"),
-      const Text("yearly"),
+      MonthlyTransactions(transactions: transactions, month: month,),
+      YearlyTransactions(transactions: transactions),
     ];
 
     return Scaffold(
@@ -200,85 +201,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
         });
           },
       ),
-      //children[_currentSelection],
-      
-      Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-           IconButton(onPressed: (){
-                          _controller.previousPage(
-                      duration: const Duration(milliseconds: 120),
-                      curve: Curves.bounceIn,
-                    );
-                        }, icon: const Icon(Icons.arrow_back_ios_new_rounded)),
-           IconButton(onPressed: (){
-                              _controller.nextPage(
-                          duration: const Duration(milliseconds: 120),
-                          curve: Curves.bounceIn,
-                        );
-                            }, icon: const Icon(Icons.arrow_forward_ios_rounded)),             
-        ]),
-        Text(DateTime.now().year.toString()),
-          Expanded(
-                child: PageView.builder(
-                  controller: _controller,
-                  itemCount: month.length,
-                  onPageChanged: (int index) {
-                    setState(() {
-                      pageIndex = index;
-                    });
-                  },
-
-                  itemBuilder: (_, i) {
-                    return Column(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        Text(
-                          month[i],
-                          style: const TextStyle(
-                              fontSize: 38,
-                              fontWeight: FontWeight.w500,
-                            ),
-                        ),
-                        SizedBox(
-                          height: 200,
-                          child: ListView.builder(itemBuilder: (context, index) {
-                            List specificTrans = [];
-                            specificTrans = transactions.where((transaction) => transaction.date.month == index+1 ).toList();
-                            if(specificTrans.isEmpty){return SizedBox();}
-                            Transaction transaction = specificTrans[index];
-                            return Card(
-                                color: Colors.white,
-                                elevation: 0,
-                                child: ListTile(
-                                  leading: Image.asset(transaction.imgUrl),
-                                  title: Text(
-                                    transaction.name,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Text(transaction.time),
-                                  trailing: Text(
-                                      transaction.type == TransactionType.income
-                                          ? "+\$${transaction.amount}"
-                                          : "-\$${transaction.amount}",
-                                      style: TextStyle(
-                                          color: transaction.type ==
-                                                  TransactionType.income
-                                              ? Colors.green
-                                              : Colors.red,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              );
-                          },),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ),
-               
-        
+      children[_currentSelection],
         ]),
       ),
     ));

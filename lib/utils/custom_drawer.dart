@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/balance.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
+import 'package:snabbudget/Screens/preferences.dart';
 import 'package:snabbudget/Screens/setting_screen.dart';
 import 'package:snabbudget/Screens/summary_screen.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
@@ -56,7 +57,7 @@ class CustomDrawer extends StatelessWidget {
                   context, "assets/images/box.png", "Budget", "Budget-Screen"),
               drawerTile(context, "assets/images/calender.png", "Calendar",
                   "Calender-Screen"),
-              drawerTile(context, "assets/images/minus.png", "Summary",
+              drawerTile(context, "assets/images/summary.png", "Summary",
                   SummaryScreen.routeName),
               drawerTile(context, "assets/images/transfer.png", "Transactions",
                   TransactionsScreen.routeName),
@@ -65,7 +66,7 @@ class CustomDrawer extends StatelessWidget {
               drawerTile(context, "assets/images/settings.png", "Settings",
                   SettingScreen.routeName),
               drawerTile(context, "assets/images/settings-2.png", "Preferences",
-                  "Preferences"),
+                  PreferencesScreen.routeName),
             ]),
             const Column(
               children: [
