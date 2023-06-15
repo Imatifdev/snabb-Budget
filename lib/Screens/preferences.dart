@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class PreferencesScreen extends StatefulWidget {
-  static const routeName = "Budget-Screen";
+  static const routeName = "preference-Screen";
 
   const PreferencesScreen({super.key});
 

@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "348655505954",
+    "project_id": "snabb-budget",
+    "storage_bucket": "snabb-budget.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:348655505954:android:a74af1cffaf6698519b07b",
+        "android_client_info": {
+          "package_name": "com.codefren.snabbudget"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "348655505954-l5dkf8e5lfv4hbjm2d1cqmpairfps0ij.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCe4rPajgfeZG3e0UM6UvyNe_Sy_MRQqvw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "348655505954-l5dkf8e5lfv4hbjm2d1cqmpairfps0ij.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

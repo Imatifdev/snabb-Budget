@@ -1,5 +1,6 @@
 // ignore_for_file: unused_import
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snabbudget/Screens/addexpanse.dart';
@@ -18,17 +19,15 @@ import 'Screens/accounts.dart';
 import 'Screens/addincome.dart';
 import 'Screens/balance.dart';
 import 'Screens/dept.dart';
-import 'Screens/dashboard_screen.dart';
 import 'Screens/setting_screen.dart';
 import 'controller/IncomeProvider.dart';
 import 'controller/balanceProvider.dart';
 import 'utils/materialColor.dart';
 import 'package:provider/provider.dart';
-import 'globals.dart' as globals;
 
-final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
