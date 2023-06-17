@@ -16,7 +16,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       key: scaffoldKey,
-      drawer: CustomDrawer(),
+      drawer: const CustomDrawer(),
       body: SafeArea(child: 
       SizedBox(
         width: double.infinity,
@@ -58,14 +58,14 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   trailing: const Icon(Icons.arrow_forward_ios_rounded),
                   onTap: (){},
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 const Padding(
                   padding: EdgeInsets.only(left: 15),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text("Free", style: TextStyle(color:Colors.black, fontSize: 16,fontWeight: FontWeight.bold,))),
                 ),
-                SizedBox(height: 30,),
+                const SizedBox(height: 30,),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text("Superior Account", style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
@@ -75,14 +75,14 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   trailing: const Icon(Icons.arrow_forward_ios_rounded),
                   onTap: (){},
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 const Padding(
                   padding: EdgeInsets.only(left: 15),
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Text("5 Euro", style: TextStyle(color:Colors.black, fontSize: 16,fontWeight: FontWeight.bold,))),
                 ),
-                SizedBox(height: 30,),
+                const SizedBox(height: 30,),
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Text("Elegant Account", style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
@@ -92,7 +92,7 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                   trailing: const Icon(Icons.arrow_forward_ios_rounded),
                   onTap: (){},
                 ),
-                SizedBox(height: 10,),
+                const SizedBox(height: 10,),
                 const Padding(
                   padding: EdgeInsets.only(left: 15),
                   child: Align(

@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/seealltransactions.dart';
+import 'package:snabbudget/Screens/transactions_screen.dart';
 import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
 
@@ -245,10 +246,11 @@ class DashboardScreen extends StatelessWidget {
                                           builder: (ctx) =>
                                               SeeAllTransactions()));
                                 },
-                                child: const Text(
+                                child: TextButton(
+                                  child: const Text(
                                   "See All",
                                   style: TextStyle(
-                                      fontSize: 13, color: Colors.grey),
+                                      fontSize: 13, color: Colors.grey)), onPressed: () {Navigator.of(context).pushNamed(TransactionsScreen.routeName);},
                                 ),
                               )
                             ]),
