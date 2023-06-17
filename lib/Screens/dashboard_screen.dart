@@ -6,6 +6,7 @@ import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
 
 final List<Transaction> transactions = [];
+double totalBalance = 523.24;
 
 class DashboardScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -15,7 +16,9 @@ class DashboardScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     double totalIncomeAmount = 0;
     double totalexpAmount = 0;
-
+    const List<String> month = [
+      "Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"
+    ];
     for (Transaction transaction in transactions) {
       if (transaction.type == TransactionType.income) {
         totalIncomeAmount += transaction.amount;
@@ -121,7 +124,8 @@ class DashboardScreen extends StatelessWidget {
                                           color: Colors.white, fontSize: 14),
                                       textAlign: TextAlign.left,
                                     ),
-                                    Text("\$523.82",
+                                    Text("\$523.24", 
+                                   // ${double.parse((totalBalance).toStringAsFixed(2))}",
                                         style: TextStyle(
                                             letterSpacing: 3,
                                             color: Colors.white,
@@ -158,9 +162,9 @@ class DashboardScreen extends StatelessWidget {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      const Text(
-                                        "Income",
-                                        style: TextStyle(
+                                      Text(
+                                        "Income ${month[(DateTime.now().month)-1]}",
+                                        style: const TextStyle(
                                             fontSize: 14, color: Colors.white),
                                       )
                                     ],
@@ -193,9 +197,9 @@ class DashboardScreen extends StatelessWidget {
                                       const SizedBox(
                                         width: 5,
                                       ),
-                                      const Text(
-                                        "Expenses",
-                                        style: TextStyle(
+                                      Text(
+                                        "Expenses ${month[(DateTime.now().month)-1]}",
+                                        style:const TextStyle(
                                             fontSize: 14, color: Colors.white),
                                       )
                                     ],

@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:snabbudget/utils/transaction_card.dart';
 import '../models/transaction.dart';
+import '../utils/custom_drawer.dart';
+import 'dashboard_screen.dart';
+
 
 
 List<Transaction> schedualedTransactions = [
@@ -87,22 +91,85 @@ class ScheduleTransactions extends StatefulWidget {
 }
 
 class _ScheduleTransactionsState extends State<ScheduleTransactions> {
+  final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
+      key: scaffoldKey,
+      drawer: CustomDrawer(),
       body: SafeArea(
         child: Column(
           children: [
-            const Text("Schedule Transactions"),
-            SizedBox(
-              height: 300,
+            Card(
+              child: SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                 IconButton(
+                            onPressed: () {
+                              scaffoldKey.currentState?.openDrawer();
+                            },
+                            icon: const ImageIcon(
+                              AssetImage("assets/images/menu.png"),
+                              size: 40,
+                            )),
+                const Text(
+                  "Schedualed Transactions",
+                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(width: 50,)
+              ],
+            ),
+          )),
+          SizedBox(
+              height: size.height-100,
               child: ListView.builder(
                 itemCount: schedualedTransactions.length,
                 itemBuilder: (context, index) {
                   Transaction transaction = schedualedTransactions[index];
-                  return ListTile(
-                    title: Text(transaction.name),
-                  );
+                  return InkWell(
+                    onTap: (){
+                      showDialog(
+                context: context,
+                builder: (ctx) => AlertDialog(
+                  title: const Text("Confirm Transaction"),
+                  content: const Text("Confirm your schedualed transaction"),
+                  actions: <Widget>[
+                    TextButton(
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(14),
+                        child:const Text("Cancel", style: TextStyle(color: Colors.red),),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          transactions.add(transaction);
+                          if(transaction.type == TransactionType.income){
+                            totalBalance = totalBalance+transaction.amount; 
+                          }
+                          else if(transaction.type == TransactionType.expense){
+                            totalBalance = totalBalance-transaction.amount; 
+                          }
+                        });
+                        Navigator.of(context).push( MaterialPageRoute(builder: (context) => DashboardScreen()),);
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(14),
+                        child:Text("Confirm", style: TextStyle(color: Theme.of(context).primaryColor),),
+                      ),
+                    ),
+                    
+                  ],
+                ),
+              );
+                    },
+                    child: TransactionCard(transaction: transaction));
                 },),
             ),
           ],
