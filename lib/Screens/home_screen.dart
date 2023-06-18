@@ -1,5 +1,7 @@
 // ignore_for_file: library_private_types_in_public_api
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/daily_stats.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
@@ -20,12 +22,25 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   int _selectedIndex = 0;
+  int check = 0;
   late PageController _pageController;
-  final List<Widget> _pages = [
-    DashboardScreen(),
-    const DailyStats(),
-    ProfileView(),
-  ];
+  String name = "loading....";
+  String email = "loading....";
+  String phone = 'loading....';
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+  void getInfo() async {
+    var collection = FirebaseFirestore.instance.collection('UsersData');
+    var docSnapshot = await collection.doc(userId).get();
+    if (docSnapshot.exists) {
+      print("ok");
+      Map<String, dynamic>? data = docSnapshot.data();
+      setState(() {
+        name = data?["First Name"];
+        email = data?["Email"];
+      });
+    }
+    print(userId);
+  }
 
   @override
   void initState() {
@@ -35,6 +50,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (check == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
+      check++;
+    }
+    final List<Widget> _pages = [
+    DashboardScreen(),
+    DailyStats(),
+    ProfileView(name: name,email: email),
+  ];
     return Scaffold(
       key: scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,

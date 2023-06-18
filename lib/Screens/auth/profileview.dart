@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_literals_to_create_immutables, unnecessary_string_interpolations, prefer_const_constructors, curly_braces_in_flow_control_structures, unused_import, duplicate_import
+// ignore_for_file: prefer_const_literals_to_create_immutables, unnecessary_string_interpolations, prefer_const_constructors, curly_braces_in_flow_control_structures, unused_import, duplicate_import, use_build_context_synchronously
 
 import 'dart:async';
 import 'dart:math';
@@ -21,6 +21,9 @@ import '../../utils/custom_drawer.dart';
 import 'editprofile.dart';
 
 class ProfileView extends StatefulWidget {
+  final String name;
+  final String email;
+  const ProfileView({super.key, required this.name, required this.email});
   @override
   State<ProfileView> createState() => _ProfileViewState();
 }
@@ -28,32 +31,12 @@ class ProfileView extends StatefulWidget {
 class _ProfileViewState extends State<ProfileView> {
   final FirebaseAuth auth = FirebaseAuth.instance;
   signOut() async {
-    print('object');
     await auth.signOut();
     Navigator.pushReplacement(
         context, MaterialPageRoute(builder: (context) => LoginScreen()));
   }
 
-  final userId = FirebaseAuth.instance.currentUser!.uid;
-  int check = 0;
-  String name = "loading....";
-  String email = "loading....";
-  String phone = 'loading....';
-
-  void getInfo() async {
-    var collection = FirebaseFirestore.instance.collection('UsersData');
-    var docSnapshot = await collection.doc(userId).get();
-    if (docSnapshot.exists) {
-      print("ok");
-      Map<String, dynamic>? data = docSnapshot.data();
-      setState(() {
-        name = data?["First Name"];
-        email = data?["Email"];
-        //phone = data?["Phone"];
-      });
-    }
-    print(userId);
-  }
+  
 
   late StreamSubscription subscription;
   bool isDeviceConnected = false;
@@ -75,7 +58,6 @@ class _ProfileViewState extends State<ProfileView> {
           }
         },
       );
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   void dispose() {
@@ -85,10 +67,7 @@ class _ProfileViewState extends State<ProfileView> {
 
   @override
   Widget build(BuildContext context) {
-    if (check == 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
-      check++;
-    }
+    
     // final controller = Get.put(ProfileController());
     return Scaffold(
       extendBody: true,
@@ -97,35 +76,36 @@ class _ProfileViewState extends State<ProfileView> {
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Card(
-                color: bgcolor,
-                elevation: 3,
-                child: Row(
-                  children: [
-                    IconButton(
-                        onPressed: () {
-                          _scaffoldKey.currentState?.openDrawer();
-                        },
-                        icon: const ImageIcon(
-                          AssetImage("assets/images/menu.png"),
-                          size: 40,
-                        )),
-                    ShaderMask(
-                      shaderCallback: (bounds) => const LinearGradient(
-                        colors: [Colors.black, Colors.black],
-                      ).createShader(bounds),
-                      child: const Text(
-                        "Debts",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ).pSymmetric(h: 130),
-                    ),
-                  ],
-                ),
-              ),
+              // Card(
+              //   color: bgcolor,
+              //   elevation: 3,
+              //   child: Row(
+              //     children: [
+              //       IconButton(
+              //           onPressed: () {
+              //             _scaffoldKey.currentState?.openDrawer();
+              //           },
+              //           icon: const ImageIcon(
+              //             AssetImage("assets/images/menu.png"),
+              //             size: 40,
+              //           )),
+              //       ShaderMask(
+              //         shaderCallback: (bounds) => const LinearGradient(
+              //           colors: [Colors.black, Colors.black],
+              //         ).createShader(bounds),
+              //         child: const Text(
+              //           "Debts",
+              //           style: TextStyle(
+              //               color: Colors.white,
+              //               fontSize: 18,
+              //               fontWeight: FontWeight.bold),
+              //         ).pSymmetric(h: 130),
+              //       ),
+              //     ],
+              //   ),
+              // ),
               SizedBox(
                 height: MediaQuery.of(context).size.height / 30,
               ),
@@ -141,8 +121,7 @@ class _ProfileViewState extends State<ProfileView> {
               ),
               Center(
                 child: Text(
-                  name,
-                  //                   user!.email,
+                  widget.name,
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.w400),
                 ),
               ),
@@ -175,7 +154,7 @@ class _ProfileViewState extends State<ProfileView> {
                                 height: 5,
                               ),
                               Text(
-                                email,
+                                widget.email,
                                 style: TextStyle(fontSize: 14),
                               ),
                             ],
@@ -217,7 +196,7 @@ class _ProfileViewState extends State<ProfileView> {
                               height: 5,
                             ),
                             Text(
-                              name,
+                              widget.name,
                               style: TextStyle(fontSize: 14),
                             ),
                           ],
