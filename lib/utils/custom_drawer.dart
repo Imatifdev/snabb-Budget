@@ -27,11 +27,12 @@ class CustomDrawer extends StatelessWidget {
           ),
         ),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 55.0, bottom: 20),
+              Column(children: [
+              const SafeArea(
+                //padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
                 child: Text("Snabb",
                     style: TextStyle(
                         fontSize: 20,
@@ -68,6 +69,8 @@ class CustomDrawer extends StatelessWidget {
               drawerTile(context, "assets/images/settings-2.png", "Preferences",
                   PreferencesScreen.routeName),
             ]),
+            ],),
+            
             const Column(
               children: [
                 Divider(
