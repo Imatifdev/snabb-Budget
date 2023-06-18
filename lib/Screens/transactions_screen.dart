@@ -7,7 +7,6 @@ import 'package:material_segmented_control/material_segmented_control.dart';
 import '../models/transaction.dart';
 import '../utils/daily_transactions.dart';
 import '../utils/monthly_transactions.dart';
-import '../utils/transaction_card.dart';
 import '../utils/yearly_transactions.dart';
 
 class TransactionsScreen extends StatefulWidget {

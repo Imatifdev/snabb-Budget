@@ -26,10 +26,10 @@ class _EditProfileState extends State<EditProfile> {
   final TextEditingController _emailController = TextEditingController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final TextEditingController _passController = TextEditingController();
+  //final TextEditingController _passController = TextEditingController();
 
   final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _lastnameController = TextEditingController();
+  //final TextEditingController _lastnameController = TextEditingController();
   final TextEditingController _mobilecontroller = TextEditingController();
   Future<void> updateUserData(String uid, String newUsername, String newEmail,
       String phoneNumber) async {

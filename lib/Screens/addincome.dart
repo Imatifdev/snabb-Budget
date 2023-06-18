@@ -8,9 +8,7 @@ import 'package:intl/intl.dart';
 
 import '../models/IncomeDataMode.dart';
 import '../models/transaction.dart';
-import 'addexpanse.dart';
 import 'dashboard_screen.dart';
-import 'displaydata.dart';
 import 'schedule_transactions.dart';
 
 class AddIncome extends StatefulWidget {
@@ -30,13 +28,12 @@ class _AddIncomeState extends State<AddIncome> {
   TimeOfDay _selectedTime = TimeOfDay.now();
 
   final TextEditingController _noteController = TextEditingController();
-  DropdownItem? _selectedItem;
-
-  List<DropdownItem> _dropdownItems = [
-    DropdownItem('Others', 'assets/images/others.png'),
-    DropdownItem('Finance', 'assets/images/fiance.png'),
-    DropdownItem('Income', 'assets/images/income.png'),
-  ];
+  // DropdownItem? _selectedItem;
+  // List<DropdownItem> _dropdownItems = [
+  //   DropdownItem('Others', 'assets/images/others.png'),
+  //   DropdownItem('Finance', 'assets/images/fiance.png'),
+  //   DropdownItem('Income', 'assets/images/income.png'),
+  // ];
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -67,7 +64,7 @@ class _AddIncomeState extends State<AddIncome> {
 
 //function for storing data and passing to another screen
   void _saveIncome() {
-    if ( _formKey.currentState!.validate() &&
+    if (_formKey.currentState!.validate() &&
         selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;

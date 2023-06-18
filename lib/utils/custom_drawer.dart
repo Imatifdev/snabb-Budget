@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/balance.dart';
-import 'package:snabbudget/Screens/dashboard_screen.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/Screens/preferences.dart';
 import 'package:snabbudget/Screens/setting_screen.dart';

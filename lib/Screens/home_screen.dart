@@ -5,7 +5,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/daily_stats.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
-import 'package:snabbudget/Screens/profile_screen.dart';
 
 import '../utils/custom_bottombar.dart';
 import '../utils/expandable_fab.dart';

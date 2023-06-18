@@ -9,7 +9,6 @@ import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../models/registerviewmodel.dart';
-import '../dashboard_screen.dart';
 import 'login.dart';
 
 class SignupScreen extends StatefulWidget {

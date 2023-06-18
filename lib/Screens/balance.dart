@@ -11,7 +11,6 @@ import '../utils/custom_drawer.dart';
 import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import 'dashboard_screen.dart';
 
 class BalanceScreen extends StatefulWidget {
   static const routeName = "balance-screen";

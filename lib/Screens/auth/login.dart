@@ -7,7 +7,6 @@ import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../models/loginviewmodel.dart';
-import '../dashboard_screen.dart';
 import '../home_screen.dart';
 
 class LoginScreen extends StatefulWidget {

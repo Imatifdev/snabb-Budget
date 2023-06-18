@@ -1,12 +1,8 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:snabbudget/utils/mycolors.dart';
-import 'package:snabbudget/main.dart';
 import '../models/transaction.dart';
-import '../utils/custom_bottombar.dart';
 import '../utils/custom_drawer.dart';
-import '../utils/expandable_fab.dart';
 
 final List<Transaction> transactions = [
   Transaction(
@@ -88,7 +84,6 @@ class SeeAllTransactions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldKey,
       extendBody: true,

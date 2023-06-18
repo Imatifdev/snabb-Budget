@@ -22,9 +22,6 @@ class TextFieldInput extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final inputBorder = OutlineInputBorder(
-      borderSide: Divider.createBorderSide(context),
-    );
 
     return TextFormField(
       validator: validator,
