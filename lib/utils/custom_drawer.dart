@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snabbudget/Screens/accounts.dart';
 import 'package:snabbudget/Screens/balance.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/Screens/preferences.dart';
@@ -50,13 +51,13 @@ class CustomDrawer extends StatelessWidget {
               drawerTile(context, "assets/images/home-icon.png", "Dashboard",
                   HomeScreen.routeName),
               drawerTile(context, "assets/images/user.png", "Accounts",
-                  "Account-Screen"),
+                  Accounts.routeName),
               drawerTile(context, "assets/images/dollar.png", "Dept",
                   BalanceScreen.routeName),
               drawerTile(
-                  context, "assets/images/box.png", "Budget", "Budget-Screen"),
+                  context, "assets/images/box.png", "Budget", HomeScreen.routeName),
               drawerTile(context, "assets/images/calender.png", "Calendar",
-                  "Calender-Screen"),
+                  HomeScreen.routeName),
               drawerTile(context, "assets/images/summary.png", "Summary",
                   SummaryScreen.routeName),
               drawerTile(context, "assets/images/transfer.png", "Transactions",
