@@ -1,12 +1,60 @@
 // ignore_for_file: non_constant_identifier_names
 
 import 'package:flutter/material.dart';
-import 'package:snabbudget/Screens/seealltransactions.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
 import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
 
-final List<Transaction> transactions = [];
+final List<Transaction> transactions = [
+  //Transaction(
+  //     name: "Money Transfer",
+  //     time: "06:20 PM",
+  //     date: DateTime.now(),
+  //     imgUrl: "assets/images/home.png",
+  //     type: TransactionType.expense,
+  //     category: TransactionCat.moneyTransfer,
+  //     amount: 22),
+  // Transaction(
+  //     name: "Shopping",
+  //     time: "02:26 PM",
+  //     date: DateTime.now().subtract(const Duration(days: 1)),
+  //     imgUrl: "assets/images/shopping.png",
+  //     type: TransactionType.expense,
+  //     category: TransactionCat.shopping,
+  //     amount: 100),
+  // Transaction(
+  //     name: "Taxi",
+  //     time: "02:00 PM",
+  //     date: DateTime.now().subtract(const Duration(days: 2)),
+  //     imgUrl: "assets/images/travel.png",
+  //     type: TransactionType.expense,
+  //     category: TransactionCat.taxi,
+  //     amount: 80),
+  // Transaction(
+  //     name: "Salary",
+  //     time: "10:26 AM",
+  //     imgUrl: "assets/images/income.png",
+  //     date: DateTime.now().subtract(const Duration(days: 3)),
+  //     type: TransactionType.income,
+  //     category: TransactionCat.moneyTransfer,
+  //     amount: 2000),
+  // Transaction(
+  //     name: "Bills",
+  //     time: "09:26 PM",
+  //     date: DateTime.now().subtract(const Duration(days: 3)),
+  //     imgUrl: "assets/images/others.png",
+  //     type: TransactionType.expense,
+  //     category: TransactionCat.bills,
+  //     amount: 1000),
+  // Transaction(
+  //     name: "Salary",
+  //     time: "10:26 AM",
+  //     date: DateTime.now().subtract(const Duration(days: 3)),
+  //     imgUrl: "assets/images/income.png",
+  //     type: TransactionType.income,
+  //     category: TransactionCat.moneyTransfer,
+  //     amount: 2000),
+      ];
 double totalBalance = 523.24;
 
 class DashboardScreen extends StatelessWidget {
@@ -238,26 +286,19 @@ class DashboardScreen extends StatelessWidget {
                                     color: Colors.black,
                                     fontWeight: FontWeight.bold),
                               ),
-                              GestureDetector(
-                                onTap: () {
-                                  Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (ctx) =>
-                                              SeeAllTransactions()));
-                                },
-                                child: TextButton(
-                                  child: const Text(
-                                  "See All",
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.grey)), onPressed: () {Navigator.of(context).pushNamed(TransactionsScreen.routeName);},
-                                ),
+                              TextButton(
+                                child: const Text(
+                                "See All",
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.grey)), onPressed: () {Navigator.of(context).pushNamed(TransactionsScreen.routeName);},
                               )
                             ]),
                         const SizedBox(
                           height: 5,
                         ),
-                        const Align(
+                        if (transactions.isNotEmpty) Column(
+                          children: [
+                            const Align(
                           alignment: Alignment.centerLeft,
                           child: Text(
                             "Today",
@@ -296,6 +337,13 @@ class DashboardScreen extends StatelessWidget {
                             },
                           ),
                         ),
+                          ],
+                        ) else const SizedBox(
+                          height: 300,
+                          child: Align(
+                            alignment: Alignment.center,
+                            child: Text("No Transactions to show\nStart Adding your transactions", textAlign: TextAlign.center,)),
+                        )
                       ],
                     ),
                   )

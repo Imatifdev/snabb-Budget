@@ -2,6 +2,7 @@
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
 
@@ -65,9 +66,8 @@ class _AddIncomeState extends State<AddIncome> {
   List<IncomeData> incomeDatList = [];
 
 //function for storing data and passing to another screen
-  void _saveExpense() {
-    if (_amountController.text.isNotEmpty &&
-        _nameController.text.isNotEmpty &&
+  void _saveIncome() {
+    if ( _formKey.currentState!.validate() &&
         selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
@@ -108,13 +108,13 @@ class _AddIncomeState extends State<AddIncome> {
         _nameController.clear();
         _amountController.clear();
       });
-    }
-    Navigator.push(
+      Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => DashboardScreen(),
+        builder: (context) => HomeScreen(),
       ),
     );
+    }
   }
 
   void schedualeTransaction() {
@@ -215,7 +215,7 @@ class _AddIncomeState extends State<AddIncome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Income Name",
+                        "Income Name (optional)",
                         style:
                             TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                       ),
@@ -223,15 +223,15 @@ class _AddIncomeState extends State<AddIncome> {
                         height: height / 80,
                       ),
                       TextFormField(
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter a name';
-                          }
-                          if (value.length < 3) {
-                            return 'Name must be at least 3 characters long';
-                          }
-                          return null;
-                        },
+                        // validator: (value) {
+                        //   if (value!.isEmpty) {
+                        //     return 'Please enter a name';
+                        //   }
+                        //   if (value.length < 3) {
+                        //     return 'Name must be at least 3 characters long';
+                        //   }
+                        //   return null;
+                        // },
                         controller: _nameController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
@@ -491,7 +491,7 @@ class _AddIncomeState extends State<AddIncome> {
                       width: width / 2,
                       child: ElevatedButton(
                         onPressed: () {
-                          _saveExpense();
+                          _saveIncome();
                         },
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(

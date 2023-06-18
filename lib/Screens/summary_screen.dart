@@ -16,19 +16,6 @@ class SummaryScreen extends StatefulWidget {
 
 class _SummaryScreenState extends State<SummaryScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
-  final Map<String, double> dataMap = {
-    "Expense": 3,
-    "Income": 1,
-  };
-  String selectedType = "Income";
-
-  DateTime selectedDateFrom = DateTime.now();
-  DateTime selectedDateTo = DateTime.now();
-
-  List<String> types = [
-    'Income',
-    'Expense',
-  ];
   List<String> months = [
     "Janvary",
     "Feburary",
@@ -50,12 +37,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
     padding: const EdgeInsets.symmetric(horizontal: 20),
     child:Text('Category',style: GoogleFonts.montserrat(),)),
   };
-  List<DateTime> monthsWithTransactions = [];
-
   
-  
-    
-
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [
