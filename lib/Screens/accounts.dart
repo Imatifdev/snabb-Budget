@@ -157,102 +157,132 @@ class _AccountsState extends State<Accounts> {
               ),
             ),
             Divider(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Total Amount',
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Text(
-                  totalAmount.toString(),
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Total Amount',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    totalAmount.toString(),
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                ],
+              ),
             ),
             SizedBox(
               height: 10,
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return Card(
-                    color: bgcolor,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20)),
-                    elevation: 7,
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              transactions[index].transactionType,
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Row(
-                              children: [
-                                IconButton(
-                                    onPressed: () {
-                                      if (!transactions[index].transferred) {
-                                        _transferAmount(transactions[index]);
-                                      }
-                                    },
-                                    icon: Icon(Icons.compare_arrows)),
-                                IconButton(
-                                    onPressed: () {
-                                      _showTransactionDetails(
-                                          transactions[index]);
-                                    },
-                                    icon: Icon(Icons.visibility)),
-                                IconButton(
-                                    onPressed: () {
-                                      _deleteTransaction(index);
-                                    },
-                                    icon: Icon(Icons.delete_forever))
-                              ],
-                            ),
-                          ],
-                        ).pSymmetric(v: 10),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              "Balance",
-                              style: TextStyle(
-                                  fontSize: 16, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              transactions[index].amount.toString(),
-                              style: TextStyle(
-                                  color: Colors.green,
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold),
-                            )
-                          ],
-                        ).pSymmetric(v: 10),
-                        if (transactions[index].transferred)
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
+            transactions.isEmpty
+                ? Column(
+                    children: [
+                      SizedBox(
+                        height: 200,
+                      ),
+                      Image.asset(
+                        'assets/images/icon.jpg',
+                        height: 100,
+                      ),
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Center(
+                        child: Text(
+                          "  Your account is empty.\nWanna Create a Account?",
+                          style: TextStyle(fontSize: 19),
+                        ),
+                      ),
+                    ],
+                  )
+                : Expanded(
+                    child: ListView.builder(
+                      itemCount: transactions.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return Card(
+                          color: bgcolor,
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          elevation: 7,
+                          child: Column(
                             children: [
-                              Icon(Icons.flag_circle),
-                              Text(
-                                'Transferred',
-                                style: TextStyle(
-                                    color: Colors.red,
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold),
-                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    transactions[index].transactionType,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Row(
+                                    children: [
+                                      IconButton(
+                                          onPressed: () {
+                                            if (!transactions[index]
+                                                .transferred) {
+                                              _transferAmount(
+                                                  transactions[index]);
+                                            }
+                                          },
+                                          icon: Icon(Icons.compare_arrows)),
+                                      IconButton(
+                                          onPressed: () {
+                                            _showTransactionDetails(
+                                                transactions[index]);
+                                          },
+                                          icon: Icon(Icons.visibility)),
+                                      IconButton(
+                                          onPressed: () {
+                                            _deleteTransaction(index);
+                                          },
+                                          icon: Icon(Icons.delete_forever))
+                                    ],
+                                  ),
+                                ],
+                              ).pSymmetric(v: 10),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    "Balance",
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    transactions[index].amount.toString(),
+                                    style: TextStyle(
+                                        color: Colors.green,
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ).pSymmetric(v: 10),
+                              if (transactions[index].transferred)
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Icon(Icons.flag_circle),
+                                    Text(
+                                      'Transferred',
+                                      style: TextStyle(
+                                          color: Colors.red,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                  ],
+                                ),
                             ],
-                          ),
-                      ],
-                    ).p(10),
-                  );
-                },
-              ),
-            ),
+                          ).p(10),
+                        );
+                      },
+                    ),
+                  ),
           ],
         ),
       ).p(10),

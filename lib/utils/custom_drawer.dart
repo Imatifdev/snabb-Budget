@@ -59,7 +59,7 @@ class CustomDrawer extends StatelessWidget {
                   drawerTile(context, "assets/images/box.png", "Budget",
                       HomeScreen.routeName),
                   drawerTile(context, "assets/images/calender.png", "Calendar",
-                      HomeScreen.routeName),
+                      TransactionsScreen.routeName),
                   drawerTile(context, "assets/images/summary.png", "Summary",
                       SummaryScreen.routeName),
                   drawerTile(context, "assets/images/transfer.png",
