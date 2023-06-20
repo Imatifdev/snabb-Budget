@@ -1,7 +1,8 @@
-// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages, unused_element, no_leading_underscores_for_local_identifiers, avoid_print
+// ignore_for_file: prefer_const_constructors, depend_on_referenced_packages, unused_element, no_leading_underscores_for_local_identifiers, avoid_print, use_build_context_synchronously
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:snabbudget/Screens/auth/signup.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -196,41 +197,51 @@ class _LoginScreenState extends State<LoginScreen> {
                   height: height / 4.3,
                 ),
                 InkWell(
-                  splashColor: Colors.white,
-                  onTap: _isLoggingIn
-                      ? null
-                      : () async {
-                          if (_formKey.currentState!.validate()) {
-                            setState(() {
-                              _isLoggingIn = true;
-                            });
-                            bool isLoggedIn = await _loginVM.login(
-                                _emailController.text,
-                                _passwordController.text);
-                            if (isLoggedIn) {
-                              Navigator.pushAndRemoveUntil(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (ctx) => HomeScreen()),
-                                  (Route<dynamic> route) => false);
+                    splashColor: Colors.white,
+                    onTap: _isLoggingIn
+                        ? null
+                        : () async {
+                            if (_formKey.currentState!.validate()) {
+                              setState(() {
+                                _isLoggingIn = true;
+                              });
+                              bool isLoggedIn = await _loginVM.login(
+                                  _emailController.text,
+                                  _passwordController.text);
+                              setState(() {
+                                _isLoggingIn = false;
+                              });
+                              if (!isLoggedIn) {
+                                Fluttertoast.showToast(
+                                  msg: 'Invalid email or password',
+                                  toastLength: Toast.LENGTH_SHORT,
+                                  gravity: ToastGravity.BOTTOM,
+                                  backgroundColor: Colors.red,
+                                  textColor: Colors.white,
+                                );
+                              } else {
+                                Navigator.pushAndRemoveUntil(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (ctx) => HomeScreen()),
+                                    (Route<dynamic> route) => false);
+                              }
                             }
-                          }
-                        },
-                  child: Container(
-                    height: 40,
-                    width: 300,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      border: Border.all(width: 1, color: Colors.white),
-                    ),
-                    child: _isLoggingIn
-                        ? const CircularProgressIndicator().centered()
-                        : const Text(
-                            'Sign In',
-                            style: TextStyle(color: Colors.white),
-                          ).centered(),
-                  ),
-                ),
+                          },
+                    child: Container(
+                      height: 40,
+                      width: 300,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(width: 1, color: Colors.white),
+                      ),
+                      child: _isLoggingIn
+                          ? CircularProgressIndicator().centered()
+                          : Text(
+                              'Sign In',
+                              style: TextStyle(color: Colors.white),
+                            ).centered(),
+                    )),
                 SizedBox(
                   height: height / 40,
                 ),

@@ -290,7 +290,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       child: _isSigningUp
                           ? const CircularProgressIndicator().centered()
                           : const Text(
-                              'Sign In',
+                              'Sign Up',
                               style: TextStyle(color: Colors.white),
                             ).centered(),
                     ),
