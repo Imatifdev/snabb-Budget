@@ -11,7 +11,6 @@ import '../utils/custom_drawer.dart';
 import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-
 class BalanceScreen extends StatefulWidget {
   static const routeName = "balance-screen";
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -21,40 +20,41 @@ class BalanceScreen extends StatefulWidget {
   State<BalanceScreen> createState() => _BalanceScreenState();
 }
 
-
 class _BalanceScreenState extends State<BalanceScreen> {
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        key: widget.scaffoldKey,
-        extendBody: true,
-        drawer: CustomDrawer(),
-        backgroundColor: Colors.grey[100],
-        body: Column(
+    return Scaffold(
+      key: widget.scaffoldKey,
+      extendBody: true,
+      drawer: CustomDrawer(),
+      backgroundColor: Colors.grey[100],
+      body: SafeArea(
+        child: Column(
           children: [
             Card(
-              child: SizedBox(
-            height: 50,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-               IconButton(
-                            onPressed: () {
-                              widget.scaffoldKey.currentState?.openDrawer();
-                            },
-                            icon: const ImageIcon(
-                              AssetImage("assets/images/menu.png"),
-                              size: 40,
-                            )),
-                const Text(
-                  "DEPTS",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(width: 50,)
-              ],
-            ),
-          )),
+                child: SizedBox(
+              height: 50,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IconButton(
+                      onPressed: () {
+                        widget.scaffoldKey.currentState?.openDrawer();
+                      },
+                      icon: const ImageIcon(
+                        AssetImage("assets/images/menu.png"),
+                        size: 40,
+                      )),
+                  const Text(
+                    "DEPTS",
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    width: 50,
+                  )
+                ],
+              ),
+            )).pOnly(top: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -76,321 +76,358 @@ class _BalanceScreenState extends State<BalanceScreen> {
                   },
                 ),
               ],
-            ).pSymmetric(h: 20),
+            ).pSymmetric(h: 20, v: 20),
             Consumer<BalanceProvider>(
               builder: (context, balanceProvider, _) {
-                return Expanded(
-                  child: ListView.builder(
-                    itemCount: balanceProvider.balanceList.length,
-                    itemBuilder: (context, index) {
-                      final data = balanceProvider.balanceList[index];
-                      String status;
-                      if (data.balanceType == "Credit") {
-                        status = "Paid";
-                      } else if (data.balanceType == "Debit") {
-                        status = "Pending";
-                      } else {
-                        status = "";
-                      }
-                      return Column(
+                return balanceProvider.balanceList.isEmpty
+                    ? Column(
                         children: [
-                          Stack(children: [
-                            Card(
-                              child: Container(
-                                  decoration: BoxDecoration(
-                                    color: bgcolor,
-                                  ),
-                                  child: data.balanceType == "Credit"
-                                      ? Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Image.asset(
-                                                    "assets/images/paid.png"),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '${data.balanceType}',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
-                                                    Row(
-                                                      children: [
-                                                        Text(
-                                                          'You',
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        Icon(
-                                                          Icons
-                                                              .arrow_right_alt_sharp,
-                                                          size: 35,
-                                                          color:
-                                                              data.balanceType ==
-                                                                      "Credit"
-                                                                  ? Colors.green
-                                                                  : Colors
-                                                                      .black,
-                                                        ),
-                                                        Text(
-                                                          data.person,
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                      ],
-                                                    )
-                                                  ],
-                                                ).pOnly(left: 20),
-                                              ],
-                                            ).pSymmetric(v: 10),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                    '${DateFormat.yMMMd().format(data.currentDate)}'),
-                                                Text(
-                                                  "%",
-                                                  style: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                    '${DateFormat.yMMMd().format(data.dueDate)}'),
-                                              ],
-                                            ),
-                                            Container(
-                                              height: 5,
-                                              color:
-                                                  data.balanceType == "Credit"
-                                                      ? Colors.green
-                                                      : Colors.red,
-                                            ).pSymmetric(v: 5),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text('0.00 Rs'),
-                                                Text(
-                                                  "0.00 Rs",
-                                                  style: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                    ' ${NumberFormat.currency(symbol: '\$').format(data.balance)}'),
-                                              ],
-                                            ),
-                                            if (data.balanceType == "Debit")
-                                              Row(
+                          SizedBox(
+                            height: 200,
+                          ),
+                          Image.asset(
+                            'assets/images/icon.jpg',
+                            height: 100,
+                          ),
+                          SizedBox(
+                            height: 40,
+                          ),
+                          Center(
+                            child: Text(
+                              "  Your Debts are empty.\nWanna Create a Account?",
+                              style: TextStyle(fontSize: 19),
+                            ),
+                          ),
+                        ],
+                      )
+                    : Expanded(
+                        child: ListView.builder(
+                          itemCount: balanceProvider.balanceList.length,
+                          itemBuilder: (context, index) {
+                            final data = balanceProvider.balanceList[index];
+                            String status;
+                            if (data.balanceType == "Credit") {
+                              status = "Paid";
+                            } else if (data.balanceType == "Debit") {
+                              status = "Pending";
+                            } else {
+                              status = "";
+                            }
+                            return Column(
+                              children: [
+                                Stack(children: [
+                                  Card(
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          color: bgcolor,
+                                        ),
+                                        child: data.balanceType == "Credit"
+                                            ? Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
                                                 children: [
-                                                  Image.asset(
-                                                      "assets/images/notpaid.png"),
-                                                  Column(
+                                                  Row(
+                                                    children: [
+                                                      Image.asset(
+                                                          "assets/images/paid.png"),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            '${data.balanceType}',
+                                                            style: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                'You',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              Icon(
+                                                                Icons
+                                                                    .arrow_right_alt_sharp,
+                                                                size: 35,
+                                                                color: data.balanceType ==
+                                                                        "Credit"
+                                                                    ? Colors
+                                                                        .green
+                                                                    : Colors
+                                                                        .black,
+                                                              ),
+                                                              Text(
+                                                                data.person,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ).pOnly(left: 20),
+                                                    ],
+                                                  ).pSymmetric(v: 10),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        '${data.balanceType}',
+                                                          '${DateFormat.yMMMd().format(data.currentDate)}'),
+                                                      Text(
+                                                        "%",
                                                         style: TextStyle(
-                                                            fontSize: 20,
+                                                            fontSize: 17,
                                                             fontWeight:
                                                                 FontWeight
                                                                     .bold),
                                                       ),
+                                                      Text(
+                                                          '${DateFormat.yMMMd().format(data.dueDate)}'),
                                                     ],
-                                                  )
-                                                ],
-                                              ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  'Residual Payment',
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                    ' $status  ${NumberFormat.currency(symbol: '\$').format(data.balance)}',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ))
-                                              ],
-                                            ),
-                                          ],
-                                        ).p(20)
-                                      //debit
-                                      : Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Row(
-                                              children: [
-                                                Image.asset(
-                                                    "assets/images/notpaid.png"),
-                                                Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      '${data.balanceType}',
-                                                      style: TextStyle(
-                                                          fontSize: 20,
-                                                          fontWeight:
-                                                              FontWeight.bold),
-                                                    ),
+                                                  ),
+                                                  Container(
+                                                    height: 5,
+                                                    color: data.balanceType ==
+                                                            "Credit"
+                                                        ? Colors.green
+                                                        : Colors.red,
+                                                  ).pSymmetric(v: 5),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text('0.00 Rs'),
+                                                      Text(
+                                                        "0.00 Rs",
+                                                        style: TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Text(
+                                                          ' ${NumberFormat.currency(symbol: '\$').format(data.balance)}'),
+                                                    ],
+                                                  ),
+                                                  if (data.balanceType ==
+                                                      "Debit")
                                                     Row(
                                                       children: [
-                                                        Text(
-                                                          data.person,
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
-                                                        Icon(
-                                                          Icons
-                                                              .arrow_right_alt_sharp,
-                                                          size: 35,
-                                                          color:
-                                                              data.balanceType ==
-                                                                      "Credit"
-                                                                  ? Colors.green
-                                                                  : Colors
-                                                                      .black,
-                                                        ),
-                                                        Text(
-                                                          'You',
-                                                          style: TextStyle(
-                                                              fontSize: 20,
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .bold),
-                                                        ),
+                                                        Image.asset(
+                                                            "assets/images/notpaid.png"),
+                                                        Column(
+                                                          children: [
+                                                            Text(
+                                                              '${data.balanceType}',
+                                                              style: TextStyle(
+                                                                  fontSize: 20,
+                                                                  fontWeight:
+                                                                      FontWeight
+                                                                          .bold),
+                                                            ),
+                                                          ],
+                                                        )
                                                       ],
-                                                    )
-                                                  ],
-                                                ).pOnly(left: 20)
-                                              ],
-                                            ).pSymmetric(v: 10),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                    '${DateFormat.yMMMd().format(data.currentDate)}'),
-                                                Text(
-                                                  "%",
-                                                  style: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                    '${DateFormat.yMMMd().format(data.dueDate)}'),
-                                              ],
-                                            ),
-                                            Container(
-                                              height: 5,
-                                              color:
-                                                  data.balanceType == "Credit"
-                                                      ? Colors.green
-                                                      : Colors.red,
-                                            ).pSymmetric(v: 5),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text('0.00 Rs'),
-                                                Text(
-                                                  "0.00 Rs",
-                                                  style: TextStyle(
-                                                      fontSize: 17,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                    ' ${NumberFormat.currency(symbol: '\$').format(data.balance)}'),
-                                              ],
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  'Residual Payment',
-                                                  style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold),
-                                                ),
-                                                Text(
-                                                    ' $status  ${NumberFormat.currency(symbol: '\$').format(data.balance)}',
-                                                    style: TextStyle(
-                                                      fontSize: 16,
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                    ))
-                                              ],
-                                            ),
-                                          ],
-                                        ).p(20)),
-                            ),
-                            Positioned(
-                                right: 10,
-                                top: 10,
-                                child: IconButton(
-                                    onPressed: () {}, icon: Icon(Icons.delete)))
-                          ]),
-                        ],
+                                                    ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        'Residual Payment',
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Text(
+                                                          ' $status  ${NumberFormat.currency(symbol: '\$').format(data.balance)}',
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ))
+                                                    ],
+                                                  ),
+                                                ],
+                                              ).p(20)
+                                            //debit
+                                            : Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Row(
+                                                    children: [
+                                                      Image.asset(
+                                                          "assets/images/notpaid.png"),
+                                                      Column(
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .start,
+                                                        children: [
+                                                          Text(
+                                                            '${data.balanceType}',
+                                                            style: TextStyle(
+                                                                fontSize: 20,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold),
+                                                          ),
+                                                          Row(
+                                                            children: [
+                                                              Text(
+                                                                data.person,
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                              Icon(
+                                                                Icons
+                                                                    .arrow_right_alt_sharp,
+                                                                size: 35,
+                                                                color: data.balanceType ==
+                                                                        "Credit"
+                                                                    ? Colors
+                                                                        .green
+                                                                    : Colors
+                                                                        .black,
+                                                              ),
+                                                              Text(
+                                                                'You',
+                                                                style: TextStyle(
+                                                                    fontSize:
+                                                                        20,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .bold),
+                                                              ),
+                                                            ],
+                                                          )
+                                                        ],
+                                                      ).pOnly(left: 20)
+                                                    ],
+                                                  ).pSymmetric(v: 10),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                          '${DateFormat.yMMMd().format(data.currentDate)}'),
+                                                      Text(
+                                                        "%",
+                                                        style: TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Text(
+                                                          '${DateFormat.yMMMd().format(data.dueDate)}'),
+                                                    ],
+                                                  ),
+                                                  Container(
+                                                    height: 5,
+                                                    color: data.balanceType ==
+                                                            "Credit"
+                                                        ? Colors.green
+                                                        : Colors.red,
+                                                  ).pSymmetric(v: 5),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text('0.00 Rs'),
+                                                      Text(
+                                                        "0.00 Rs",
+                                                        style: TextStyle(
+                                                            fontSize: 17,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Text(
+                                                          ' ${NumberFormat.currency(symbol: '\$').format(data.balance)}'),
+                                                    ],
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      Text(
+                                                        'Residual Payment',
+                                                        style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Text(
+                                                          ' $status  ${NumberFormat.currency(symbol: '\$').format(data.balance)}',
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                          ))
+                                                    ],
+                                                  ),
+                                                ],
+                                              ).p(20)),
+                                  ),
+                                  Positioned(
+                                      right: 10,
+                                      top: 10,
+                                      child: IconButton(
+                                          onPressed: () {},
+                                          icon: Icon(Icons.delete)))
+                                ]),
+                              ],
+                            );
+                          },
+                        ).p(10),
                       );
-                    },
-                  ).p(10),
-                );
               },
             ),
           ],
         ),
-        floatingActionButton: BlanceExpandableFloating(),
-        //  Column(
-        //   mainAxisAlignment: MainAxisAlignment.end,
-        //   children: [
-        //     FloatingActionButton(
-        //     onPressed: () => _openAddBalanceDialog(context, 'Credit'),
-        //       child: Icon(Icons.add),
-        //     ),
-        //     SizedBox(height: 16),
-        //     FloatingActionButton(
-        //       onPressed: () => _openAddBalanceDialog(context, 'Debit'),
-        //       child: Icon(Icons.remove),
-        //     ),
-        //   ],
-        // ),
       ),
+      floatingActionButton: BlanceExpandableFloating(),
+      //  Column(
+      //   mainAxisAlignment: MainAxisAlignment.end,
+      //   children: [
+      //     FloatingActionButton(
+      //     onPressed: () => _openAddBalanceDialog(context, 'Credit'),
+      //       child: Icon(Icons.add),
+      //     ),
+      //     SizedBox(height: 16),
+      //     FloatingActionButton(
+      //       onPressed: () => _openAddBalanceDialog(context, 'Debit'),
+      //       child: Icon(Icons.remove),
+      //     ),
+      //   ],
+      // ),
     );
   }
 
@@ -402,7 +439,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
       },
     );
   }
-  
+
   ListTile drawerTile(String imgUrl, String title) {
     return ListTile(
         leading: ImageIcon(
