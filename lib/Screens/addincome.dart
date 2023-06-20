@@ -10,6 +10,8 @@ import '../models/IncomeDataMode.dart';
 import '../models/transaction.dart';
 import 'dashboard_screen.dart';
 import 'schedule_transactions.dart';
+import 'package:camera/camera.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
@@ -59,13 +61,23 @@ class _AddIncomeState extends State<AddIncome> {
     }
   }
 
+  Future<void> _takePicture() async {
+    final picker = ImagePicker();
+    final image = await picker.getImage(source: ImageSource.camera);
+
+    if (image != null) {
+      setState(() {
+        file = image.path;
+      });
+    }
+  }
+
   IncomeDataCategory? selectedCategory;
   List<IncomeData> incomeDatList = [];
 
 //function for storing data and passing to another screen
   void _saveIncome() {
-    if (_formKey.currentState!.validate() &&
-        selectedCategory != null) {
+    if (_formKey.currentState!.validate() && selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
       DateTime dateTime = DateTime(
@@ -92,7 +104,7 @@ class _AddIncomeState extends State<AddIncome> {
       setState(() {
         incomeDatList.add(expense);
         selectedCategory = null;
-        transactions.add( Transaction(
+        transactions.add(Transaction(
           amount: int.parse(_amountController.text),
           category: TransactionCat.moneyTransfer,
           type: TransactionType.income,
@@ -100,17 +112,16 @@ class _AddIncomeState extends State<AddIncome> {
           imgUrl: image,
           name: _nameController.text,
           time: _selectedTime.format(context),
-          
-        ) );
+        ));
         _nameController.clear();
         _amountController.clear();
       });
       Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(),
-      ),
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(),
+        ),
+      );
     }
   }
 
@@ -132,9 +143,8 @@ class _AddIncomeState extends State<AddIncome> {
 
       String image = selectedCategory!.image;
 
-
       setState(() {
-        schedualedTransactions.add( Transaction(
+        schedualedTransactions.add(Transaction(
           amount: int.parse(_amountController.text),
           category: TransactionCat.moneyTransfer,
           type: TransactionType.income,
@@ -142,8 +152,7 @@ class _AddIncomeState extends State<AddIncome> {
           imgUrl: image,
           name: _nameController.text,
           time: _selectedTime.format(context),
-          
-        ) );
+        ));
         _nameController.clear();
         _amountController.clear();
       });
@@ -154,6 +163,26 @@ class _AddIncomeState extends State<AddIncome> {
         builder: (context) => ScheduleTransactions(),
       ),
     );
+  }
+
+  CameraController? _cameraController;
+
+  @override
+  void initState() {
+    super.initState();
+    initializeCamera();
+  }
+
+  void initializeCamera() async {
+    final cameras = await availableCameras();
+    _cameraController = CameraController(cameras[0], ResolutionPreset.medium);
+    await _cameraController!.initialize();
+  }
+
+  @override
+  void dispose() {
+    _cameraController!.dispose();
+    super.dispose();
   }
 
   @override
@@ -212,7 +241,7 @@ class _AddIncomeState extends State<AddIncome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Income Name (optional)",
+                        "Income Name",
                         style:
                             TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                       ),
@@ -236,7 +265,7 @@ class _AddIncomeState extends State<AddIncome> {
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                           fillColor: Colors.black.withOpacity(0.2),
-                          hintText: "Income Name ",
+                          hintText: "Income Name (optional) ",
                           alignLabelWithHint: true,
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -335,11 +364,11 @@ class _AddIncomeState extends State<AddIncome> {
                             );
                           }).toList(),
                         ),
-      
+
                         // DropdownButtonFormField<DropdownItem>(
                         //   hint: Text("Category"),
                         //   value: _selectedItem,
-      
+
                         //   decoration: InputDecoration(
                         //     contentPadding: EdgeInsets.all(10),
                         //     border: OutlineInputBorder(
@@ -453,17 +482,13 @@ class _AddIncomeState extends State<AddIncome> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: () async{
-                            FilePickerResult? result = await FilePicker.platform.pickFiles();
-                            if (result != null) {
-                              setState(() {
-                                file = result.names[0] as String;
-                              });
-                            }  
-                            },child: Text("Add File")),
-                            SizedBox(
+                              onPressed: _takePicture, child: Text("Add File")),
+                          SizedBox(
                               width: 200,
-                              child: Text(file, softWrap: true,)),
+                              child: Text(
+                                file,
+                                softWrap: true,
+                              )),
                         ],
                       ),
                       Row(

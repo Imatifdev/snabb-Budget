@@ -48,6 +48,8 @@ dependencies:
   internet_connection_checker: ^1.0.0+1
   connectivity_plus: ^4.0.1
   carousel_slider: ^4.2.1
+  camera: ^0.10.5+2
+  image_picker: ^0.8.9
 
 dev_dependencies:
   flutter_test:

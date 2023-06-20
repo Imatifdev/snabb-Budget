@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../models/expanseDataModel.dart';
 import '../models/transaction.dart';
@@ -27,6 +28,17 @@ class _AddExpanseState extends State<AddExpanse> {
   TimeOfDay _selectedTime = TimeOfDay.now();
 
   final TextEditingController _noteController = TextEditingController();
+
+  Future<void> _takePicture() async {
+    final picker = ImagePicker();
+    final image = await picker.getImage(source: ImageSource.camera);
+
+    if (image != null) {
+      setState(() {
+        file = image.path;
+      });
+    }
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -57,8 +69,7 @@ class _AddExpanseState extends State<AddExpanse> {
 
 //function for storing data and passing to another screen
   void _saveExpense() {
-    if ( _formKey.currentState!.validate() &&
-        selectedCategory != null) {
+    if (_formKey.currentState!.validate() && selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
       DateTime dateTime = DateTime(
@@ -98,19 +109,18 @@ class _AddExpanseState extends State<AddExpanse> {
         _amountController.clear();
       });
       Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(),
-      ),
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(),
+        ),
+      );
     }
   }
 
   final List<File> _selectedFiles = [];
 
   Future<void> _pickFiles() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-    );
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
 
     if (result != null && result.files.isNotEmpty) {
       List<File> pickedFiles = result.paths.map((path) => File(path!)).toList();
@@ -275,7 +285,8 @@ class _AddExpanseState extends State<AddExpanse> {
                     children: [
                       Text(
                         "Expense Name (optional)",
-                        style: TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
+                        style:
+                            TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                       ),
                       SizedBox(
                         height: height / 80,
@@ -314,7 +325,8 @@ class _AddExpanseState extends State<AddExpanse> {
                       ),
                       Text(
                         "Amount ",
-                        style: TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
+                        style:
+                            TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                       ),
                       SizedBox(
                         height: height / 80,
@@ -361,7 +373,8 @@ class _AddExpanseState extends State<AddExpanse> {
                       ),
                       Text(
                         "Category ",
-                        style: TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
+                        style:
+                            TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                       ),
                       SizedBox(
                         height: height / 80,
@@ -482,18 +495,13 @@ class _AddExpanseState extends State<AddExpanse> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: () async{
-                              FilePickerResult? result = await FilePicker.platform.pickFiles();
-                              if (result != null) {
-                                setState(() {
-                                  file = result.names[0] as String;
-                                });
-                              }  
-                              },
-                              child: Text("Add File")),
-                              SizedBox(
-                                width: 200,
-                                child: Text(file, softWrap: true,)),
+                              onPressed: _takePicture, child: Text("Add File")),
+                          SizedBox(
+                              width: 200,
+                              child: Text(
+                                file,
+                                softWrap: true,
+                              )),
                         ],
                       ),
                       Row(
@@ -517,7 +525,9 @@ class _AddExpanseState extends State<AddExpanse> {
                     child: SizedBox(
                       width: width / 2,
                       child: ElevatedButton(
-                        onPressed: () {_saveExpense();},
+                        onPressed: () {
+                          _saveExpense();
+                        },
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50))),

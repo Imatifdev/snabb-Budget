@@ -54,7 +54,7 @@ final List<Transaction> transactions = [
   //     type: TransactionType.income,
   //     category: TransactionCat.moneyTransfer,
   //     amount: 2000),
-      ];
+];
 double totalBalance = 523.24;
 
 class DashboardScreen extends StatelessWidget {
@@ -66,7 +66,18 @@ class DashboardScreen extends StatelessWidget {
     double totalIncomeAmount = 0;
     double totalexpAmount = 0;
     const List<String> month = [
-      "Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"
+      "Jan",
+      "Feb",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "Aug",
+      "Sept",
+      "Oct",
+      "Nov",
+      "Dec"
     ];
     for (Transaction transaction in transactions) {
       if (transaction.type == TransactionType.income) {
@@ -173,8 +184,8 @@ class DashboardScreen extends StatelessWidget {
                                           color: Colors.white, fontSize: 14),
                                       textAlign: TextAlign.left,
                                     ),
-                                    Text("\$523.24", 
-                                   // ${double.parse((totalBalance).toStringAsFixed(2))}",
+                                    Text("\$0.00",
+                                        // ${double.parse((totalBalance).toStringAsFixed(2))}",
                                         style: TextStyle(
                                             letterSpacing: 3,
                                             color: Colors.white,
@@ -212,7 +223,7 @@ class DashboardScreen extends StatelessWidget {
                                         width: 5,
                                       ),
                                       Text(
-                                        "Income ${month[(DateTime.now().month)-1]}",
+                                        "Income ${month[(DateTime.now().month) - 1]}",
                                         style: const TextStyle(
                                             fontSize: 14, color: Colors.white),
                                       )
@@ -247,8 +258,8 @@ class DashboardScreen extends StatelessWidget {
                                         width: 5,
                                       ),
                                       Text(
-                                        "Expenses ${month[(DateTime.now().month)-1]}",
-                                        style:const TextStyle(
+                                        "Expenses ${month[(DateTime.now().month) - 1]}",
+                                        style: const TextStyle(
                                             fontSize: 14, color: Colors.white),
                                       )
                                     ],
@@ -287,63 +298,76 @@ class DashboardScreen extends StatelessWidget {
                                     fontWeight: FontWeight.bold),
                               ),
                               TextButton(
-                                child: const Text(
-                                "See All",
-                                style: TextStyle(
-                                    fontSize: 13, color: Colors.grey)), onPressed: () {Navigator.of(context).pushNamed(TransactionsScreen.routeName);},
+                                child: const Text("See All",
+                                    style: TextStyle(
+                                        fontSize: 13, color: Colors.grey)),
+                                onPressed: () {
+                                  Navigator.of(context)
+                                      .pushNamed(TransactionsScreen.routeName);
+                                },
                               )
                             ]),
                         const SizedBox(
                           height: 5,
                         ),
-                        if (transactions.isNotEmpty) Column(
-                          children: [
-                            const Align(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                            "Today",
-                            style: TextStyle(fontSize: 13, color: Colors.grey),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 410,
-                          child: ListView.builder(
-                            itemCount: transactions.length,
-                            itemBuilder: (context, index) {
-                              Transaction transaction = transactions[index];
-                              return Card(
-                                color: Colors.white,
-                                elevation: 0,
-                                child: ListTile(
-                                  leading: Image.asset(transaction.imgUrl),
-                                  title: Text(
-                                    transaction.name,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Text(transaction.time),
-                                  trailing: Text(
-                                      transaction.type == TransactionType.income
-                                          ? "+\$${transaction.amount}"
-                                          : "-\$${transaction.amount}",
-                                      style: TextStyle(
-                                          color: transaction.type ==
-                                                  TransactionType.income
-                                              ? Colors.green
-                                              : Colors.red,
-                                          fontWeight: FontWeight.bold)),
+                        if (transactions.isNotEmpty)
+                          Column(
+                            children: [
+                              const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  "Today",
+                                  style: TextStyle(
+                                      fontSize: 13, color: Colors.grey),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
-                          ],
-                        ) else const SizedBox(
-                          height: 300,
-                          child: Align(
-                            alignment: Alignment.center,
-                            child: Text("No Transactions to show\nStart Adding your transactions", textAlign: TextAlign.center,)),
-                        )
+                              ),
+                              SizedBox(
+                                height: 410,
+                                child: ListView.builder(
+                                  itemCount: transactions.length,
+                                  itemBuilder: (context, index) {
+                                    Transaction transaction =
+                                        transactions[index];
+                                    return Card(
+                                      color: Colors.white,
+                                      elevation: 0,
+                                      child: ListTile(
+                                        leading:
+                                            Image.asset(transaction.imgUrl),
+                                        title: Text(
+                                          transaction.name,
+                                          style: const TextStyle(
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        subtitle: Text(transaction.time),
+                                        trailing: Text(
+                                            transaction.type ==
+                                                    TransactionType.income
+                                                ? "+\$${transaction.amount}"
+                                                : "-\$${transaction.amount}",
+                                            style: TextStyle(
+                                                color: transaction.type ==
+                                                        TransactionType.income
+                                                    ? Colors.green
+                                                    : Colors.red,
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          )
+                        else
+                          const SizedBox(
+                            height: 300,
+                            child: Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  "No Transactions to show\nStart Adding your transactions",
+                                  textAlign: TextAlign.center,
+                                )),
+                          )
                       ],
                     ),
                   )
