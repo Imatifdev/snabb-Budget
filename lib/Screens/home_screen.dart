@@ -1,11 +1,12 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction ;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/daily_stats.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
 
+import '../models/transaction.dart';
 import '../utils/custom_bottombar.dart';
 import '../utils/expandable_fab.dart';
 import 'auth/profileview.dart';
@@ -23,9 +24,10 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
   int check = 0;
   late PageController _pageController;
-  String name = "loading....";
-  String email = "loading....";
-  String phone = 'loading....';
+  String name = "";
+  String email = "";
+  String phone = "";
+  List<Transaction> transactionsList= [];
   final userId = FirebaseAuth.instance.currentUser!.uid;
   void getInfo() async {
     var collection = FirebaseFirestore.instance.collection('UsersData');
@@ -53,8 +55,8 @@ class _HomeScreenState extends State<HomeScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
       check++;
     }
-    final List<Widget> _pages = [
-    DashboardScreen(),
+    final List<Widget> pages = [
+    DashboardScreen(transactions: transactionsList,),
     DailyStats(),
     ProfileView(name: name,email: email),
   ];
@@ -64,7 +66,7 @@ class _HomeScreenState extends State<HomeScreen> {
       floatingActionButton: const ExpandableFloatingActionButton(),
       body: PageView(
         controller: _pageController,
-        children: _pages,
+        children: pages,
         onPageChanged: (index) {
           setState(() {
             _selectedIndex = index;

@@ -42,7 +42,7 @@ class _SummaryScreenState extends State<SummaryScreen> {
   Widget build(BuildContext context) {
     List<Widget> children = [
     SummaryWidget(transactions: transactions,months: months,),
-    CategoryWidget(transactions: transactions)
+    CategoryWidget(transactions: transactions, months:months)
   ];
     return Scaffold(
       key: scaffoldKey,

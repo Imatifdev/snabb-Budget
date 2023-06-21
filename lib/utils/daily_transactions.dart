@@ -36,6 +36,7 @@ class _DailyTransactionsState extends State<DailyTransactions> {
               height: specificTrans.length*80,
               //specificTrans.length == 1?80: specificTrans.length == 2?160: specificTrans.length == 3?240: specificTrans.length == 3?320 : 400 ,
               child: ListView.builder(
+                physics: const NeverScrollableScrollPhysics(),
                             itemCount: specificTrans.length,
                             itemBuilder: (context, index) {
                               Transaction transaction = specificTrans[index];

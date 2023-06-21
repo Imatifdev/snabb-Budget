@@ -59,8 +59,8 @@ double totalBalance = 523.24;
 
 class DashboardScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
-
-  DashboardScreen({super.key});
+  final List<Transaction> transactions;
+  DashboardScreen({super.key, required this.transactions});
   @override
   Widget build(BuildContext context) {
     double totalIncomeAmount = 0;

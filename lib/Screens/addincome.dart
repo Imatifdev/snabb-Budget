@@ -1,6 +1,5 @@
 // ignore_for_file: unused_local_variable, prefer_const_constructors, prefer_final_fields, depend_on_referenced_packages
 
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:velocity_x/velocity_x.dart';

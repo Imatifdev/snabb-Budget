@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
           ),
         ),
         home: FirebaseAuth.instance.currentUser != null
-            ? HomeScreen()
+            ? const HomeScreen()
             : Welcome(),
         routes: {
           CalenderScreen.routeName: (context) => const CalenderScreen(),

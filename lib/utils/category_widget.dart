@@ -3,8 +3,9 @@ import 'package:snabbudget/utils/transaction_card.dart';
 
 import '../models/transaction.dart';
 class CategoryWidget extends StatefulWidget {
-  final List<Transaction> transactions; 
-  const CategoryWidget({super.key, required this.transactions});
+  final List<Transaction> transactions;
+  final List<String> months; 
+  const CategoryWidget({super.key, required this.transactions, required this.months});
 
   @override
   State<CategoryWidget> createState() => _CategoryWidgetState();
@@ -22,17 +23,21 @@ class _CategoryWidgetState extends State<CategoryWidget> {
       if (picked != null && picked != selectedDateFrom) {
       setState(() {
         selectedDateFrom = picked;
+        dateFromPicked = true;
       });
     }
     }else{
       if(picked != null && picked != selectedDateTo) {
       setState(() {
         selectedDateTo = picked;
+        dateToPicked = true;
       });
     }
     }
   }
   String selectedType = "Income";
+  bool dateFromPicked = false;
+  bool dateToPicked = false;
   DateTime selectedDateFrom = DateTime.now();
   DateTime selectedDateTo = DateTime.now();
   List<String> types = [
@@ -179,7 +184,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                         ),
                               child: TextButton(onPressed: (){
                                 _selectDate(context,true);
-                              }, child: const Text("Select Date", style: TextStyle(color:Colors.black),)),
+                              }, child:Text( !dateFromPicked? "Select Date":" ${selectedDateFrom.day} ${widget.months[selectedDateFrom.month]} ${selectedDateFrom.year} ", style: const TextStyle(color:Colors.black),)),
                             ),
                     ],
                   ),
@@ -205,7 +210,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                         ),
                               child:TextButton(onPressed: (){
                                 _selectDate(context,false);
-                              }, child: const Text("Select Date", style: TextStyle(color:Colors.black),)),
+                              }, child: Text( !dateToPicked? "Select Date":" ${selectedDateTo.day} ${widget.months[selectedDateTo.month]} ${selectedDateFrom.year}", style: const TextStyle(color:Colors.black),)),
                             ),
                       ],
                   ),

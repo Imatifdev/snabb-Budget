@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/utils/transaction_card.dart';
 import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
@@ -97,7 +98,7 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldKey,
-      drawer: CustomDrawer(),
+      drawer: const CustomDrawer(),
       body: SafeArea(
         child: Column(
           children: [
@@ -157,7 +158,7 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
                             totalBalance = totalBalance-transaction.amount; 
                           }
                         });
-                        Navigator.of(context).push( MaterialPageRoute(builder: (context) => DashboardScreen()),);
+                        Navigator.of(context).push( MaterialPageRoute(builder: (context) => const HomeScreen()),);
                       },
                       child: Container(
                         padding: const EdgeInsets.all(14),
