@@ -382,7 +382,7 @@ class _AddExpanseState extends State<AddExpanse> {
                       SizedBox(
                         width: width / 1.3,
                         child: DropdownButtonFormField<ExpanseDataCategory>(
-                          value: selectedCategory,
+                          value: selectedCategory ?? expanseCategories.first,
                           hint: Text('Category'),
                           onChanged: (ExpanseDataCategory? newValue) {
                             setState(() {

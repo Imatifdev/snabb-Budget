@@ -15,8 +15,11 @@ class CustomDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
+
     return Drawer(
       child: Container(
+        height: height - 10,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
@@ -48,7 +51,7 @@ class CustomDrawer extends StatelessWidget {
                     endIndent: 40,
                   ),
                   const SizedBox(
-                    height: 20,
+                    height: 15,
                   ),
                   drawerTile(context, "assets/images/home-icon.png",
                       "Dashboard", HomeScreen.routeName),
@@ -113,11 +116,11 @@ class CustomDrawer extends StatelessWidget {
       leading: ImageIcon(
         AssetImage(imgUrl),
         color: Colors.white,
-        size: 38,
+        size: 34,
       ),
       title: Text(
         title,
-        style: const TextStyle(fontSize: 14, color: Colors.white),
+        style: const TextStyle(fontSize: 13, color: Colors.white),
       ),
       onTap: () {
         Navigator.of(context).pushNamed(routeName);
