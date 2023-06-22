@@ -1,5 +1,7 @@
-// ignore_for_file: unused_local_variable, prefer_const_constructors, prefer_final_fields, depend_on_referenced_packages
+// ignore_for_file: unused_local_variable, prefer_const_constructors, prefer_final_fields, depend_on_referenced_packages, use_build_context_synchronously
 
+import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -7,7 +9,6 @@ import 'package:intl/intl.dart';
 
 import '../models/IncomeDataMode.dart';
 import '../models/transaction.dart';
-import 'dashboard_screen.dart';
 import 'schedule_transactions.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
@@ -27,7 +28,7 @@ class _AddIncomeState extends State<AddIncome> {
   DateTime _selectedDate = DateTime.now();
   String file = "";
   TimeOfDay _selectedTime = TimeOfDay.now();
-
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   final TextEditingController _noteController = TextEditingController();
   // DropdownItem? _selectedItem;
   // List<DropdownItem> _dropdownItems = [
@@ -46,6 +47,7 @@ class _AddIncomeState extends State<AddIncome> {
 
     if (pickedDate != null) {
       _selectedDate = pickedDate;
+      print(_selectedDate);
     }
   }
 
@@ -75,54 +77,50 @@ class _AddIncomeState extends State<AddIncome> {
   List<IncomeData> incomeDatList = [];
 
 //function for storing data and passing to another screen
-  void _saveIncome() {
-    if (_formKey.currentState!.validate() && selectedCategory != null) {
-      double amount = double.parse(_amountController.text);
-      String name = _nameController.text;
-      DateTime dateTime = DateTime(
-        _selectedDate.year,
-        _selectedDate.month,
-        _selectedDate.day,
-      );
-      DateTime time = DateTime(
-        _selectedDate.hour,
-        _selectedDate.minute,
-      );
+  void _saveIncome() async {
+  if (_formKey.currentState!.validate() && selectedCategory != null) {
+    double amount = double.parse(_amountController.text);
+    String name = _nameController.text.isNotEmpty
+        ? _nameController.text
+        : selectedCategory!.name; // Use category name if name is not provided
+    DateTime dateTime = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+    );
+    DateTime time = DateTime(
+      _selectedDate.hour,
+      _selectedDate.minute,
+    );
+    String image = selectedCategory!.image;
 
-      String image = selectedCategory!.image;
+    await FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("transactions")
+        .add({
+      "name": name,
+      "amount": int.parse(_amountController.text),
+      "category": "TransactionCat.moneyTransfer",
+      "type": "TransactionType.income",
+      "date": _selectedDate,
+      "time": _selectedTime.toString(),
+      "imgUrl": image,
+    });
 
-      IncomeData expense = IncomeData(
-        amount: amount,
-        name: name,
-        time: time,
-        date: dateTime,
-        category: selectedCategory!.name,
-        imageurl: image,
-      );
-
-      setState(() {
-        incomeDatList.add(expense);
-        selectedCategory = null;
-        transactions.add(Transaction(
-          amount: int.parse(_amountController.text),
-          category: TransactionCat.moneyTransfer,
-          type: TransactionType.income,
-          date: _selectedDate,
-          imgUrl: image,
-          name: _nameController.text,
-          time: _selectedTime.format(context),
-        ));
-        _nameController.clear();
-        _amountController.clear();
-      });
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(),
-        ),
-      );
-    }
+    setState(() {
+      _nameController.clear();
+      _amountController.clear();
+    });
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ),
+    );
   }
+}
+
 
   void schedualeTransaction() {
     if (_amountController.text.isNotEmpty &&

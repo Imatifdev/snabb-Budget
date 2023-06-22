@@ -15,7 +15,7 @@ class DailyTransactions extends StatefulWidget {
 class _DailyTransactionsState extends State<DailyTransactions> {
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+     return widget.transactions.isNotEmpty? Expanded(
         child: ListView.builder(
           itemCount: widget.dates.length,
           itemBuilder: (context, index) {
@@ -69,6 +69,9 @@ class _DailyTransactionsState extends State<DailyTransactions> {
           
         ]),
         );},),
-      );
+      ): const  Padding(
+        padding:  EdgeInsets.all(80.0),
+        child: Text("No Transactions"),
+      ) ;
   }
 }

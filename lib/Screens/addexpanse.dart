@@ -1,14 +1,15 @@
-// ignore_for_file: unused_local_variable, prefer_const_constructors, depend_on_referenced_packages
+// ignore_for_file: unused_local_variable, prefer_const_constructors, depend_on_referenced_packages, use_build_context_synchronously
 
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction ;
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../models/expanseDataModel.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import '../models/transaction.dart';
-import 'dashboard_screen.dart';
 import 'home_screen.dart';
 
 class AddExpanse extends StatefulWidget {
@@ -20,6 +21,7 @@ class AddExpanse extends StatefulWidget {
 }
 
 class _AddExpanseState extends State<AddExpanse> {
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
@@ -68,67 +70,58 @@ class _AddExpanseState extends State<AddExpanse> {
   List<ExpanseData> incomeDatList = [];
 
 //function for storing data and passing to another screen
-  void _saveExpense() {
-    if (_formKey.currentState!.validate() && selectedCategory != null) {
-      double amount = double.parse(_amountController.text);
-      String name = _nameController.text;
-      DateTime dateTime = DateTime(
-        _selectedDate.year,
-        _selectedDate.month,
-        _selectedDate.day,
-      );
-      DateTime time = DateTime(
-        _selectedDate.hour,
-        _selectedDate.minute,
-      );
+  void _saveExpense() async {
+  if (_formKey.currentState!.validate() && selectedCategory != null) {
+    double amount = double.parse(_amountController.text);
+    String name = _nameController.text.isNotEmpty ? _nameController.text : selectedCategory!.name;
+    DateTime dateTime = DateTime(
+      _selectedDate.year,
+      _selectedDate.month,
+      _selectedDate.day,
+    );
+    DateTime time = DateTime(
+      _selectedDate.hour,
+      _selectedDate.minute,
+    );
+    String image = selectedCategory!.image;
 
-      String image = selectedCategory!.image;
+    await FirebaseFirestore.instance.collection("UserTransactions").doc(userId).collection("transactions").add({
+      "name": name,
+      "amount": int.parse(_amountController.text),
+      "category": "TransactionCat.moneyTransfer",
+      "type": "TransactionType.expense",
+      "date": _selectedDate,
+      "time": _selectedTime.toString(),
+      "imgUrl": image,
+    });
 
-      ExpanseData expense = ExpanseData(
-        amount: amount,
-        name: name,
-        time: time,
-        date: dateTime,
-        category: selectedCategory!.name,
-        imageurl: image,
-      );
+    setState(() {
+      _nameController.clear();
+      _amountController.clear();
+    });
 
-      setState(() {
-        incomeDatList.add(expense);
-        selectedCategory = null;
-        transactions.add(Transaction(
-          amount: int.parse(_amountController.text),
-          category: TransactionCat.moneyTransfer,
-          type: TransactionType.expense,
-          date: _selectedDate,
-          imgUrl: image,
-          name: _nameController.text,
-          time: _selectedTime.toString(),
-        ));
-        _nameController.clear();
-        _amountController.clear();
-      });
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomeScreen(),
-        ),
-      );
-    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      ),
+    );
   }
+}
+
 
   final List<File> _selectedFiles = [];
 
-  Future<void> _pickFiles() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+  // Future<void> _pickFiles() async {
+  //   FilePickerResult? result = await FilePicker.platform.pickFiles();
 
-    if (result != null && result.files.isNotEmpty) {
-      List<File> pickedFiles = result.paths.map((path) => File(path!)).toList();
-      setState(() {
-        _selectedFiles.addAll(pickedFiles);
-      });
-    }
-  }
+  //   if (result != null && result.files.isNotEmpty) {
+  //     List<File> pickedFiles = result.paths.map((path) => File(path!)).toList();
+  //     setState(() {
+  //       _selectedFiles.addAll(pickedFiles);
+  //     });
+  //   }
+  // }
 
   void _removeFile(int index) {
     setState(() {
@@ -136,106 +129,104 @@ class _AddExpanseState extends State<AddExpanse> {
     });
   }
 
-  Widget _buildFilePreview() {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: _selectedFiles.length,
-        itemBuilder: (context, index) {
-          File file = _selectedFiles[index];
-          return ListTile(
-            leading: _getFileIcon(file),
-            // title: Text('File ${index + 1}'),
-            //subtitle: Text(file.path),
-            trailing: IconButton(
-              icon: const Icon(Icons.close),
-              onPressed: () => _removeFile(index),
-            ),
-          );
-        },
-      ),
-    );
-  }
+  // Widget _buildFilePreview() {
+  //   return Expanded(
+  //     child: ListView.builder(
+  //       itemCount: _selectedFiles.length,
+  //       itemBuilder: (context, index) {
+  //         File file = _selectedFiles[index];
+  //         return ListTile(
+  //           leading: _getFileIcon(file),
+  //           // title: Text('File ${index + 1}'),
+  //           //subtitle: Text(file.path),
+  //           trailing: IconButton(
+  //             icon: const Icon(Icons.close),
+  //             onPressed: () => _removeFile(index),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
-  Widget _buildFilePreview1() {
-    return Expanded(
-      child: GridView.builder(
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 3, // Adjust the number of columns as needed
-          mainAxisSpacing: 8.0,
-          crossAxisSpacing: 8.0,
-          childAspectRatio: 1.0,
-        ),
-        itemCount: _selectedFiles.length,
-        itemBuilder: (context, index) {
-          File file = _selectedFiles[index];
-          return GestureDetector(
-            onTap: () {
-              // Perform any action when the file is tapped
-              print('File ${index + 1} tapped');
-            },
-            child: Stack(
-              children: [
-                Container(
-                    height: 200,
-                    width: 200,
-                    child: _getFilePreviewWidget(file)),
-                Positioned(
-                    top: -10,
-                    right: -10,
-                    child: IconButton(
-                      icon: const Icon(
-                        Icons.delete_sharp,
-                        size: 20,
-                        color: Colors.red,
-                      ),
-                      onPressed: () => _removeFile(index),
-                    )),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
+  // Widget _buildFilePreview1() {
+  //   return Expanded(
+  //     child: GridView.builder(
+  //       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+  //         crossAxisCount: 3, // Adjust the number of columns as needed
+  //         mainAxisSpacing: 8.0,
+  //         crossAxisSpacing: 8.0,
+  //         childAspectRatio: 1.0,
+  //       ),
+  //       itemCount: _selectedFiles.length,
+  //       itemBuilder: (context, index) {
+  //         File file = _selectedFiles[index];
+  //         return GestureDetector(
+  //           onTap: () {
+  //             // Perform any action when the file is tapped
+  //             print('File ${index + 1} tapped');
+  //           },
+  //           child: Stack(
+  //             children: [
+  //               Container(
+  //                   height: 200,
+  //                   width: 200,
+  //                   child: _getFilePreviewWidget(file)),
+  //               Positioned(
+  //                   top: -10,
+  //                   right: -10,
+  //                   child: IconButton(
+  //                     icon: const Icon(
+  //                       Icons.delete_sharp,
+  //                       size: 20,
+  //                       color: Colors.red,
+  //                     ),
+  //                     onPressed: () => _removeFile(index),
+  //                   )),
+  //             ],
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+  // }
 
-  Widget _getFilePreviewWidget(File file) {
-    if (file.path.endsWith('.pdf')) {
-      return Container(
-        color: Colors.grey[300],
-        child: const Icon(Icons.picture_as_pdf),
-      );
-    } else if (file.path.endsWith('.jpg') ||
-        file.path.endsWith('.jpeg') ||
-        file.path.endsWith('.png')) {
-      return Image.file(file, fit: BoxFit.cover);
-    } else {
-      return Container(
-        color: Colors.grey[300],
-        child: const Icon(Icons.attach_file),
-      );
-    }
-  }
+  // Widget _getFilePreviewWidget(File file) {
+  //   if (file.path.endsWith('.pdf')) {
+  //     return Container(
+  //       color: Colors.grey[300],
+  //       child: const Icon(Icons.picture_as_pdf),
+  //     );
+  //   } else if (file.path.endsWith('.jpg') ||
+  //       file.path.endsWith('.jpeg') ||
+  //       file.path.endsWith('.png')) {
+  //     return Image.file(file, fit: BoxFit.cover);
+  //   } else {
+  //     return Container(
+  //       color: Colors.grey[300],
+  //       child: const Icon(Icons.attach_file),
+  //     );
+  //   }
+  // }
 
-  Widget _getFileIcon(File file) {
-    if (file.path.endsWith('.pdf')) {
-      return const Icon(Icons.picture_as_pdf);
-    } else if (file.path.endsWith('.jpg') ||
-        file.path.endsWith('.jpeg') ||
-        file.path.endsWith('.png')) {
-      return Image.file(file, width: 24, height: 24); // Display image file
-    } else {
-      return const Icon(Icons.attach_file);
-    }
-  }
+  // Widget _getFileIcon(File file) {
+  //   if (file.path.endsWith('.pdf')) {
+  //     return const Icon(Icons.picture_as_pdf);
+  //   } else if (file.path.endsWith('.jpg') ||
+  //       file.path.endsWith('.jpeg') ||
+  //       file.path.endsWith('.png')) {
+  //     return Image.file(file, width: 24, height: 24); // Display image file
+  //   } else {
+  //     return const Icon(Icons.attach_file);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
     FloatingActionButton.extended(
         onPressed: () {}, label: Text("Add").pSymmetric(h: 60));
     var height = MediaQuery.of(context).size.height;
-
     var width = MediaQuery.of(context).size.width;
-
     FloatingActionButton.extended(
         onPressed: () {}, label: Text("Add").pSymmetric(h: 60));
     return Scaffold(

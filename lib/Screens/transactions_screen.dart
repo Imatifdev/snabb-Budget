@@ -1,10 +1,12 @@
 // ignore_for_file: avoid_print
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
 
 import '../models/transaction.dart';
+import '../models/transaction_controller.dart';
 import '../utils/daily_transactions.dart';
 import '../utils/monthly_transactions.dart';
 import '../utils/yearly_transactions.dart';
@@ -16,106 +18,108 @@ class TransactionsScreen extends StatefulWidget {
 }
 
 class _TransactionsScreenState extends State<TransactionsScreen>{
-  final List<Transaction> transactions = [
-    Transaction(
-        name: "Money Transfer",
-        time: "06:20 PM",
-        date: DateTime.now(),
-        imgUrl: "assets/images/home.png",
-        type: TransactionType.expense,
-        category: TransactionCat.moneyTransfer,
-        amount: 22),
-    Transaction(
-        name: "Shopping",
-        time: "02:26 PM",
-        date: DateTime.now().subtract(const Duration(days: 365)),
-        imgUrl: "assets/images/shopping.png",
-        type: TransactionType.expense,
-        category: TransactionCat.shopping,
-        amount: 100),
-    Transaction(
-        name: "Taxi",
-        time: "02:00 PM",
-        date: DateTime.now().subtract(const Duration(days: 2)),
-        imgUrl: "assets/images/travel.png",
-        type: TransactionType.expense,
-        category: TransactionCat.taxi,
-        amount: 80),
-    Transaction(
-        name: "Salary",
-        time: "10:26 AM",
-        imgUrl: "assets/images/income.png",
-        date: DateTime.now().subtract(const Duration(days: 3)),
-        type: TransactionType.income,
-        category: TransactionCat.moneyTransfer,
-        amount: 2000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        date: DateTime.now().subtract(const Duration(days: 3)),
-        imgUrl: "assets/images/others.png",
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),
-    Transaction(
-        name: "Salary",
-        time: "10:26 AM",
-        date: DateTime.now().subtract(const Duration(days: 3)),
-        imgUrl: "assets/images/income.png",
-        type: TransactionType.income,
-        category: TransactionCat.moneyTransfer,
-        amount: 2000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        date: DateTime.now().subtract(const Duration(days: 90)),
-        imgUrl: "assets/images/others.png",
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),
-    Transaction(
-        name: "Salary",
-        time: "10:26 AM",
-        date: DateTime.now().subtract(const Duration(days: 1)),
-        imgUrl: "assets/images/income.png",
-        type: TransactionType.income,
-        category: TransactionCat.moneyTransfer,
-        amount: 2000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        imgUrl: "assets/images/others.png",
-        date: DateTime.now().subtract(const Duration(days: 2)),
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        imgUrl: "assets/images/others.png",
-        date: DateTime.now().subtract(const Duration(days: 2)),
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        imgUrl: "assets/images/others.png",
-        date: DateTime.now().subtract(const Duration(days: 30)),
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),
-    Transaction(
-        name: "Bills",
-        time: "09:26 PM",
-        imgUrl: "assets/images/others.png",
-        date: DateTime.now().subtract(const Duration(days: 50)),
-        type: TransactionType.expense,
-        category: TransactionCat.bills,
-        amount: 1000),            
-  ];
-  
+  // final List<Transaction> transactions = [
+  //   Transaction(
+  //       name: "Money Transfer",
+  //       time: "06:20 PM",
+  //       date: DateTime.now(),
+  //       imgUrl: "assets/images/home.png",
+  //       type: TransactionType.expense,
+  //       category: TransactionCat.moneyTransfer,
+  //       amount: 22),
+  //   Transaction(
+  //       name: "Shopping",
+  //       time: "02:26 PM",
+  //       date: DateTime.now().subtract(const Duration(days: 365)),
+  //       imgUrl: "assets/images/shopping.png",
+  //       type: TransactionType.expense,
+  //       category: TransactionCat.shopping,
+  //       amount: 100),
+  //   Transaction(
+  //       name: "Taxi",
+  //       time: "02:00 PM",
+  //       date: DateTime.now().subtract(const Duration(days: 2)),
+  //       imgUrl: "assets/images/travel.png",
+  //       type: TransactionType.expense,
+  //       category: TransactionCat.taxi,
+  //       amount: 80),
+  //   Transaction(
+  //       name: "Salary",
+  //       time: "10:26 AM",
+  //       imgUrl: "assets/images/income.png",
+  //       date: DateTime.now().subtract(const Duration(days: 3)),
+  //       type: TransactionType.income,
+  //       category: TransactionCat.moneyTransfer,
+  //       amount: 2000),
+  //   Transaction(
+  //       name: "Bills",
+  //       time: "09:26 PM",
+  //       date: DateTime.now().subtract(const Duration(days: 3)),
+  //       imgUrl: "assets/images/others.png",
+  //       type: TransactionType.expense,
+  //       category: TransactionCat.bills,
+  //       amount: 1000),
+  //   Transaction(
+  //       name: "Salary",
+  //       time: "10:26 AM",
+  //       date: DateTime.now().subtract(const Duration(days: 3)),
+  //       imgUrl: "assets/images/income.png",
+  //       type: TransactionType.income,
+  //       category: TransactionCat.moneyTransfer,
+  //       amount: 2000),
+  //   Transaction(
+  //       name: "Bills",
+  //       time: "09:26 PM",
+  //       date: DateTime.now().subtract(const Duration(days: 90)),
+  //       imgUrl: "assets/images/others.png",
+  //       type: TransactionType.expense,
+  //       category: TransactionCat.bills,
+  //       amount: 1000),
+  //   Transaction(
+  //       name: "Salary",
+  //       time: "10:26 AM",
+  //       date: DateTime.now().subtract(const Duration(days: 1)),
+  //       imgUrl: "assets/images/income.png",
+  //       type: TransactionType.income,
+  //       category: TransactionCat.moneyTransfer,
+  //       amount: 2000),
+  //   Transaction(
+  //       name: "Bills",
+  //       time: "09:26 PM",
+  //       imgUrl: "assets/images/others.png",
+  //       date: DateTime.now().subtract(const Duration(days: 2)),
+  //       type: TransactionType.expense,
+  //       category: TransactionCat.bills,
+  //       amount: 1000),
+  //   Transaction(
+  //       name: "Bills",
+  //       time: "09:26 PM",
+  //       imgUrl: "assets/images/others.png",
+  //       date: DateTime.now().subtract(const Duration(days: 2)),
+  //       type: TransactionType.expense,
+  //       category: TransactionCat.bills,
+  //       amount: 1000),
+  //   Transaction(
+  //       name: "Bills",
+  //       time: "09:26 PM",
+  //       imgUrl: "assets/images/others.png",
+  //       date: DateTime.now().subtract(const Duration(days: 30)),
+  //       type: TransactionType.expense,
+  //       category: TransactionCat.bills,
+  //       amount: 1000),
+  //   Transaction(
+  //       name: "Bills",
+  //       time: "09:26 PM",
+  //       imgUrl: "assets/images/others.png",
+  //       date: DateTime.now().subtract(const Duration(days: 50)),
+  //       type: TransactionType.expense,
+  //       category: TransactionCat.bills,
+  //       amount: 1000),            
+  // ];
+  final userId  = FirebaseAuth.instance.currentUser!.uid;
+  List<Transaction> transactions = [];
   int _currentSelection = 0;
+  int check = 0;
   final Map<int, Widget> _children = {
   0: Text('Daily',style: GoogleFonts.montserrat(),),
   1:  Padding(
@@ -126,6 +130,10 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
   @override
   void initState() {
     super.initState();
+   TransactionData transactionData = TransactionData();
+   transactionData.fetchTransactions(userId);
+   transactions = transactionData.transactions;
+   print(transactions);
   }
 
   @override
@@ -135,6 +143,14 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
 
   @override
   Widget build(BuildContext context) {
+
+    if (check == 0) {
+      WidgetsBinding.instance
+          .addPostFrameCallback((_) => (){
+            
+          } );
+      check++;
+    }
     
     const List<String> month = [
       "Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"

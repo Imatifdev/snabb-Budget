@@ -150,7 +150,7 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
                     TextButton(
                       onPressed: () {
                         setState(() {
-                          transactions.add(transaction);
+                          //transactions.add(transaction);
                           if(transaction.type == TransactionType.income){
                             totalBalance = totalBalance+transaction.amount; 
                           }

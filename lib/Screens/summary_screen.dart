@@ -41,8 +41,8 @@ class _SummaryScreenState extends State<SummaryScreen> {
   @override
   Widget build(BuildContext context) {
     List<Widget> children = [
-    SummaryWidget(transactions: transactions,months: months,),
-    CategoryWidget(transactions: transactions, months:months)
+    // SummaryWidget(transactions: transactions,months: months,),
+    // CategoryWidget(transactions: transactions, months:months)
   ];
     return Scaffold(
       key: scaffoldKey,

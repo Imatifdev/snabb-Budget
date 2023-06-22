@@ -42,11 +42,35 @@ class _HomeScreenState extends State<HomeScreen> {
     }
     print(userId);
   }
+  
+Future<List<Transaction>> fetchTransactions() async {
+  List<Transaction> transactions = [];
+
+  QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
+      .collection('UserTransactions')
+      .doc(userId)
+      .collection('transactions')
+      .get();
+
+  List<QueryDocumentSnapshot<Map<String, dynamic>>> documents = querySnapshot.docs;
+
+  for (var document in documents) {
+    Transaction transaction = Transaction.fromJson(document.data());
+    transactions.add(transaction);
+  }
+
+  setState(() {
+    transactionsList = transactions;
+  });
+  return transactions;
+}
 
   @override
   void initState() {
     super.initState();
     _pageController = PageController(initialPage: _selectedIndex);
+    fetchTransactions();
+    print(transactionsList);
   }
 
   @override

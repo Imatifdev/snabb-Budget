@@ -1,63 +1,66 @@
 // ignore_for_file: non_constant_identifier_names
 
+// import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
 import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
 
-final List<Transaction> transactions = [
-  //Transaction(
-  //     name: "Money Transfer",
-  //     time: "06:20 PM",
-  //     date: DateTime.now(),
-  //     imgUrl: "assets/images/home.png",
-  //     type: TransactionType.expense,
-  //     category: TransactionCat.moneyTransfer,
-  //     amount: 22),
-  // Transaction(
-  //     name: "Shopping",
-  //     time: "02:26 PM",
-  //     date: DateTime.now().subtract(const Duration(days: 1)),
-  //     imgUrl: "assets/images/shopping.png",
-  //     type: TransactionType.expense,
-  //     category: TransactionCat.shopping,
-  //     amount: 100),
-  // Transaction(
-  //     name: "Taxi",
-  //     time: "02:00 PM",
-  //     date: DateTime.now().subtract(const Duration(days: 2)),
-  //     imgUrl: "assets/images/travel.png",
-  //     type: TransactionType.expense,
-  //     category: TransactionCat.taxi,
-  //     amount: 80),
-  // Transaction(
-  //     name: "Salary",
-  //     time: "10:26 AM",
-  //     imgUrl: "assets/images/income.png",
-  //     date: DateTime.now().subtract(const Duration(days: 3)),
-  //     type: TransactionType.income,
-  //     category: TransactionCat.moneyTransfer,
-  //     amount: 2000),
-  // Transaction(
-  //     name: "Bills",
-  //     time: "09:26 PM",
-  //     date: DateTime.now().subtract(const Duration(days: 3)),
-  //     imgUrl: "assets/images/others.png",
-  //     type: TransactionType.expense,
-  //     category: TransactionCat.bills,
-  //     amount: 1000),
-  // Transaction(
-  //     name: "Salary",
-  //     time: "10:26 AM",
-  //     date: DateTime.now().subtract(const Duration(days: 3)),
-  //     imgUrl: "assets/images/income.png",
-  //     type: TransactionType.income,
-  //     category: TransactionCat.moneyTransfer,
-  //     amount: 2000),
-];
+// final List<Transaction> transactions = [
+//   //Transaction(
+//   //     name: "Money Transfer",
+//   //     time: "06:20 PM",
+//   //     date: DateTime.now(),
+//   //     imgUrl: "assets/images/home.png",
+//   //     type: TransactionType.expense,
+//   //     category: TransactionCat.moneyTransfer,
+//   //     amount: 22),
+//   // Transaction(
+//   //     name: "Shopping",
+//   //     time: "02:26 PM",
+//   //     date: DateTime.now().subtract(const Duration(days: 1)),
+//   //     imgUrl: "assets/images/shopping.png",
+//   //     type: TransactionType.expense,
+//   //     category: TransactionCat.shopping,
+//   //     amount: 100),
+//   // Transaction(
+//   //     name: "Taxi",
+//   //     time: "02:00 PM",
+//   //     date: DateTime.now().subtract(const Duration(days: 2)),
+//   //     imgUrl: "assets/images/travel.png",
+//   //     type: TransactionType.expense,
+//   //     category: TransactionCat.taxi,
+//   //     amount: 80),
+//   // Transaction(
+//   //     name: "Salary",
+//   //     time: "10:26 AM",
+//   //     imgUrl: "assets/images/income.png",
+//   //     date: DateTime.now().subtract(const Duration(days: 3)),
+//   //     type: TransactionType.income,
+//   //     category: TransactionCat.moneyTransfer,
+//   //     amount: 2000),
+//   // Transaction(
+//   //     name: "Bills",
+//   //     time: "09:26 PM",
+//   //     date: DateTime.now().subtract(const Duration(days: 3)),
+//   //     imgUrl: "assets/images/others.png",
+//   //     type: TransactionType.expense,
+//   //     category: TransactionCat.bills,
+//   //     amount: 1000),
+//   // Transaction(
+//   //     name: "Salary",
+//   //     time: "10:26 AM",
+//   //     date: DateTime.now().subtract(const Duration(days: 3)),
+//   //     imgUrl: "assets/images/income.png",
+//   //     type: TransactionType.income,
+//   //     category: TransactionCat.moneyTransfer,
+//   //     amount: 2000),
+// ];
 double totalBalance = 523.24;
 
 class DashboardScreen extends StatelessWidget {
+  final userId = FirebaseAuth.instance.currentUser!.uid;
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final List<Transaction> transactions;
   DashboardScreen({super.key, required this.transactions});
@@ -313,14 +316,14 @@ class DashboardScreen extends StatelessWidget {
                         if (transactions.isNotEmpty)
                           Column(
                             children: [
-                              const Align(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                  "Today",
-                                  style: TextStyle(
-                                      fontSize: 13, color: Colors.grey),
-                                ),
-                              ),
+                              // const Align(
+                              //   alignment: Alignment.centerLeft,
+                              //   child: Text(
+                              //     "Today",
+                              //     style: TextStyle(
+                              //         fontSize: 13, color: Colors.grey),
+                              //   ),
+                              // ),
                               SizedBox(
                                 height: 410,
                                 child: ListView.builder(
@@ -360,21 +363,66 @@ class DashboardScreen extends StatelessWidget {
                           )
                         else
                           const SizedBox(
-                            height: 300,
-                            child: Align(
-                                alignment: Alignment.center,
-                                child: Text(
-                                  "No Transactions to show\nStart Adding your transactions",
-                                  textAlign: TextAlign.center,
-                                )),
-                          )
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                 Align(
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      "No Transactions to show\nStart Adding your transactions",
+                                      textAlign: TextAlign.center,
+                                    )),
+                          //           SizedBox(
+                          //             height: 200,
+                          //             child: StreamBuilder<QuerySnapshot>(
+                          //                   stream: FirebaseFirestore.instance
+                          //                       .collection('UserTransactions')
+                          //                       .doc(userId)
+                          //                       .collection('transactions')
+                          //                       .snapshots(),
+                          //                   builder: (context, snapshot) {
+                          //                     if (snapshot.connectionState == ConnectionState.waiting) {
+                          //                       return const Center(
+                          //                         child: CircularProgressIndicator(),
+                          //                       );
+                          //                     }
+                                    
+                          //                     if (snapshot.hasError) {
+                          //                       return Center(
+                          //                         child: Text('Error: ${snapshot.error}'),
+                          //                       );
+                          //                     } 
+                          //                     final List<Transaction> transactions = snapshot.data!.docs.map((doc) {
+                          //                           final data = doc.data();
+                          //                           return Transaction.fromJson(data as Map<String, dynamic>);
+                          //                       }).toList();                                
+                          //                         if(transactions.isNotEmpty) {return ListView.builder(
+                          //                             itemCount: transactions.length,
+                          //                             itemBuilder: (context, index) {
+                          //                             final transaction = transactions[index];
+                          //                             return TransactionCard(transaction: transaction,);
+                          //                         },
+                          //                       );}else{
+                          //                         return const Align(
+                          //           alignment: Alignment.center,
+                          //           child: Text(
+                          //             "No Transactions to show\nStart Adding your transactions",
+                          //             textAlign: TextAlign.center,
+                          //           ));
+                          //                       }
+                          //                   },
+                          //                 ),
+                          //           ),
+                          //     ],
+                          //   ),
+                          // )
                       ],
                     ),
                   )
                 ],
               ),
             ),
-          ),
-        ));
+          ]),
+        ))));
   }
 }
