@@ -298,8 +298,9 @@ class _AccountsState extends State<Accounts> {
                                       fontSize: 14,color: Colors.grey,
                                       fontWeight: FontWeight.bold),
                                 ),
-                                Text(
-                                  account.amount.toString(),
+                                Text(                                  
+                                  "\$${account.amount.toString()}",// //By Ammar
+                                  // "\$${double.parse((widget.balance).toStringAsFixed(2))}", //Previous Code
                                   style: const TextStyle(
                                       color: Colors.green,
                                       fontSize: 16,

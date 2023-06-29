@@ -206,7 +206,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ),
                               ),
                               IconButton(
-                                  onPressed: () {},
+                                  onPressed: () {
+                                    Navigator.of(context).pushNamed(TransactionsScreen.routeName); //By Ammar
+                                  },
                                   icon: const ImageIcon(
                                     AssetImage("assets/images/dot-menu.png"),
                                     size: 20,
@@ -243,7 +245,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     height: 5,
                                   ),
                                   Text(
-                                    "\$${totalIncomeAmount.toString()}",
+                                    "\$${totalIncomeAmount.toString()}",                                  
                                     style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 15,
