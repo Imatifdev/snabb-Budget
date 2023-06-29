@@ -14,7 +14,7 @@ class CustomBottomBar extends StatelessWidget {
     return Container(
       height: 80,
       decoration: const BoxDecoration(
-          color: Colors.white,
+          //color: Colors.white,
           borderRadius: BorderRadius.only(
               topLeft: Radius.circular(15), topRight: Radius.circular(15))),
       child: Row(

@@ -6,9 +6,7 @@ class TransactionData {
   final List<Transaction> _transactions = [];
 
   factory TransactionData() {
-    if (_instance == null) {
-      _instance = TransactionData._internal();
-    }
+    _instance ??= TransactionData._internal();
     return _instance!;
   }
 
@@ -26,7 +24,7 @@ class TransactionData {
     _transactions.clear(); // Clear the existing transactions before adding new ones
 
     documents.forEach((document) {
-      Transaction transaction = Transaction.fromJson(document.data());
+      Transaction transaction = Transaction.fromJson(document.data(),document.id);
       _transactions.add(transaction);
     });
   }

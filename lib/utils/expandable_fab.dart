@@ -5,7 +5,8 @@ import 'package:snabbudget/Screens/addexpanse.dart';
 import 'package:snabbudget/Screens/addincome.dart';
 
 class ExpandableFloatingActionButton extends StatefulWidget {
-  const ExpandableFloatingActionButton({super.key});
+  final double balance;
+  const ExpandableFloatingActionButton({super.key, required this.balance});
 
   @override
   _ExpandableFloatingActionButtonState createState() =>
@@ -72,17 +73,27 @@ class _ExpandableFloatingActionButtonState
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(AddExpanse.routeName);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddExpanse(balance: widget.balance),));
             },
             heroTag: null,
             backgroundColor: Colors.red,
             child: const ImageIcon(AssetImage("assets/images/minus.png")),
           ),
         if (_isExpanded) const SizedBox(height: 16),
+        // if (_isExpanded)
+        //   FloatingActionButton(
+        //     onPressed: () {
+        //       Navigator.of(context).pushNamed(AddExpanse.routeName);
+        //     },
+        //     heroTag: null,
+        //     backgroundColor: Theme.of(context).primaryColor,
+        //     child: const ImageIcon(AssetImage("assets/images/dollar.png")),
+        //   ),  
+        if (_isExpanded) const SizedBox(height: 16),
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
-              Navigator.of(context).pushNamed(AddIncome.routeName);
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddIncome(balance: widget.balance),));
             },
             heroTag: null,
             backgroundColor: Colors.green,

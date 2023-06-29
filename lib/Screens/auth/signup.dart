@@ -84,6 +84,7 @@ class _SignupScreenState extends State<SignupScreen> {
         FocusScope.of(context).unfocus();
       },
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Form(
           key: _formKey,
           child: Container(
@@ -156,7 +157,7 @@ class _SignupScreenState extends State<SignupScreen> {
                             contentPadding: EdgeInsets.symmetric(
                                 vertical: 0, horizontal: 20),
                             fillColor: Colors.white.withOpacity(0.2),
-                            hintText: "Full Name ",
+                            hintText: "Full Name",
                             hintStyle: TextStyle(color: simplefont),
                             alignLabelWithHint: true,
                             enabledBorder: OutlineInputBorder(
@@ -266,6 +267,18 @@ class _SignupScreenState extends State<SignupScreen> {
                                     .set({
                                   "First Name": _name.text.trim(),
                                   "Email": _emailController.text.trim(),
+                                });
+                                await FirebaseFirestore.instance.collection("UserTransactions").
+                                doc(userId).collection("data").
+                                doc("userData").set({
+                                  "balance":0,
+                                  "credit":0,
+                                  "dept":0,
+                                  "expense":0,
+                                  "income":0,
+                                  "cash":0,
+                                  "bankTransfer":0,
+                                  "creditCard":0
                                 });
                                 Navigator.pushAndRemoveUntil(
                                     context,

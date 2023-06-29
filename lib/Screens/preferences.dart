@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+
 
 class PreferencesScreen extends StatefulWidget {
   static const routeName = "preference-Screen";
@@ -37,9 +39,9 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
                               AssetImage("assets/images/menu.png"),
                               size: 40,
                             )),
-                const Text(
-                  "PREFERENCES",
-                  style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                Text(
+                  AppLocalizations.of(context)!.preferences,
+                  style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(width: 50,)
               ],
@@ -51,53 +53,53 @@ class _PreferencesScreenState extends State<PreferencesScreen> {
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("Basic Account", style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
+                  child: Text(AppLocalizations.of(context)!.basicAccount, style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
                 ListTile(
-                  title: const Text("Current",style: TextStyle(fontWeight: FontWeight.bold),),
-                  subtitle: const Text("Data Saved (On Device), \nDynamic Mobile App \nUnlimited Invoice Save \nAccess To All Categories"),
+                  title: Text(AppLocalizations.of(context)!.current,style: const TextStyle(fontWeight: FontWeight.bold),),
+                  subtitle: Text(AppLocalizations.of(context)!.dataSavedOnDevice),
                   trailing: const Icon(Icons.arrow_forward_ios_rounded),
                   onTap: (){},
                 ),
                 const SizedBox(height: 10,),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("Free", style: TextStyle(color:Colors.black, fontSize: 16,fontWeight: FontWeight.bold,))),
+                    child: Text(AppLocalizations.of(context)!.free, style: const TextStyle(color:Colors.black, fontSize: 16,fontWeight: FontWeight.bold,))),
                 ),
                 const SizedBox(height: 30,),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("Superior Account", style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
+                  child: Text(AppLocalizations.of(context)!.superiorAccount, style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
                 ListTile(
                   //title: const Text("Current",style: TextStyle(fontWeight: FontWeight.bold),),
-                  subtitle: const Text("All Services From Basic, \nCloud Data From Storage \nSuperior Support \nSuperior Integrations \nAnalysis Tools"),
+                  subtitle: Text(AppLocalizations.of(context)!.cloudDataStorage),
                   trailing: const Icon(Icons.arrow_forward_ios_rounded),
                   onTap: (){},
                 ),
                 const SizedBox(height: 10,),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("5 Euro", style: TextStyle(color:Colors.black, fontSize: 16,fontWeight: FontWeight.bold,))),
+                    child: Text(AppLocalizations.of(context)!.fiveEuro, style: const TextStyle(color:Colors.black, fontSize: 16,fontWeight: FontWeight.bold,))),
                 ),
                 const SizedBox(height: 30,),
                 Align(
                   alignment: Alignment.centerLeft,
-                  child: Text("Elegant Account", style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
+                  child: Text(AppLocalizations.of(context)!.elegantAccount, style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
                 ListTile(
                   //title: const Text("Current",style: TextStyle(fontWeight: FontWeight.bold),),
-                  subtitle: const Text("All Services From Superior, \nUnlimited File Restore \nUnique Integrations \nOne on One Onboarding Assistance"),
+                  subtitle: Text(AppLocalizations.of(context)!.unlimitedFileRestore),
                   trailing: const Icon(Icons.arrow_forward_ios_rounded),
                   onTap: (){},
                 ),
                 const SizedBox(height: 10,),
-                const Padding(
-                  padding: EdgeInsets.only(left: 15),
+                Padding(
+                  padding: const EdgeInsets.only(left: 15),
                   child: Align(
                     alignment: Alignment.centerLeft,
-                    child: Text("15 Euro", style: TextStyle(color:Colors.black, fontSize: 16,fontWeight: FontWeight.bold,))),
+                    child: Text(AppLocalizations.of(context)!.fifteenEuro, style: const TextStyle(color:Colors.black, fontSize: 16,fontWeight: FontWeight.bold,))),
                 ),
               ],
             ),

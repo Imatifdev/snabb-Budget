@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snabbudget/utils/transaction_card.dart';
 
 import '../models/transaction.dart';
 
@@ -47,7 +48,7 @@ class _MonthlyTransactionsState extends State<MonthlyTransactions> {
         ),
         Text(DateTime.now().year.toString(), style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),),
         SizedBox(
-          height: size.height - 210,
+          height: size.height - 220,
           child: PageView.builder(
             controller: _controller,
             itemCount: widget.month.length,
@@ -78,29 +79,7 @@ class _MonthlyTransactionsState extends State<MonthlyTransactions> {
                         itemCount: filteredTransactions.length,
                         itemBuilder: (context, index) {
                           final transaction = filteredTransactions[index];
-                          return Card(
-                                color: Colors.white,
-                                elevation: 0,
-                                child: ListTile(
-                                  leading: Image.asset(transaction.imgUrl),
-                                  title: Text(
-                                    transaction.name,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Text(transaction.time),
-                                  trailing: Text(
-                                      transaction.type == TransactionType.income
-                                          ? "+\$${transaction.amount}"
-                                          : "-\$${transaction.amount}",
-                                      style: TextStyle(
-                                          color: transaction.type ==
-                                                  TransactionType.income
-                                              ? Colors.green
-                                              : Colors.red,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              );
+                          return TransactionCard(transaction: transaction);
                         },
                       ),
                     )

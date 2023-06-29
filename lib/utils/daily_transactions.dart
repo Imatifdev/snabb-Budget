@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:snabbudget/utils/transaction_card.dart';
 
 import '../models/transaction.dart';
 
@@ -40,29 +41,7 @@ class _DailyTransactionsState extends State<DailyTransactions> {
                             itemCount: specificTrans.length,
                             itemBuilder: (context, index) {
                               Transaction transaction = specificTrans[index];
-                              return Card(
-                                color: Colors.white,
-                                elevation: 0,
-                                child: ListTile(
-                                  leading: Image.asset(transaction.imgUrl),
-                                  title: Text(
-                                    transaction.name,
-                                    style: const TextStyle(
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  subtitle: Text(transaction.time),
-                                  trailing: Text(
-                                      transaction.type == TransactionType.income
-                                          ? "+\$${transaction.amount}"
-                                          : "-\$${transaction.amount}",
-                                      style: TextStyle(
-                                          color: transaction.type ==
-                                                  TransactionType.income
-                                              ? Colors.green
-                                              : Colors.red,
-                                          fontWeight: FontWeight.bold)),
-                                ),
-                              );
+                              return TransactionCard(transaction: transaction);
                             },
                           ),
               )

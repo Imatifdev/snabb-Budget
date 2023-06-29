@@ -6,7 +6,7 @@ import 'package:snabbudget/Screens/auth/signup.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
-import 'home_screen.dart';
+// import 'home_screen.dart';
 import 'auth/login.dart';
 
 class Welcome extends StatelessWidget {
@@ -98,6 +98,7 @@ class Welcome extends StatelessWidget {
               width: width / 1.1,
               color: Colors.white,
             ),
+           // Text("FOR BUSINESS", style: TextStyle(fontSize: 28, color: Colors.white, fontWeight: FontWeight.w900)),
             SizedBox(
               height: height / 12,
             ),
@@ -129,6 +130,7 @@ class Welcome extends StatelessWidget {
                 fontsize: 14,
                 color: Colors.white,
                 text: "Sign in",
+                
               ).centered(),
             ),
             SizedBox(
@@ -142,8 +144,8 @@ class Welcome extends StatelessWidget {
                   color: simplefont,
                   text: "Continue without creating an account ",
                 ).centered().onTap(() {
-                  Navigator.push(context,
-                      MaterialPageRoute(builder: (ctx) => HomeScreen()));
+                  // Navigator.push(context,
+                  //     MaterialPageRoute(builder: (ctx) => HomeScreen()));
                 }),
                 Icon(
                   CupertinoIcons.arrow_right_circle_fill,

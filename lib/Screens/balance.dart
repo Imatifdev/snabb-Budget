@@ -3,12 +3,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import '../controller/balanceProvider.dart';
 import '../models/balance_data.dart';
 import '../utils/balance_ex.dart';
 import '../utils/custom_drawer.dart';
-import '../utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class BalanceScreen extends StatefulWidget {
@@ -27,7 +26,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
       key: widget.scaffoldKey,
       extendBody: true,
       drawer: CustomDrawer(),
-      backgroundColor: Colors.grey[100],
+      //backgroundColor: Colors.grey[100],
       body: SafeArea(
         child: Column(
           children: [
@@ -59,7 +58,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Residual Payment",
+                  AppLocalizations.of(context)!.residualAmount,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 Consumer<BalanceProvider>(
@@ -119,7 +118,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                   Card(
                                     child: Container(
                                         decoration: BoxDecoration(
-                                          color: bgcolor,
+                                         // color: bgcolor,
                                         ),
                                         child: data.balanceType == "Credit"
                                             ? Column(
@@ -146,7 +145,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                           Row(
                                                             children: [
                                                               Text(
-                                                                'You',
+                                                                AppLocalizations.of(context)!.you,
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         20,
@@ -250,7 +249,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        'Residual Payment',
+                                                        AppLocalizations.of(context)!.residualAmount,
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
@@ -313,7 +312,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                         .black,
                                                               ),
                                                               Text(
-                                                                'You',
+                                                                AppLocalizations.of(context)!.you,
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         20,
@@ -377,7 +376,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        'Residual Payment',
+                                                        AppLocalizations.of(context)!.residualAmount,
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
@@ -641,7 +640,7 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
                         keyboardType:
                             TextInputType.numberWithOptions(decimal: true),
                         decoration:
-                            InputDecoration(labelText: 'Balance Amount'),
+                            InputDecoration(labelText: "${AppLocalizations.of(context)!.balance}Amount"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter the balance amount';
@@ -660,7 +659,7 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
                 Row(
                   children: [
                     Text(
-                      "Create the associated \ntransaction (Expanse)",
+                      "Create the associated \ntransaction (Expense)",
                       style: TextStyle(fontSize: 18),
                     ),
                   ],
@@ -671,7 +670,7 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
                       children: [
                         IconButton(onPressed: () {}, icon: Icon(Icons.wallet)),
                         Text(
-                          "Wallet:",
+                          "${AppLocalizations.of(context)!.wallet}:",
                           style: TextStyle(fontSize: 20),
                         ),
                       ],

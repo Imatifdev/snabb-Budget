@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
+
+
+import '../utils/custom_drawer.dart';
 
 class Debt extends StatefulWidget {
   const Debt({super.key});
@@ -20,7 +24,7 @@ class _DebtState extends State<Debt> {
     return SafeArea(
       child: Scaffold(
         extendBody: true,
-        drawer: CustomDrawer(),
+        drawer: const CustomDrawer(),
         backgroundColor: Colors.grey[100],
         floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
         floatingActionButton: const ExpandableFloatingActionButton(),
@@ -30,7 +34,7 @@ class _DebtState extends State<Debt> {
               height: 20,
             ),
             Card(
-              color: bgcolor,
+             // color: bgcolor,
               elevation: 3,
               child: Row(
                 children: [
@@ -57,14 +61,14 @@ class _DebtState extends State<Debt> {
                 ],
               ),
             ),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Residual Payment",
-                  style: TextStyle(fontSize: 22),
+                  AppLocalizations.of(context)!.residualAmount,
+                  style: const TextStyle(fontSize: 22),
                 ),
-                Text(
+                const Text(
                   "\$0.00",
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
@@ -92,87 +96,88 @@ class _DebtState extends State<Debt> {
     );
   }
 
-  Drawer CustomDrawer() {
-    return Drawer(
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              gradient1,
-              gradient2,
-            ],
-            begin: Alignment.centerLeft,
-            end: Alignment.centerRight,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
-            Column(children: [
-              const Padding(
-                padding: EdgeInsets.only(top: 55.0, bottom: 20),
-                child: Text("Snabb",
-                    style: TextStyle(
-                        fontSize: 20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold)),
-              ),
-              const Divider(
-                color: Colors.white,
-                thickness: 2,
-                indent: 40,
-                endIndent: 40,
-              ),
-              const SizedBox(
-                height: 20,
-              ),
-              drawerTile("assets/images/home-icon.png", "Dashboard"),
-              drawerTile("assets/images/user.png", "Accounts"),
-              drawerTile("assets/images/dollar.png", "Debt"),
-              drawerTile("assets/images/box.png", "Budget"),
-              drawerTile("assets/images/calender.png", "Calendar"),
-              drawerTile("assets/images/clock.png", "Scheduled Transactions"),
-              drawerTile("assets/images/settings.png", "Settings"),
-              drawerTile("assets/images/settings-2.png", "Preferences"),
-            ]),
-            const Column(
-              children: [
-                Divider(
-                  color: Colors.white,
-                  thickness: 2,
-                  indent: 40,
-                  endIndent: 40,
-                ),
-                ListTile(
-                    leading: Icon(
-                      Icons.logout_rounded,
-                      color: Colors.white,
-                      size: 38,
-                    ),
-                    title: Text(
-                      "Logout",
-                      style: TextStyle(fontSize: 14, color: Colors.white),
-                    )),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Drawer CustomDrawer() {
+  //   return Drawer(
+  //     child: Container(
+  //       decoration: BoxDecoration(
+  //         gradient: LinearGradient(
+  //           colors: [
+  //             gradient1,
+  //             gradient2,
+  //           ],
+  //           begin: Alignment.centerLeft,
+  //           end: Alignment.centerRight,
+  //         ),
+  //       ),
+  //       child: Column(
+  //         mainAxisAlignment: MainAxisAlignment.spaceAround,
+  //         children: [
+  //           Column(children: [
+  //             const Padding(
+  //               padding: EdgeInsets.only(top: 55.0, bottom: 20),
+  //               child: Text("Snabb",
+  //                   style: TextStyle(
+  //                       fontSize: 20,
+  //                       color: Colors.white,
+  //                       fontWeight: FontWeight.bold)),
+  //             ),
+  //             const Divider(
+  //               color: Colors.white,
+  //               thickness: 2,
+  //               indent: 40,
+  //               endIndent: 40,
+  //             ),
+  //             const SizedBox(
+  //               height: 20,
+  //             ),
+  //             drawerTile("assets/images/home-icon.png", "Dashboard"),
+  //             drawerTile("assets/images/user.png", "Accounts"),
+  //             drawerTile("assets/images/dollar.png", "Debt"),
+  //             drawerTile("assets/images/box.png", "Budget"),
+  //             drawerTile("assets/images/calender.png", "Calendar"),
+  //             drawerTile("assets/images/clock.png", "Scheduled Transactions"),
+  //             drawerTile("assets/images/settings.png", "Settings"),
+  //             drawerTile("assets/images/settings-2.png", "Preferences"),
+  //           ]),
+  //           const Column(
+  //             children: [
+  //               Divider(
+  //                 color: Colors.white,
+  //                 thickness: 2,
+  //                 indent: 40,
+  //                 endIndent: 40,
+  //               ),
+  //               ListTile(
+  //                   leading: Icon(
+  //                     Icons.logout_rounded,
+  //                     color: Colors.white,
+  //                     size: 38,
+  //                   ),
+  //                   title: Text(
+  //                     "Logout",
+  //                     style: TextStyle(fontSize: 14, color: Colors.white),
+  //                   )),
+  //             ],
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  ListTile drawerTile(String imgUrl, String title) {
-    return ListTile(
-        leading: ImageIcon(
-          AssetImage(imgUrl),
-          color: Colors.white,
-          size: 38,
-        ),
-        title: Text(
-          title,
-          style: const TextStyle(fontSize: 14, color: Colors.white),
-        ));
-  }
+  // ListTile drawerTile(String imgUrl, String title) {
+  //   return ListTile(
+  //       leading: ImageIcon(
+  //         AssetImage(imgUrl),
+  //         color: Colors.white,
+  //         size: 38,
+  //       ),
+  //       title: Text(
+  //         title,
+  //         style: const TextStyle(fontSize: 14, color: Colors.white),
+  //       ));
+  // }
+
 }
 
 class ExpandableFloatingActionButton extends StatefulWidget {

@@ -6,16 +6,16 @@ import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import '../models/IncomeDataMode.dart';
-import '../models/transaction.dart';
 import 'schedule_transactions.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
-  const AddIncome({super.key});
+  final double balance;
+  const AddIncome({super.key, required this.balance});
 
   @override
   State<AddIncome> createState() => _AddIncomeState();
@@ -30,12 +30,8 @@ class _AddIncomeState extends State<AddIncome> {
   TimeOfDay _selectedTime = TimeOfDay.now();
   final userId = FirebaseAuth.instance.currentUser!.uid;
   final TextEditingController _noteController = TextEditingController();
-  // DropdownItem? _selectedItem;
-  // List<DropdownItem> _dropdownItems = [
-  //   DropdownItem('Others', 'assets/images/others.png'),
-  //   DropdownItem('Finance', 'assets/images/fiance.png'),
-  //   DropdownItem('Income', 'assets/images/income.png'),
-  // ];
+  String formatTime = "";
+  bool isLoading = false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -59,6 +55,7 @@ class _AddIncomeState extends State<AddIncome> {
 
     if (pickedTime != null) {
       _selectedTime = pickedTime;
+      formatTime = "${_selectedTime.hour}:${_selectedTime.minute}";
     }
   }
 
@@ -79,6 +76,9 @@ class _AddIncomeState extends State<AddIncome> {
 //function for storing data and passing to another screen
   void _saveIncome() async {
   if (_formKey.currentState!.validate() && selectedCategory != null) {
+    setState(() {
+    isLoading = true; // Show the progress indicator
+  });
     double amount = double.parse(_amountController.text);
     String name = _nameController.text.isNotEmpty
         ? _nameController.text
@@ -87,10 +87,6 @@ class _AddIncomeState extends State<AddIncome> {
       _selectedDate.year,
       _selectedDate.month,
       _selectedDate.day,
-    );
-    DateTime time = DateTime(
-      _selectedDate.hour,
-      _selectedDate.minute,
     );
     String image = selectedCategory!.image;
 
@@ -104,13 +100,16 @@ class _AddIncomeState extends State<AddIncome> {
       "category": "TransactionCat.moneyTransfer",
       "type": "TransactionType.income",
       "date": _selectedDate,
-      "time": _selectedTime.toString(),
+      "time": formatTime,
       "imgUrl": image,
     });
+    await FirebaseFirestore.instance.collection("UserTransactions")
+        .doc(userId).collection("data").doc("userData").update({"balance":widget.balance+amount});
 
     setState(() {
       _nameController.clear();
       _amountController.clear();
+      isLoading = false; // Hide the progress indicator
     });
     Navigator.push(
       context,
@@ -122,36 +121,31 @@ class _AddIncomeState extends State<AddIncome> {
 }
 
 
-  void schedualeTransaction() {
-    if (_amountController.text.isNotEmpty &&
-        _nameController.text.isNotEmpty &&
+  void schedualeTransaction() async {
+    if ( _formKey.currentState!.validate() &&
         selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
-      DateTime dateTime = DateTime(
-        _selectedDate.year,
-        _selectedDate.month,
-        _selectedDate.day,
-      );
-      DateTime time = DateTime(
-        _selectedDate.hour,
-        _selectedDate.minute,
-      );
-
+      // DateTime dateTime = DateTime(
+      //   _selectedDate.year,
+      //   _selectedDate.month,
+      //   _selectedDate.day,
+      // );
+      // DateTime time = DateTime(
+      //   _selectedDate.hour,
+      //   _selectedDate.minute,
+      // );
       String image = selectedCategory!.image;
-
-      setState(() {
-        schedualedTransactions.add(Transaction(
-          amount: int.parse(_amountController.text),
-          category: TransactionCat.moneyTransfer,
-          type: TransactionType.income,
-          date: _selectedDate,
-          imgUrl: image,
-          name: _nameController.text,
-          time: _selectedTime.format(context),
-        ));
-        _nameController.clear();
-        _amountController.clear();
+      await FirebaseFirestore.instance.
+      collection("UserTransactions").doc(userId).
+      collection("SchedualTrsanactions").add({
+       "name": name,
+      "amount": int.parse(_amountController.text),
+      "category": "TransactionCat.moneyTransfer",
+      "type": "TransactionType.income",
+      "date": _selectedDate,
+      "time": formatTime,
+      "imgUrl": image, 
       });
     }
     Navigator.push(
@@ -196,8 +190,7 @@ class _AddIncomeState extends State<AddIncome> {
       appBar: AppBar(
         toolbarHeight: 100,
         elevation: 0,
-        backgroundColor: Colors.white,
-        title: Text("ADD INCOME",
+        title: Text(AppLocalizations.of(context)!.addIncome,
             style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
@@ -238,7 +231,7 @@ class _AddIncomeState extends State<AddIncome> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Income Name",
+                        AppLocalizations.of(context)!.incomeName,
                         style:
                             TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                       ),
@@ -262,7 +255,7 @@ class _AddIncomeState extends State<AddIncome> {
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                           fillColor: Colors.black.withOpacity(0.2),
-                          hintText: "Income Name (optional) ",
+                          hintText: "${AppLocalizations.of(context)!.incomeName} (optional) ",
                           alignLabelWithHint: true,
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -278,7 +271,7 @@ class _AddIncomeState extends State<AddIncome> {
                         height: height / 80,
                       ),
                       Text(
-                        "Amount ",
+                        AppLocalizations.of(context)!.amount,
                         style:
                             TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                       ),
@@ -305,7 +298,7 @@ class _AddIncomeState extends State<AddIncome> {
                                 contentPadding: EdgeInsets.symmetric(
                                     vertical: 0, horizontal: 20),
                                 fillColor: Colors.black.withOpacity(0.2),
-                                hintText: "Enter your amount: 0.00 ",
+                                hintText: AppLocalizations.of(context)!.amount,
                                 alignLabelWithHint: true,
                                 enabledBorder: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(10),
@@ -326,7 +319,7 @@ class _AddIncomeState extends State<AddIncome> {
                         height: height / 80,
                       ),
                       Text(
-                        "Category ",
+                        AppLocalizations.of(context)!.category,
                         style:
                             TextStyle(fontSize: 16, color: Color(0xff2EA6C1)),
                       ),
@@ -337,7 +330,7 @@ class _AddIncomeState extends State<AddIncome> {
                         width: width / 1.3,
                         child: DropdownButtonFormField<IncomeDataCategory>(
                           value: selectedCategory,
-                          hint: Text('Category'),
+                          hint: Text(AppLocalizations.of(context)!.category),
                           onChanged: (IncomeDataCategory? newValue) {
                             setState(() {
                               selectedCategory = newValue;
@@ -479,7 +472,7 @@ class _AddIncomeState extends State<AddIncome> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: _takePicture, child: Text("Add File")),
+                              onPressed: _takePicture, child: Text(AppLocalizations.of(context)!.addFile)),
                           SizedBox(
                               width: 200,
                               child: Text(
@@ -490,13 +483,18 @@ class _AddIncomeState extends State<AddIncome> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children: const [
-                          Text(
-                            "Scheduled?",
-                            style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xff2EA6C1)),
+                        children: [
+                          InkWell(
+                            onTap: (){
+                              schedualeTransaction();
+                            },
+                            child: Text(
+                              AppLocalizations.of(context)!.schedule,
+                              style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.bold,
+                                  color: Color(0xff2EA6C1)),
+                            ),
                           ),
                         ],
                       )
@@ -505,20 +503,23 @@ class _AddIncomeState extends State<AddIncome> {
                   SizedBox(
                     height: height / 20,
                   ),
+                !isLoading?
                   Center(
                     child: SizedBox(
                       width: width / 2,
-                      child: ElevatedButton(
+                      child:  
+                      
+                      ElevatedButton(
                         onPressed: () {
                           _saveIncome();
                         },
                         style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(50))),
-                        child: Text("Add "),
+                        child: Text(AppLocalizations.of(context)!.add),
                       ),
                     ),
-                  ),
+                  ): CircularProgressIndicator()
                 ],
               ),
             ),

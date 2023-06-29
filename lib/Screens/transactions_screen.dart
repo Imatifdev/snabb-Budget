@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:material_segmented_control/material_segmented_control.dart';
-
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
 import '../utils/daily_transactions.dart';
@@ -120,13 +120,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
   List<Transaction> transactions = [];
   int _currentSelection = 0;
   int check = 0;
-  final Map<int, Widget> _children = {
-  0: Text('Daily',style: GoogleFonts.montserrat(),),
-  1:  Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 20),
-    child:Text('Monthly',style: GoogleFonts.montserrat(),)),
-  2:  Text('Yearly',style: GoogleFonts.montserrat(),),
-};
+  
   @override
   void initState() {
     super.initState();
@@ -142,16 +136,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
   }
 
   @override
-  Widget build(BuildContext context) {
-
-    if (check == 0) {
-      WidgetsBinding.instance
-          .addPostFrameCallback((_) => (){
-            
-          } );
-      check++;
-    }
-    
+  Widget build(BuildContext context){
     const List<String> month = [
       "Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"
     ];
@@ -163,6 +148,14 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
       MonthlyTransactions(transactions: transactions, month: month,),
       YearlyTransactions(transactions: transactions),
     ];
+
+    final Map<int, Widget> _children = {
+  0: Text(AppLocalizations.of(context)!.daily,style: GoogleFonts.montserrat(),),
+  1:  Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 20),
+    child:Text(AppLocalizations.of(context)!.monthly,style: GoogleFonts.montserrat(),)),
+  2:  Text(AppLocalizations.of(context)!.yearly,style: GoogleFonts.montserrat(),),
+};
 
     return Scaffold(
         body: SafeArea(
@@ -178,6 +171,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
                 Padding(
                   padding: const EdgeInsets.all(5.0),
                   child: CircleAvatar(
+                    backgroundColor: Colors.white,
                     child: IconButton(
                         onPressed: () {
                           Navigator.of(context).pop();

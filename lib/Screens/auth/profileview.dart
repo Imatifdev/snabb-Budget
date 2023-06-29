@@ -72,7 +72,7 @@ class _ProfileViewState extends State<ProfileView> {
     return Scaffold(
       extendBody: true,
       drawer: CustomDrawer(),
-      backgroundColor: Colors.white,
+      //backgroundColor: Colors.white,
       body: SingleChildScrollView(
         child: SafeArea(
           child: Column(

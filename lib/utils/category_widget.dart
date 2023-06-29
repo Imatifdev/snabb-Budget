@@ -35,65 +35,42 @@ class _CategoryWidgetState extends State<CategoryWidget> {
     }
     }
   }
-  String selectedType = "Income";
+  String selectedType = "All";
   bool dateFromPicked = false;
   bool dateToPicked = false;
   DateTime selectedDateFrom = DateTime.now();
   DateTime selectedDateTo = DateTime.now();
   List<String> types = [
-    'Income',
-    'Expense',
+    "All",
+    'income',
+    'expense',
   ];
-  List<Transaction> filteredTrsanctions = [
-    Transaction(
-      name: "Money Transfer",
-      time: "06:20 PM",
-      date: DateTime.now(),
-      imgUrl: "assets/images/home.png",
-      type: TransactionType.expense,
-      category: TransactionCat.moneyTransfer,
-      amount: 22),
-  Transaction(
-      name: "Shopping",
-      time: "02:26 PM",
-      date: DateTime.now().subtract(const Duration(days: 1)),
-      imgUrl: "assets/images/shopping.png",
-      type: TransactionType.expense,
-      category: TransactionCat.shopping,
-      amount: 100),
-  Transaction(
-      name: "Taxi",
-      time: "02:00 PM",
-      date: DateTime.now().subtract(const Duration(days: 2)),
-      imgUrl: "assets/images/travel.png",
-      type: TransactionType.expense,
-      category: TransactionCat.taxi,
-      amount: 80),
-  Transaction(
-      name: "Salary",
-      time: "10:26 AM",
-      imgUrl: "assets/images/income.png",
-      date: DateTime.now().subtract(const Duration(days: 3)),
-      type: TransactionType.income,
-      category: TransactionCat.moneyTransfer,
-      amount: 2000),
-  Transaction(
-      name: "Bills",
-      time: "09:26 PM",
-      date: DateTime.now().subtract(const Duration(days: 3)),
-      imgUrl: "assets/images/others.png",
-      type: TransactionType.expense,
-      category: TransactionCat.bills,
-      amount: 1000),
-  Transaction(
-      name: "Salary",
-      time: "10:26 AM",
-      date: DateTime.now().subtract(const Duration(days: 3)),
-      imgUrl: "assets/images/income.png",
-      type: TransactionType.income,
-      category: TransactionCat.moneyTransfer,
-      amount: 2000),
-  ];
+  double totalAmount = 0.0;
+  List<Transaction> getFilteredTransactions() {
+  List<Transaction> filteredList = widget.transactions;
+  if (selectedType == 'income') {
+    filteredList = filteredList.where((transaction) => transaction.type == TransactionType.income).toList();
+  } else if (selectedType == 'expense') {
+    filteredList = filteredList.where((transaction) => transaction.type == TransactionType.expense).toList();
+  }
+
+  filteredList = filteredList.where((transaction) => transaction.date.isAfter(selectedDateFrom)).toList();
+
+  filteredList = filteredList.where((transaction) => transaction.date.isBefore(selectedDateTo)).toList();
+
+  // Calculate the total amount
+ // setState(() {
+    totalAmount = filteredList.fold(0, (double total, transaction) {
+    if (transaction.type == TransactionType.income) {
+      return total + transaction.amount;
+    } else {
+      return total - transaction.amount;
+    }
+  });
+ // });
+  return filteredList;
+}
+  
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -134,6 +111,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                      );
                    }).toList(),
                    hint: const Text('Select a type'),
+                   
                    dropdownColor: Theme.of(context).primaryColor,
                             icon: const Icon(Icons.arrow_drop_down),
                             underline: Container(
@@ -230,21 +208,33 @@ class _CategoryWidgetState extends State<CategoryWidget> {
               const Align(
                 alignment: Alignment.centerLeft,
                 child: Text("Results")),
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  Text("Total: "),
-                  Text("-\$458542", style:TextStyle(color: Colors.red))
+                  const Text("Total: "),
+                  Text(
+                    '\$$totalAmount',
+                      style: TextStyle(
+                      color: totalAmount < 0 ? Colors.red : Colors.green,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+  ),
+),
                 ],
               ),
-              Expanded(
-                child: ListView.builder(
-                  itemCount: filteredTrsanctions.length,
-                  itemBuilder: (context, index) {
-                    Transaction transaction = filteredTrsanctions[index];
-                  return TransactionCard(transaction: transaction);
-                },),
-              )
+            getFilteredTransactions().isNotEmpty?
+            Expanded(
+            child: ListView.builder(
+              itemCount: getFilteredTransactions().length,
+              itemBuilder: (BuildContext context, int index) {
+                final transaction = getFilteredTransactions()[index];
+                return TransactionCard(transaction: transaction);
+              },
+            ),
+          ): const Padding(
+            padding:  EdgeInsets.symmetric(vertical:100.0),
+            child:  Center(child: Text("No Transactions for the given filter", textAlign: TextAlign.center,)),
+          ),
             ],
           )
         ),

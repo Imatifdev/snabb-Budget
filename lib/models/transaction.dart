@@ -1,11 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-// Replace these enum definitions with your existing ones
 enum TransactionType { income, expense }
-enum TransactionCat { moneyTransfer, shopping, taxi, bills }
+enum TransactionCat {travelling, shopping, others, finance, income, pets, transport, home, health, family, foodDrink }
 
 class Transaction {
+  final String id;
   final String name;
   final String time;
   final DateTime date;
@@ -14,7 +12,8 @@ class Transaction {
   final TransactionCat category;
   final int amount;
 
-  Transaction({
+  Transaction( {
+    required this.id,
     required this.name,
     required this.time,
     required this.date,
@@ -24,25 +23,27 @@ class Transaction {
     required this.amount,
   });
 
-  factory Transaction.fromJson(Map<String, dynamic> json) {
-    final TransactionType type = TransactionType.values.firstWhere(
-      (value) => value.toString() == json['type'],
-      orElse: () => TransactionType.expense,
-    );
+  factory Transaction.fromJson(Map<String, dynamic> json, String id) {
+  final TransactionType type = TransactionType.values.firstWhere(
+    (value) => value.toString() == json['type'],
+    orElse: () => TransactionType.expense,
+  );
 
-    final TransactionCat category = TransactionCat.values.firstWhere(
-      (value) => value.toString() == json['category'],
-      orElse: () => TransactionCat.moneyTransfer,
-    );
+  final TransactionCat category = TransactionCat.values.firstWhere(
+    (value) => value.toString() == json['category'],
+    orElse: () => TransactionCat.others,
+  );
 
-    return Transaction(
-      name: json['name'],
-      time: json['time'],
-      date: json['date'].toDate(),
-      imgUrl: json['imgUrl'],
-      type: type,
-      category: category,
-      amount: json['amount'],
-    );
-  }
+  return Transaction(
+    id: id,
+    name: json['name'],
+    time: json['time'],
+    date: json['date'].toDate(),
+    imgUrl: json['imgUrl'],
+    type: type,
+    category: category,
+    amount: json['amount'],
+  );
+}
+
 }

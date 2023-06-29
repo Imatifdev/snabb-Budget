@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/accounts.dart';
 import 'package:snabbudget/Screens/auth/login.dart';
@@ -8,6 +9,7 @@ import 'package:snabbudget/Screens/setting_screen.dart';
 import 'package:snabbudget/Screens/summary_screen.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
 
+import '../Screens/budget.dart';
 import 'mycolors.dart';
 
 class CustomDrawer extends StatelessWidget {
@@ -35,11 +37,16 @@ class CustomDrawer extends StatelessWidget {
                 Column(children: [
                   const SafeArea(
                     //padding: EdgeInsets.only(top: 0.0, bottom: 0.0),
-                    child: Text("Snabb",
-                        style: TextStyle(
-                            fontSize: 20,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold)),
+                    child: Column(
+                      children: [
+                        Text("Snabb",
+                            style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold)),
+                       // Text("FOR BUISNESS", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 12),)        
+                      ],
+                    ),
                   ),
                   const Divider(
                     color: Colors.white,
@@ -57,7 +64,7 @@ class CustomDrawer extends StatelessWidget {
                   drawerTile(context, "assets/images/dollar.png", "Dept",
                       BalanceScreen.routeName),
                   drawerTile(context, "assets/images/box.png", "Budget",
-                      HomeScreen.routeName),
+                      BudgetScreen.routeName),
                   drawerTile(context, "assets/images/calender.png", "Calendar",
                       TransactionsScreen.routeName),
                   drawerTile(context, "assets/images/summary.png", "Summary",
@@ -75,7 +82,7 @@ class CustomDrawer extends StatelessWidget {
             ),
             Column(
               children: [
-                Divider(
+                const Divider(
                   color: Colors.white,
                   thickness: 2,
                   indent: 40,
@@ -83,6 +90,7 @@ class CustomDrawer extends StatelessWidget {
                 ),
                 ListTile(
                     onTap: () {
+                      FirebaseAuth.instance.signOut();
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
@@ -90,12 +98,12 @@ class CustomDrawer extends StatelessWidget {
                           ),
                           result: false);
                     },
-                    leading: Icon(
+                    leading: const Icon(
                       Icons.logout_rounded,
                       color: Colors.white,
                       size: 38,
                     ),
-                    title: Text(
+                    title: const Text(
                       "Logout",
                       style: TextStyle(fontSize: 14, color: Colors.white),
                     )),

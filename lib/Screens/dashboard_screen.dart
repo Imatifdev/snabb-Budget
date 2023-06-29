@@ -1,69 +1,29 @@
 // ignore_for_file: non_constant_identifier_names
 
 // import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
+import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
 import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
+import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
-// final List<Transaction> transactions = [
-//   //Transaction(
-//   //     name: "Money Transfer",
-//   //     time: "06:20 PM",
-//   //     date: DateTime.now(),
-//   //     imgUrl: "assets/images/home.png",
-//   //     type: TransactionType.expense,
-//   //     category: TransactionCat.moneyTransfer,
-//   //     amount: 22),
-//   // Transaction(
-//   //     name: "Shopping",
-//   //     time: "02:26 PM",
-//   //     date: DateTime.now().subtract(const Duration(days: 1)),
-//   //     imgUrl: "assets/images/shopping.png",
-//   //     type: TransactionType.expense,
-//   //     category: TransactionCat.shopping,
-//   //     amount: 100),
-//   // Transaction(
-//   //     name: "Taxi",
-//   //     time: "02:00 PM",
-//   //     date: DateTime.now().subtract(const Duration(days: 2)),
-//   //     imgUrl: "assets/images/travel.png",
-//   //     type: TransactionType.expense,
-//   //     category: TransactionCat.taxi,
-//   //     amount: 80),
-//   // Transaction(
-//   //     name: "Salary",
-//   //     time: "10:26 AM",
-//   //     imgUrl: "assets/images/income.png",
-//   //     date: DateTime.now().subtract(const Duration(days: 3)),
-//   //     type: TransactionType.income,
-//   //     category: TransactionCat.moneyTransfer,
-//   //     amount: 2000),
-//   // Transaction(
-//   //     name: "Bills",
-//   //     time: "09:26 PM",
-//   //     date: DateTime.now().subtract(const Duration(days: 3)),
-//   //     imgUrl: "assets/images/others.png",
-//   //     type: TransactionType.expense,
-//   //     category: TransactionCat.bills,
-//   //     amount: 1000),
-//   // Transaction(
-//   //     name: "Salary",
-//   //     time: "10:26 AM",
-//   //     date: DateTime.now().subtract(const Duration(days: 3)),
-//   //     imgUrl: "assets/images/income.png",
-//   //     type: TransactionType.income,
-//   //     category: TransactionCat.moneyTransfer,
-//   //     amount: 2000),
-// ];
-double totalBalance = 523.24;
 
-class DashboardScreen extends StatelessWidget {
-  final userId = FirebaseAuth.instance.currentUser!.uid;
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+class DashboardScreen extends StatefulWidget {
   final List<Transaction> transactions;
-  DashboardScreen({super.key, required this.transactions});
+  final double balance;
+  DashboardScreen({super.key, required this.transactions, required this.balance});
+
+  @override
+  State<DashboardScreen> createState() => _DashboardScreenState();
+}
+
+class _DashboardScreenState extends State<DashboardScreen> {
+  final userId = FirebaseAuth.instance.currentUser!.uid;
+
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+
   @override
   Widget build(BuildContext context) {
     double totalIncomeAmount = 0;
@@ -82,7 +42,7 @@ class DashboardScreen extends StatelessWidget {
       "Nov",
       "Dec"
     ];
-    for (Transaction transaction in transactions) {
+    for (Transaction transaction in widget.transactions) {
       if (transaction.type == TransactionType.income) {
         totalIncomeAmount += transaction.amount;
       }
@@ -91,12 +51,58 @@ class DashboardScreen extends StatelessWidget {
         totalexpAmount += transaction.amount;
       }
     }
+  Future<bool> deleteTransaction(BuildContext context,String transactionId) async {
+    bool confirmed = false;
+    bool confirmDelete = await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirm Deletion'),
+        content: const Text('Are you sure you want to delete this transaction?'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          TextButton(
+            child: const Text('Confirm'),
+            onPressed: () {
+              confirmed = true;
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
+      );
+    },
+  );
+
+  if (confirmDelete == true) {
+    // Delete the transaction document from Firebase
+    try {
+      await FirebaseFirestore.instance
+          .collection('UserTransactions')
+      .doc(userId)
+      .collection('transactions').doc(transactionId).delete();
+      print('Transaction deleted successfully');
+      setState(() {
+        widget.transactions.removeWhere((transaction) => transaction.id == transactionId);
+        confirmed = true;
+      });
+    } catch (e) {
+      confirmed = false;
+      print('Error deleting transaction: $e');
+    }
+  }
+  return confirmed;
+}
     Size size = MediaQuery.of(context).size;
     return Scaffold(
         key: scaffoldKey,
         extendBody: true,
         drawer: const CustomDrawer(),
-        backgroundColor: Colors.grey[100],
+        //backgroundColor: Colors.grey[100],
         body: SingleChildScrollView(
           child: SafeArea(
             child: Padding(
@@ -176,20 +182,21 @@ class DashboardScreen extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Padding(
-                                padding: EdgeInsets.only(left: 10),
+                              Padding(
+                                padding: const EdgeInsets.only(left: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      "Total Amount",
-                                      style: TextStyle(
+                                      AppLocalizations.of(context)!.totalAmount,
+                                      style: const TextStyle(
                                           color: Colors.white, fontSize: 14),
                                       textAlign: TextAlign.left,
                                     ),
-                                    Text("\$0.00",
-                                        // ${double.parse((totalBalance).toStringAsFixed(2))}",
-                                        style: TextStyle(
+                                    Text(
+                                      //"\$0.00",
+                                         "\$${double.parse((widget.balance).toStringAsFixed(2))}",
+                                        style: const TextStyle(
                                             letterSpacing: 3,
                                             color: Colors.white,
                                             fontSize: 22,
@@ -226,7 +233,7 @@ class DashboardScreen extends StatelessWidget {
                                         width: 5,
                                       ),
                                       Text(
-                                        "Income ${month[(DateTime.now().month) - 1]}",
+                                        "${AppLocalizations.of(context)!.income} ${month[(DateTime.now().month) - 1]}",
                                         style: const TextStyle(
                                             fontSize: 14, color: Colors.white),
                                       )
@@ -236,7 +243,7 @@ class DashboardScreen extends StatelessWidget {
                                     height: 5,
                                   ),
                                   Text(
-                                    totalIncomeAmount.toString(),
+                                    "\$${totalIncomeAmount.toString()}",
                                     style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 15,
@@ -261,7 +268,7 @@ class DashboardScreen extends StatelessWidget {
                                         width: 5,
                                       ),
                                       Text(
-                                        "Expenses ${month[(DateTime.now().month) - 1]}",
+                                        "${AppLocalizations.of(context)!.expense} ${month[(DateTime.now().month) - 1]}",
                                         style: const TextStyle(
                                             fontSize: 14, color: Colors.white),
                                       )
@@ -270,7 +277,7 @@ class DashboardScreen extends StatelessWidget {
                                   const SizedBox(
                                     height: 5,
                                   ),
-                                  Text(totalexpAmount.toString(),
+                                  Text("\$${totalexpAmount.toString()}",
                                       style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
@@ -293,11 +300,11 @@ class DashboardScreen extends StatelessWidget {
                         Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              const Text(
-                                "Transactions",
-                                style: TextStyle(
+                              Text(
+                                " ${AppLocalizations.of(context)!.transactions}",
+                                style: const TextStyle(
                                     fontSize: 20,
-                                    color: Colors.black,
+                                    //color: Colors.black,
                                     fontWeight: FontWeight.bold),
                               ),
                               TextButton(
@@ -313,47 +320,45 @@ class DashboardScreen extends StatelessWidget {
                         const SizedBox(
                           height: 5,
                         ),
-                        if (transactions.isNotEmpty)
+                        if (widget.transactions.isNotEmpty)
                           Column(
                             children: [
-                              // const Align(
-                              //   alignment: Alignment.centerLeft,
-                              //   child: Text(
-                              //     "Today",
-                              //     style: TextStyle(
-                              //         fontSize: 13, color: Colors.grey),
-                              //   ),
-                              // ),
                               SizedBox(
                                 height: 410,
                                 child: ListView.builder(
-                                  itemCount: transactions.length,
+                                  itemCount: widget.transactions.length,
                                   itemBuilder: (context, index) {
                                     Transaction transaction =
-                                        transactions[index];
-                                    return Card(
-                                      color: Colors.white,
-                                      elevation: 0,
-                                      child: ListTile(
-                                        leading:
-                                            Image.asset(transaction.imgUrl),
-                                        title: Text(
-                                          transaction.name,
-                                          style: const TextStyle(
-                                              fontWeight: FontWeight.bold),
+                                        widget.transactions[index];
+                                    return Dismissible(
+                                      confirmDismiss: (direction) async{
+                                        bool delete = await deleteTransaction(context, transaction.id);
+                                        return delete;
+                                      },
+                                      key: Key(transaction.id),
+                                      child: Card(
+                                        elevation: 0,
+                                        child: ListTile(
+                                          leading:
+                                              Image.asset(transaction.imgUrl),
+                                          title: Text(
+                                            transaction.name,
+                                            style: const TextStyle(
+                                                fontWeight: FontWeight.bold),
+                                          ),
+                                          subtitle: Text(transaction.time),
+                                          trailing: Text(
+                                              transaction.type ==
+                                                      TransactionType.income
+                                                  ? "+\$${transaction.amount}"
+                                                  : "-\$${transaction.amount}",
+                                              style: TextStyle(
+                                                  color: transaction.type ==
+                                                          TransactionType.income
+                                                      ? Colors.green
+                                                      : Colors.red,
+                                                  fontWeight: FontWeight.bold)),
                                         ),
-                                        subtitle: Text(transaction.time),
-                                        trailing: Text(
-                                            transaction.type ==
-                                                    TransactionType.income
-                                                ? "+\$${transaction.amount}"
-                                                : "-\$${transaction.amount}",
-                                            style: TextStyle(
-                                                color: transaction.type ==
-                                                        TransactionType.income
-                                                    ? Colors.green
-                                                    : Colors.red,
-                                                fontWeight: FontWeight.bold)),
                                       ),
                                     );
                                   },
@@ -362,60 +367,16 @@ class DashboardScreen extends StatelessWidget {
                             ],
                           )
                         else
-                          const SizedBox(
+                          SizedBox(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                  Align(
                                     alignment: Alignment.center,
                                     child: Text(
-                                      "No Transactions to show\nStart Adding your transactions",
+                                      AppLocalizations.of(context)!.noTransactions,
                                       textAlign: TextAlign.center,
                                     )),
-                          //           SizedBox(
-                          //             height: 200,
-                          //             child: StreamBuilder<QuerySnapshot>(
-                          //                   stream: FirebaseFirestore.instance
-                          //                       .collection('UserTransactions')
-                          //                       .doc(userId)
-                          //                       .collection('transactions')
-                          //                       .snapshots(),
-                          //                   builder: (context, snapshot) {
-                          //                     if (snapshot.connectionState == ConnectionState.waiting) {
-                          //                       return const Center(
-                          //                         child: CircularProgressIndicator(),
-                          //                       );
-                          //                     }
-                                    
-                          //                     if (snapshot.hasError) {
-                          //                       return Center(
-                          //                         child: Text('Error: ${snapshot.error}'),
-                          //                       );
-                          //                     } 
-                          //                     final List<Transaction> transactions = snapshot.data!.docs.map((doc) {
-                          //                           final data = doc.data();
-                          //                           return Transaction.fromJson(data as Map<String, dynamic>);
-                          //                       }).toList();                                
-                          //                         if(transactions.isNotEmpty) {return ListView.builder(
-                          //                             itemCount: transactions.length,
-                          //                             itemBuilder: (context, index) {
-                          //                             final transaction = transactions[index];
-                          //                             return TransactionCard(transaction: transaction,);
-                          //                         },
-                          //                       );}else{
-                          //                         return const Align(
-                          //           alignment: Alignment.center,
-                          //           child: Text(
-                          //             "No Transactions to show\nStart Adding your transactions",
-                          //             textAlign: TextAlign.center,
-                          //           ));
-                          //                       }
-                          //                   },
-                          //                 ),
-                          //           ),
-                          //     ],
-                          //   ),
-                          // )
                       ],
                     ),
                   )

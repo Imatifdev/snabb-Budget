@@ -8,7 +8,7 @@ class TransactionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-                              color: Colors.white,
+                             // color: Colors.white,
                               elevation: 0,
                               child: ListTile(
                                 leading: Image.asset(transaction.imgUrl),

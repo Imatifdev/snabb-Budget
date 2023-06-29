@@ -7,6 +7,7 @@ import 'package:snabbudget/Screens/daily_stats.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
 
 import '../models/transaction.dart';
+import '../models/transaction_controller.dart';
 import '../utils/custom_bottombar.dart';
 import '../utils/expandable_fab.dart';
 import 'auth/profileview.dart';
@@ -27,7 +28,16 @@ class _HomeScreenState extends State<HomeScreen> {
   String name = "";
   String email = "";
   String phone = "";
+ double balance=0;
+ int credit=0;
+ int dept=0;
+ int expense=0;
+ int income=0;
+ int cash=0;
+ int bankTransfer=0;
+ int creditCard=0;
   List<Transaction> transactionsList= [];
+  List<Transaction> transactionsList2= [];
   final userId = FirebaseAuth.instance.currentUser!.uid;
   void getInfo() async {
     var collection = FirebaseFirestore.instance.collection('UsersData');
@@ -38,6 +48,22 @@ class _HomeScreenState extends State<HomeScreen> {
       setState(() {
         name = data?["First Name"];
         email = data?["Email"];
+      });
+    }
+    var docSnapshot2 = await FirebaseFirestore.instance
+    .collection("UserTransactions").doc(userId)
+    .collection("data").doc("userData").get();
+    if(docSnapshot2.exists){
+      Map<String, dynamic>? data = docSnapshot2.data();
+      setState(() {
+         balance= data!["balance"];
+         credit=data["credit"];
+  dept=data["dept"];
+  expense=data["expense"];
+  income=data["income"];
+  cash=data["cash"];
+  bankTransfer=data["bankTransfer"];
+ creditCard=data["creditCard"];
       });
     }
     print(userId);
@@ -55,7 +81,7 @@ Future<List<Transaction>> fetchTransactions() async {
   List<QueryDocumentSnapshot<Map<String, dynamic>>> documents = querySnapshot.docs;
 
   for (var document in documents) {
-    Transaction transaction = Transaction.fromJson(document.data());
+    Transaction transaction = Transaction.fromJson(document.data(),document.id );
     transactions.add(transaction);
   }
 
@@ -70,6 +96,10 @@ Future<List<Transaction>> fetchTransactions() async {
     super.initState();
     _pageController = PageController(initialPage: _selectedIndex);
     fetchTransactions();
+    TransactionData transactionData = TransactionData();
+   transactionData.fetchTransactions(userId);
+   transactionsList2 = transactionData.transactions;
+   print(transactionsList2);
     print(transactionsList);
   }
 
@@ -80,14 +110,14 @@ Future<List<Transaction>> fetchTransactions() async {
       check++;
     }
     final List<Widget> pages = [
-    DashboardScreen(transactions: transactionsList,),
-    DailyStats(),
+    DashboardScreen(transactions: transactionsList,balance: balance),
+    DailyStats(balance: balance, credit: credit, dept: dept, expense: expense, income: income, cash: cash, bankTransfer: bankTransfer, creditCard: creditCard),
     ProfileView(name: name,email: email),
   ];
     return Scaffold(
       key: scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: const ExpandableFloatingActionButton(),
+      floatingActionButton: ExpandableFloatingActionButton(balance: balance),
       body: PageView(
         controller: _pageController,
         children: pages,

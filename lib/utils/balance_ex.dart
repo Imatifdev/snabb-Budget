@@ -80,7 +80,7 @@ class _BlanceExpandableFloatingState extends State<BlanceExpandableFloating>
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
-              _openAddBalanceDialog(context, 'Credit');
+              _openAddBalanceDialog(context, 'Debit');
             },
             heroTag: null,
             backgroundColor: Colors.red,
@@ -90,7 +90,7 @@ class _BlanceExpandableFloatingState extends State<BlanceExpandableFloating>
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
-              _openAddBalanceDialog(context, 'Debit');
+              _openAddBalanceDialog(context, 'Credit');
             },
             heroTag: null,
             backgroundColor: Colors.green,
