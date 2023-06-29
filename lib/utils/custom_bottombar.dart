@@ -11,8 +11,9 @@ class CustomBottomBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final height = MediaQuery.of(context).size.height;
     return Container(
-      height: 80,
+      height: height / 15,
       decoration: const BoxDecoration(
           //color: Colors.white,
           borderRadius: BorderRadius.only(
@@ -53,8 +54,7 @@ class CustomBottomBar extends StatelessWidget {
           IconButton(
             icon: const Icon(Icons.settings),
             onPressed: () => onTabSelected(3),
-            color:
-                selectedIndex == 3 ? Colors.transparent : Colors.transparent,
+            color: selectedIndex == 3 ? Colors.transparent : Colors.transparent,
           ),
         ],
       ),
