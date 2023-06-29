@@ -98,7 +98,7 @@ class Welcome extends StatelessWidget {
               width: width / 1.1,
               color: Colors.white,
             ),
-           // Text("FOR BUSINESS", style: TextStyle(fontSize: 28, color: Colors.white, fontWeight: FontWeight.w900)),
+            // Text("FOR BUSINESS", style: TextStyle(fontSize: 28, color: Colors.white, fontWeight: FontWeight.w900)),
             SizedBox(
               height: height / 12,
             ),
@@ -130,28 +130,10 @@ class Welcome extends StatelessWidget {
                 fontsize: 14,
                 color: Colors.white,
                 text: "Sign in",
-                
               ).centered(),
             ),
             SizedBox(
               height: height / 35,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                CustomText(
-                  fontsize: 16,
-                  color: simplefont,
-                  text: "Continue without creating an account ",
-                ).centered().onTap(() {
-                  // Navigator.push(context,
-                  //     MaterialPageRoute(builder: (ctx) => HomeScreen()));
-                }),
-                Icon(
-                  CupertinoIcons.arrow_right_circle_fill,
-                  color: Colors.grey.shade100,
-                )
-              ],
             ),
           ],
         ),

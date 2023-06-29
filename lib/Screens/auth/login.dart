@@ -9,6 +9,7 @@ import 'package:velocity_x/velocity_x.dart';
 
 import '../../models/loginviewmodel.dart';
 import '../home_screen.dart';
+import 'forgot.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -191,6 +192,30 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                           filled: true),
                     ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (ctx) => ForgitPassword()));
+                          },
+                          child: Text(
+                            "Forgot Password?",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                                decoration: TextDecoration.underline),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ).pSymmetric(h: 20),
                 SizedBox(

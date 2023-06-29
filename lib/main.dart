@@ -37,10 +37,9 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
-
   @override
   State<MyApp> createState() => _MyAppState();
-static void setLocale(BuildContext context, Locale locale) {
+  static void setLocale(BuildContext context, Locale locale) {
     _MyAppState? state = context.findAncestorStateOfType<_MyAppState>();
     state?.setLocale(locale);
   }
@@ -53,6 +52,7 @@ class _MyAppState extends State<MyApp> {
       _locale = newLocale;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
@@ -83,35 +83,35 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             home: FirebaseAuth.instance.currentUser != null
-                ? const HomeScreen()
+                ? HomeScreen()
                 : Welcome(),
             supportedLocales: L10n.all,
             locale: _locale,
             localizationsDelegates: const [
-        AppLocalizations.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate
-      ],
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate
+            ],
             routes: {
-          CalenderScreen.routeName: (context) => const CalenderScreen(),
-          ScheduleTransactions.routeName: (context) =>
-              const ScheduleTransactions(),
-          BudgetScreen.routeName: (context) => BudgetScreen(),
-          PreferencesScreen.routeName: (context) => const PreferencesScreen(),
-          Accounts.routeName: (ctx) => Accounts(),
-          HomeScreen.routeName: (ctx) => const HomeScreen(),
-          // AddExpanse.routeName: (ctx) => const AddExpanse(),
-          // AddIncome.routeName: (ctx) => const AddIncome(),
-          BalanceScreen.routeName: (ctx) => BalanceScreen(),
-          SettingScreen.routeName: (ctx) => SettingScreen(),
-          SummaryScreen.routeName: (ctx) => SummaryScreen(),
-          TransactionsScreen.routeName: (ctx) => TransactionsScreen(),
-        },
+              CalenderScreen.routeName: (context) => const CalenderScreen(),
+              ScheduleTransactions.routeName: (context) =>
+                  const ScheduleTransactions(),
+              BudgetScreen.routeName: (context) => BudgetScreen(),
+              PreferencesScreen.routeName: (context) =>
+                  const PreferencesScreen(),
+              Accounts.routeName: (ctx) => Accounts(),
+              // HomeScreen.routeName: (ctx) => const HomeScreen(),
+              // AddExpanse.routeName: (ctx) => const AddExpanse(),
+              // AddIncome.routeName: (ctx) => const AddIncome(),
+              BalanceScreen.routeName: (ctx) => BalanceScreen(),
+              SettingScreen.routeName: (ctx) => SettingScreen(),
+              SummaryScreen.routeName: (ctx) => SummaryScreen(),
+              TransactionsScreen.routeName: (ctx) => TransactionsScreen(),
+            },
           );
         },
       ),
     );
   }
 }
-
