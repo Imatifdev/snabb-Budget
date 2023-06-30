@@ -128,7 +128,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         child: Text(AppLocalizations.of(context)!.basicSettings, style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.language,style: const TextStyle(fontWeight: FontWeight.bold),),
-                        subtitle: const Text("English"),
+                        subtitle: const Text(AppLocalizations.of(context)!.languageName),                        
                         trailing: const Icon(Icons.arrow_forward_ios_rounded),
                         onTap: (){
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LanguageScreen() ,));
