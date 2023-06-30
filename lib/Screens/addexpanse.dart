@@ -11,6 +11,8 @@ import '../models/expanseDataModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
 
 class AddExpanse extends StatefulWidget {
   static const routeName = "add-expense";
@@ -27,23 +29,38 @@ class _AddExpanseState extends State<AddExpanse> {
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-  String file = "";
+  String pathFile = "";
   TimeOfDay _selectedTime = TimeOfDay.now();
   String formatTime = "";
   bool isLoading = false;
+  final storage = FirebaseStorage.instance;
+
 
   final TextEditingController _noteController = TextEditingController();
 
   Future<void> _takePicture() async {
-    final picker = ImagePicker();
-    final image = await picker.getImage(source: ImageSource.camera);
+  final picker = ImagePicker();
+  var pickImage = await picker.pickImage(source: ImageSource.camera);
+  var pickImagePath = pickImage!.path;
+  if (pickImage != null) {
+    setState(() {
+      pathFile = pickImage!.path;
+    });
 
-    if (image != null) {
+    final File file = File(pickImage.path);
+    final String fileName = '${DateTime.now()}.jpg';
+    final Reference storageRef = storage.ref().child(fileName);
+    final UploadTask uploadTask = storageRef.putFile(file);
+
+    await uploadTask.whenComplete(() async {
+      final imageUrl = await storageRef.getDownloadURL();
+
       setState(() {
-        file = image.path;
+        pickImagePath = imageUrl;
       });
-    }
+    });
   }
+}
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -78,10 +95,13 @@ class _AddExpanseState extends State<AddExpanse> {
   void _saveExpense() async {
   if (_formKey.currentState!.validate() && selectedCategory != null) {
     setState(() {
-      isLoading = true;
+      isLoading = true; // Show the progress indicator
     });
+
     double amount = double.parse(_amountController.text);
-    String name = _nameController.text.isNotEmpty ? _nameController.text : selectedCategory!.name;
+    String name = _nameController.text.isNotEmpty
+        ? _nameController.text
+        : selectedCategory!.name; // Use category name if name is not provided
     DateTime dateTime = DateTime(
       _selectedDate.year,
       _selectedDate.month,
@@ -93,6 +113,15 @@ class _AddExpanseState extends State<AddExpanse> {
     );
     String image = selectedCategory!.image;
 
+    // Upload image to Firebase Cloud Storage
+    String imageUrl = "";
+    if (pathFile.isNotEmpty) {
+      Reference storageReference = FirebaseStorage.instance.ref().child('images');
+      TaskSnapshot taskSnapshot = await storageReference.putFile(File(pathFile));
+      imageUrl = await taskSnapshot.ref.getDownloadURL();
+    }
+
+    // Save data to Firestore
     await FirebaseFirestore.instance.collection("UserTransactions").doc(userId).collection("transactions").add({
       "name": name,
       "amount": int.parse(_amountController.text),
@@ -101,15 +130,17 @@ class _AddExpanseState extends State<AddExpanse> {
       "date": _selectedDate,
       "time": formatTime,
       "imgUrl": image,
+      "fileUrl": imageUrl // Use the obtained image URL
     });
 
+    // Update user's balance
     await FirebaseFirestore.instance.collection("UserTransactions")
         .doc(userId).collection("data").doc("userData").update({"balance":widget.balance-amount});
 
     setState(() {
       _nameController.clear();
       _amountController.clear();
-      isLoading = false;
+      isLoading = false; // Hide the progress indicator
     });
 
     Navigator.push(
@@ -120,7 +151,7 @@ class _AddExpanseState extends State<AddExpanse> {
     );
   }
 }
-  
+
   void schedualeTransaction() async {
     if ( _formKey.currentState!.validate() &&
         selectedCategory != null) {
@@ -426,7 +457,7 @@ class _AddExpanseState extends State<AddExpanse> {
                           SizedBox(
                               width: 200,
                               child: Text(
-                                file,
+                                pathFile,
                                 softWrap: true,
                               )),
                         ],

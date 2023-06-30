@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/theme_screen.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
@@ -10,24 +11,78 @@ import 'package:open_file/open_file.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 
+import '../models/transaction.dart';
+import '../models/transaction_controller.dart';
 import 'language_screen.dart';
-class SettingScreen extends StatelessWidget {
+class SettingScreen extends StatefulWidget {
   static const routeName = "settings-screen";
-  final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
+
   SettingScreen({super.key,});
 
-  Future<void> createExcel() async {
-    final Workbook workbook = Workbook();
-    final Worksheet sheet = workbook.worksheets[0];
-    sheet.getRangeByName('A1').setText('Hello World!');
-    final List<int> bytes = workbook.saveAsStream();
-    workbook.dispose();
-      final String path = (await getApplicationSupportDirectory()).path;
-      final String fileName = '$path/Output.xlsx';
-      final File file = File(fileName);
-      await file.writeAsBytes(bytes, flush: true);
-      OpenFile.open(fileName);
+  @override
+  State<SettingScreen> createState() => _SettingScreenState();
+}
+
+class _SettingScreenState extends State<SettingScreen> {
+  final GlobalKey<ScaffoldState> scaffoldKey =  GlobalKey<ScaffoldState>();
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  List<Transaction> transactions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    TransactionData transactionData = TransactionData();
+   transactionData.fetchTransactions(userId);
+   transactions = transactionData.transactions;
   }
+
+  Future<void> createExcel(List<Transaction> transactions) async {
+  final Workbook workbook = Workbook();
+  final Worksheet sheet = workbook.worksheets[0];
+
+  // Set header "Snabb Budget"
+  sheet.getRangeByName('A1').setText('Snabb Budget!');
+
+  // Set column headers
+  sheet.getRangeByIndex(2, 1).setText('Serial Number');
+  sheet.getRangeByIndex(2, 2).setText('Date');
+  sheet.getRangeByIndex(2, 3).setText('Transaction Category');
+  sheet.getRangeByIndex(2, 4).setText('Amount');
+  sheet.getRangeByIndex(2, 5).setText('Note');
+
+  // Add transaction data
+  for (int i = 0; i < transactions.length; i++) {
+    final Transaction transaction = transactions[i];
+    final int row = i + 3; // Starting from row 3
+
+    // Serial Number
+    sheet.getRangeByIndex(row, 1).setNumber(i + 1);
+
+    // Date
+    sheet.getRangeByIndex(row, 2).setDateTime(transaction.date);
+
+    // Transaction Category
+    sheet.getRangeByIndex(row, 3).setText(transaction.category.toString().split('.').last);
+
+    // Amount
+    sheet.getRangeByIndex(row, 4).setNumber(transaction.amount.toDouble());
+
+    // Note (if exists)
+    if (transaction.name.isNotEmpty) {
+      sheet.getRangeByIndex(row, 5).setText(transaction.name);
+    }
+  }
+
+  final List<int> bytes = workbook.saveAsStream();
+  workbook.dispose();
+
+  final String path = (await getApplicationSupportDirectory()).path;
+  final String fileName = '$path/Output.xlsx';
+  final File file = File(fileName);
+  await file.writeAsBytes(bytes, flush: true);
+  OpenFile.open(fileName);
+}
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -120,7 +175,7 @@ class SettingScreen extends StatelessWidget {
                         subtitle: Text(AppLocalizations.of(context)!.xlsDownload),
                         trailing: const Icon(Icons.arrow_forward_ios_rounded),
                         onTap: (){
-                          createExcel();
+                          createExcel(transactions);
                         },
                       ),
                     ],

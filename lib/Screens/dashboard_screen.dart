@@ -9,6 +9,8 @@ import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
+import '../utils/transaction_card.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   final List<Transaction> transactions;
@@ -338,30 +340,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                         return delete;
                                       },
                                       key: Key(transaction.id),
-                                      child: Card(
-                                        elevation: 0,
-                                        child: ListTile(
-                                          leading:
-                                              Image.asset(transaction.imgUrl),
-                                          title: Text(
-                                            transaction.name,
-                                            style: const TextStyle(
-                                                fontWeight: FontWeight.bold),
-                                          ),
-                                          subtitle: Text(transaction.time),
-                                          trailing: Text(
-                                              transaction.type ==
-                                                      TransactionType.income
-                                                  ? "+\$${transaction.amount}"
-                                                  : "-\$${transaction.amount}",
-                                              style: TextStyle(
-                                                  color: transaction.type ==
-                                                          TransactionType.income
-                                                      ? Colors.green
-                                                      : Colors.red,
-                                                  fontWeight: FontWeight.bold)),
-                                        ),
-                                      ),
+                                      child: TransactionCard(transaction: transaction), 
+                                      // Card(
+                                      //   elevation: 0,
+                                      //   child: ListTile(
+                                      //     leading:
+                                      //         Image.asset(transaction.imgUrl),
+                                      //     title: Text(
+                                      //       transaction.name,
+                                      //       style: const TextStyle(
+                                      //           fontWeight: FontWeight.bold),
+                                      //     ),
+                                      //     subtitle: Text(transaction.time),
+                                      //     trailing: Text(
+                                      //         transaction.type ==
+                                      //                 TransactionType.income
+                                      //             ? "+\$${transaction.amount}"
+                                      //             : "-\$${transaction.amount}",
+                                      //         style: TextStyle(
+                                      //             color: transaction.type ==
+                                      //                     TransactionType.income
+                                      //                 ? Colors.green
+                                      //                 : Colors.red,
+                                      //             fontWeight: FontWeight.bold)),
+                                      //   ),
+                                      // ),
                                     );
                                   },
                                 ),

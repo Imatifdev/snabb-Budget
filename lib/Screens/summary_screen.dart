@@ -50,16 +50,6 @@ class _SummaryScreenState extends State<SummaryScreen> {
   
   @override
   Widget build(BuildContext context) {
-  //   if (check == 0) {
-  //     WidgetsBinding.instance
-  //         .addPostFrameCallback((_) {
-  //           TransactionData transactionData = TransactionData();
-  //  transactionData.fetchTransactions(userId);
-  //  transactions = transactionData.transactions;
-  //  print(transactions);
-  //           });
-  //     check++;
-  //   }
   final Map<int, Widget> _children = {
   0: Text(AppLocalizations.of(context)!.summary,style: GoogleFonts.montserrat(),),
   1:  Padding(

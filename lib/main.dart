@@ -101,7 +101,7 @@ class _MyAppState extends State<MyApp> {
               PreferencesScreen.routeName: (context) =>
                   const PreferencesScreen(),
               Accounts.routeName: (ctx) => Accounts(),
-              // HomeScreen.routeName: (ctx) => const HomeScreen(),
+              HomeScreen.routeName: (ctx) => const HomeScreen(),
               // AddExpanse.routeName: (ctx) => const AddExpanse(),
               // AddIncome.routeName: (ctx) => const AddIncome(),
               BalanceScreen.routeName: (ctx) => BalanceScreen(),

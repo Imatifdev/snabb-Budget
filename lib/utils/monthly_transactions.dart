@@ -21,6 +21,19 @@ class _MonthlyTransactionsState extends State<MonthlyTransactions> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
+
+    // Filter the months that have transactions
+    List<int> monthsWithTransactions = [];
+    for (int i = 0; i < widget.month.length; i++) {
+      final currentMonth = i + 1;
+      final filteredTransactions = widget.transactions
+          .where((transaction) => transaction.date.month == currentMonth)
+          .toList();
+      if (filteredTransactions.isNotEmpty) {
+        monthsWithTransactions.add(i);
+      }
+    }
+
     return Column(
       children: [
         Row(
@@ -46,48 +59,52 @@ class _MonthlyTransactionsState extends State<MonthlyTransactions> {
             ),
           ],
         ),
-        Text(DateTime.now().year.toString(), style: TextStyle(fontSize: 16,fontWeight: FontWeight.bold, color: Theme.of(context).primaryColor),),
+        Text(
+          DateTime.now().year.toString(),
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
         SizedBox(
           height: size.height - 220,
           child: PageView.builder(
             controller: _controller,
-            itemCount: widget.month.length,
+            itemCount: monthsWithTransactions.length,
             onPageChanged: (int index) {
               setState(() {
                 pageIndex = index;
               });
             },
             itemBuilder: (context, index) {
-              final currentMonth = index + 1;
+              final currentMonthIndex = monthsWithTransactions[index];
+              final currentMonth = currentMonthIndex + 1;
               final filteredTransactions = widget.transactions
                   .where((transaction) => transaction.date.month == currentMonth)
                   .toList();
+
+              final monthName = widget.month[currentMonthIndex];
 
               return Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Text(
-                    widget.month[index],
+                    monthName,
                     style: const TextStyle(
                       fontSize: 38,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
-                  if (filteredTransactions.isNotEmpty)
-                    Expanded(
-                      child: ListView.builder(
-                        itemCount: filteredTransactions.length,
-                        itemBuilder: (context, index) {
-                          final transaction = filteredTransactions[index];
-                          return TransactionCard(transaction: transaction);
-                        },
-                      ),
-                    )
-                  else
-                    const Text(
-                      'No transactions for this month',
-                      style: TextStyle(fontSize: 18),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: filteredTransactions.length,
+                      itemBuilder: (context, index) {
+                        final transaction = filteredTransactions[index];
+                        return TransactionCard(transaction: transaction);
+                      },
                     ),
+                  ),
                 ],
               );
             },

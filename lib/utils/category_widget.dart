@@ -46,6 +46,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
     'expense',
   ];
   double totalAmount = 0.0;
+  
   List<Transaction> getFilteredTransactions() {
   List<Transaction> filteredList = widget.transactions;
   if (selectedType == 'income') {
@@ -71,6 +72,22 @@ class _CategoryWidgetState extends State<CategoryWidget> {
   return filteredList;
 }
   
+  double calculateTotalBalance() {
+    double totalBalance = 0.0;
+
+    List<Transaction> filteredList = getFilteredTransactions();
+
+    for (var transaction in filteredList) {
+      if (transaction.type == TransactionType.income) {
+        totalBalance += transaction.amount;
+      } else {
+        totalBalance -= transaction.amount;
+      }
+    }
+
+    return totalBalance;
+  }
+
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -213,13 +230,13 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                 children: [
                   const Text("Total: "),
                   Text(
-                    '\$$totalAmount',
-                      style: TextStyle(
-                      color: totalAmount < 0 ? Colors.red : Colors.green,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-  ),
-),
+          '\$${calculateTotalBalance()}',
+          style: TextStyle(
+            color: calculateTotalBalance() < 0 ? Colors.red : Colors.green,
+            fontWeight: FontWeight.bold,
+            fontSize: 14,
+          ),
+        ),
                 ],
               ),
             getFilteredTransactions().isNotEmpty?

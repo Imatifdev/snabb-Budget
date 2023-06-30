@@ -11,6 +11,9 @@ import '../models/IncomeDataMode.dart';
 import 'schedule_transactions.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
+
 
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
@@ -26,12 +29,14 @@ class _AddIncomeState extends State<AddIncome> {
   TextEditingController _nameController = TextEditingController();
   TextEditingController _amountController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-  String file = "";
+  String pathFile = "";
   TimeOfDay _selectedTime = TimeOfDay.now();
   final userId = FirebaseAuth.instance.currentUser!.uid;
   final TextEditingController _noteController = TextEditingController();
   String formatTime = "";
   bool isLoading = false;
+  final storage = FirebaseStorage.instance;
+
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -60,15 +65,30 @@ class _AddIncomeState extends State<AddIncome> {
   }
 
   Future<void> _takePicture() async {
-    final picker = ImagePicker();
-    final image = await picker.getImage(source: ImageSource.camera);
+  final picker = ImagePicker();
+  var pickImage = await picker.pickImage(source: ImageSource.camera);
+  var pathPickImage = pickImage!.path;
 
-    if (image != null) {
+  if (pickImage != null) {
+    setState(() {
+      pathFile = pickImage!.path;
+    });
+
+    final File file = File(pickImage.path);
+    final String fileName = '${DateTime.now()}.jpg';
+    final Reference storageRef = storage.ref().child(fileName);
+    final UploadTask uploadTask = storageRef.putFile(file);
+
+    await uploadTask.whenComplete(() async {
+      final imageUrl = await storageRef.getDownloadURL();
+
       setState(() {
-        file = image.path;
+        pathPickImage = imageUrl ;
       });
-    }
+    });
   }
+}
+
 
   IncomeDataCategory? selectedCategory;
   List<IncomeData> incomeDatList = [];
@@ -77,8 +97,9 @@ class _AddIncomeState extends State<AddIncome> {
   void _saveIncome() async {
   if (_formKey.currentState!.validate() && selectedCategory != null) {
     setState(() {
-    isLoading = true; // Show the progress indicator
-  });
+      isLoading = true; // Show the progress indicator
+    });
+
     double amount = double.parse(_amountController.text);
     String name = _nameController.text.isNotEmpty
         ? _nameController.text
@@ -90,7 +111,16 @@ class _AddIncomeState extends State<AddIncome> {
     );
     String image = selectedCategory!.image;
 
-    await FirebaseFirestore.instance
+    // Upload image to Firebase Cloud Storage
+    String imageUrl = "";
+    if (pathFile.isNotEmpty) {
+      Reference storageReference = FirebaseStorage.instance.ref().child(DateTime.now().toString());
+      TaskSnapshot taskSnapshot = await storageReference.putFile(File(pathFile));
+      imageUrl = await taskSnapshot.ref.getDownloadURL();
+    }
+
+    // Save data to Firestore
+    DocumentReference transactionRef = await FirebaseFirestore.instance
         .collection("UserTransactions")
         .doc(userId)
         .collection("transactions")
@@ -102,15 +132,23 @@ class _AddIncomeState extends State<AddIncome> {
       "date": _selectedDate,
       "time": formatTime,
       "imgUrl": image,
+      "fileUrl":imageUrl // Use the obtained image URL
     });
-    await FirebaseFirestore.instance.collection("UserTransactions")
-        .doc(userId).collection("data").doc("userData").update({"balance":widget.balance+amount});
+
+    // Update user's balance
+    await FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("data")
+        .doc("userData")
+        .update({"balance": widget.balance + amount});
 
     setState(() {
       _nameController.clear();
       _amountController.clear();
       isLoading = false; // Hide the progress indicator
     });
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -476,7 +514,7 @@ class _AddIncomeState extends State<AddIncome> {
                           SizedBox(
                               width: 200,
                               child: Text(
-                                file,
+                                pathFile,
                                 softWrap: true,
                               )),
                         ],

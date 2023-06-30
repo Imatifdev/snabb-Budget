@@ -11,6 +11,14 @@ class TransactionCard extends StatelessWidget {
                              // color: Colors.white,
                               elevation: 0,
                               child: ListTile(
+                                onTap: (){
+                                  Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => TransactionImageScreen(imageUrl: transaction.fileUrl),
+            ),
+          );
+                                },
                                 leading: Image.asset(transaction.imgUrl),
                                 title: Text(
                                   transaction.name,
@@ -30,5 +38,32 @@ class TransactionCard extends StatelessWidget {
                                         fontWeight: FontWeight.bold)),
                               ),
                             );
+  }
+}
+
+class TransactionImageScreen extends StatelessWidget {
+  final String imageUrl;
+
+  const TransactionImageScreen({Key? key, required this.imageUrl}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Loading File"),
+      ),
+      body: Center(
+        child: Hero(
+          tag: imageUrl,
+          child: FadeInImage.assetNetwork(
+            placeholder: 'assets/images/bell.png',
+            image: imageUrl,
+            placeholderErrorBuilder: (context, error, stackTrace) {
+                  return CircularProgressIndicator();
+                },
+          ),
+        ),
+      ),
+    );
   }
 }
