@@ -93,6 +93,14 @@ class _LanguageScreenState extends State<LanguageScreen> {
                         value: "sv", groupValue: lang, onChanged: changeLocale),
                   ],
                 ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("German", style: TextStyle(fontSize: 16)),
+                    Radio(
+                        value: "de", groupValue: lang, onChanged: changeLocale),
+                  ],
+                ),
             ]),
           ),
           ) 
