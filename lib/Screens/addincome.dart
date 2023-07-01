@@ -35,6 +35,7 @@ class _AddIncomeState extends State<AddIncome> {
   String formatTime = "";
   bool isLoading = false;
   final storage = FirebaseStorage.instance;
+  bool schedual = false;
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -67,24 +68,22 @@ class _AddIncomeState extends State<AddIncome> {
     var pickImage = await picker.pickImage(source: ImageSource.camera);
     var pathPickImage = pickImage!.path;
 
-    if (pickImage != null) {
+    setState(() {
+      pathFile = pickImage.path;
+    });
+
+    final File file = File(pickImage.path);
+    final String fileName = '${DateTime.now()}.jpg';
+    final Reference storageRef = storage.ref().child(fileName);
+    final UploadTask uploadTask = storageRef.putFile(file);
+
+    await uploadTask.whenComplete(() async {
+      final imageUrl = await storageRef.getDownloadURL();
+
       setState(() {
-        pathFile = pickImage!.path;
+        pathPickImage = imageUrl;
       });
-
-      final File file = File(pickImage.path);
-      final String fileName = '${DateTime.now()}.jpg';
-      final Reference storageRef = storage.ref().child(fileName);
-      final UploadTask uploadTask = storageRef.putFile(file);
-
-      await uploadTask.whenComplete(() async {
-        final imageUrl = await storageRef.getDownloadURL();
-
-        setState(() {
-          pathPickImage = imageUrl;
-        });
-      });
-    }
+    });
   }
 
   IncomeDataCategory? selectedCategory;
@@ -161,16 +160,15 @@ class _AddIncomeState extends State<AddIncome> {
     if (_formKey.currentState!.validate() && selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
-      // DateTime dateTime = DateTime(
-      //   _selectedDate.year,
-      //   _selectedDate.month,
-      //   _selectedDate.day,
-      // );
-      // DateTime time = DateTime(
-      //   _selectedDate.hour,
-      //   _selectedDate.minute,
-      // );
       String image = selectedCategory!.image;
+      String imageUrl = "";
+      if (pathFile.isNotEmpty) {
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child(DateTime.now().toString());
+        TaskSnapshot taskSnapshot =
+            await storageReference.putFile(File(pathFile));
+        imageUrl = await taskSnapshot.ref.getDownloadURL();
+      }
       await FirebaseFirestore.instance
           .collection("UserTransactions")
           .doc(userId)
@@ -182,9 +180,13 @@ class _AddIncomeState extends State<AddIncome> {
         "type": "TransactionType.income",
         "date": _selectedDate,
         "time": formatTime,
+        "fileUrl":imageUrl,
         "imgUrl": image,
       });
     }
+    setState(() {
+      schedual = false;
+    });
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -524,18 +526,21 @@ class _AddIncomeState extends State<AddIncome> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          InkWell(
+                          !schedual?InkWell(
                             onTap: () {
+                              setState(() {
+                                schedual = true;
+                              });
                               schedualeTransaction();
                             },
                             child: Text(
                               AppLocalizations.of(context)!.schedule,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xff2EA6C1)),
                             ),
-                          ),
+                          ):CircularProgressIndicator(),
                         ],
                       )
                     ],

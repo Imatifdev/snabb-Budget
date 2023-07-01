@@ -19,7 +19,7 @@ class Transaction {
   final String time;
   final DateTime date;
   final String imgUrl;
-  final String fileUrl; // New property
+  final String fileUrl; 
   final TransactionType type;
   final TransactionCat category;
   final int amount;
@@ -30,7 +30,7 @@ class Transaction {
     required this.time,
     required this.date,
     required this.imgUrl,
-    required this.fileUrl, // New property
+    required this.fileUrl, 
     required this.type,
     required this.category,
     required this.amount,

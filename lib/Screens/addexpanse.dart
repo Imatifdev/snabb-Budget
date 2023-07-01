@@ -12,7 +12,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'home_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'dart:io';
 
 class AddExpanse extends StatefulWidget {
   static const routeName = "add-expense";
@@ -34,31 +33,29 @@ class _AddExpanseState extends State<AddExpanse> {
   String formatTime = "";
   bool isLoading = false;
   final storage = FirebaseStorage.instance;
-
+  bool schedual = false;
   final TextEditingController _noteController = TextEditingController();
 
   Future<void> _takePicture() async {
     final picker = ImagePicker();
     var pickImage = await picker.pickImage(source: ImageSource.camera);
     var pickImagePath = pickImage!.path;
-    if (pickImage != null) {
+    setState(() {
+      pathFile = pickImage.path;
+    });
+
+    final File file = File(pickImage.path);
+    final String fileName = '${DateTime.now()}.jpg';
+    final Reference storageRef = storage.ref().child(fileName);
+    final UploadTask uploadTask = storageRef.putFile(file);
+
+    await uploadTask.whenComplete(() async {
+      final imageUrl = await storageRef.getDownloadURL();
+
       setState(() {
-        pathFile = pickImage!.path;
+        pickImagePath = imageUrl;
       });
-
-      final File file = File(pickImage.path);
-      final String fileName = '${DateTime.now()}.jpg';
-      final Reference storageRef = storage.ref().child(fileName);
-      final UploadTask uploadTask = storageRef.putFile(file);
-
-      await uploadTask.whenComplete(() async {
-        final imageUrl = await storageRef.getDownloadURL();
-
-        setState(() {
-          pickImagePath = imageUrl;
-        });
-      });
-    }
+    });
   }
 
   Future<void> _selectDate(BuildContext context) async {
@@ -148,7 +145,7 @@ class _AddExpanseState extends State<AddExpanse> {
       setState(() {
         _nameController.clear();
         _amountController.clear();
-        isLoading = false; // Hide the progress indicator
+        isLoading = false;
       });
 
       Navigator.push(
@@ -165,6 +162,14 @@ class _AddExpanseState extends State<AddExpanse> {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
       String image = selectedCategory!.image;
+      String imageUrl = "";
+      if (pathFile.isNotEmpty) {
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child('images');
+        TaskSnapshot taskSnapshot =
+            await storageReference.putFile(File(pathFile));
+        imageUrl = await taskSnapshot.ref.getDownloadURL();
+      }
       await FirebaseFirestore.instance
           .collection("UserTransactions")
           .doc(userId)
@@ -176,9 +181,13 @@ class _AddExpanseState extends State<AddExpanse> {
         "type": "TransactionType.expense",
         "date": _selectedDate,
         "time": formatTime,
+        "fileUrl":imageUrl,
         "imgUrl": image,
       });
     }
+    setState(() {
+      schedual = false;
+    });
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -476,8 +485,11 @@ class _AddExpanseState extends State<AddExpanse> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          InkWell(
+                          !schedual?InkWell(
                             onTap: () {
+                              setState(() {
+                                schedual = true;
+                              });
                               schedualeTransaction();
                             },
                             child: Text(
@@ -487,7 +499,7 @@ class _AddExpanseState extends State<AddExpanse> {
                                   fontWeight: FontWeight.bold,
                                   color: Color(0xff2EA6C1)),
                             ),
-                          ),
+                          ):CircularProgressIndicator(),
                         ],
                       )
                     ],
