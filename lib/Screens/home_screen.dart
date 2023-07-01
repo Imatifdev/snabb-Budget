@@ -1,6 +1,6 @@
 // ignore_for_file: library_private_types_in_public_api
 
-import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction ;
+import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/daily_stats.dart';
@@ -28,17 +28,17 @@ class _HomeScreenState extends State<HomeScreen> {
   String name = "";
   String email = "";
   String phone = "";
- double balance=0;
- int credit=0;
- int dept=0;
- int expense=0;
- int income=0;
- int cash=0;
- int bankTransfer=0;
- int creditCard=0;
- String currency = "";
-  List<Transaction> transactionsList= [];
-  List<Transaction> transactionsList2= [];
+  double balance = 0;
+  int credit = 0;
+  int dept = 0;
+  int expense = 0;
+  int income = 0;
+  int cash = 0;
+  int bankTransfer = 0;
+  int creditCard = 0;
+  String currency = "";
+  List<Transaction> transactionsList = [];
+  List<Transaction> transactionsList2 = [];
   final userId = FirebaseAuth.instance.currentUser!.uid;
   void getInfo() async {
     var collection = FirebaseFirestore.instance.collection('UsersData');
@@ -52,46 +52,52 @@ class _HomeScreenState extends State<HomeScreen> {
       });
     }
     var docSnapshot2 = await FirebaseFirestore.instance
-    .collection("UserTransactions").doc(userId)
-    .collection("data").doc("userData").get();
-    if(docSnapshot2.exists){
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("data")
+        .doc("userData")
+        .get();
+    if (docSnapshot2.exists) {
       Map<String, dynamic>? data = docSnapshot2.data();
       setState(() {
-         balance= data!["balance"];
-         credit=data["credit"];
-  dept=data["dept"];
-  expense=data["expense"];
-  income=data["income"];
-  cash=data["cash"];
-  bankTransfer=data["bankTransfer"];
- creditCard=data["creditCard"];
- currency = data["currency"];
+        balance = data!["balance"];
+        credit = data["credit"];
+        dept = data["dept"];
+        expense = data["expense"];
+        income = data["income"];
+        cash = data["cash"];
+        bankTransfer = data["bankTransfer"];
+        creditCard = data["creditCard"];
+        currency = data["currency"];
       });
     }
     print(userId);
   }
-  
-Future<List<Transaction>> fetchTransactions() async {
-  List<Transaction> transactions = [];
 
-  QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
-      .collection('UserTransactions')
-      .doc(userId)
-      .collection('transactions')
-      .get();
+  Future<List<Transaction>> fetchTransactions() async {
+    List<Transaction> transactions = [];
 
-  List<QueryDocumentSnapshot<Map<String, dynamic>>> documents = querySnapshot.docs;
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore
+        .instance
+        .collection('UserTransactions')
+        .doc(userId)
+        .collection('transactions')
+        .get();
 
-  for (var document in documents) {
-    Transaction transaction = Transaction.fromJson(document.data(),document.id );
-    transactions.add(transaction);
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> documents =
+        querySnapshot.docs;
+
+    for (var document in documents) {
+      Transaction transaction =
+          Transaction.fromJson(document.data(), document.id);
+      transactions.add(transaction);
+    }
+
+    setState(() {
+      transactionsList = transactions;
+    });
+    return transactions;
   }
-
-  setState(() {
-    transactionsList = transactions;
-  });
-  return transactions;
-}
 
   @override
   void initState() {
@@ -99,9 +105,9 @@ Future<List<Transaction>> fetchTransactions() async {
     _pageController = PageController(initialPage: _selectedIndex);
     fetchTransactions();
     TransactionData transactionData = TransactionData();
-   transactionData.fetchTransactions(userId);
-   transactionsList2 = transactionData.transactions;
-   print(transactionsList2);
+    transactionData.fetchTransactions(userId);
+    transactionsList2 = transactionData.transactions;
+    print(transactionsList2);
     print(transactionsList);
   }
 
@@ -112,10 +118,18 @@ Future<List<Transaction>> fetchTransactions() async {
       check++;
     }
     final List<Widget> pages = [
-    DashboardScreen(transactions: transactionsList,balance: balance),
-    DailyStats(balance: balance, credit: credit, dept: dept, expense: expense, income: income, cash: cash, bankTransfer: bankTransfer, creditCard: creditCard),
-    ProfileView(name: name,email: email),
-  ];
+      DashboardScreen(transactions: transactionsList, balance: balance),
+      DailyStats(
+          balance: balance,
+          credit: credit,
+          dept: dept,
+          expense: expense,
+          income: income,
+          cash: cash,
+          bankTransfer: bankTransfer,
+          creditCard: creditCard),
+      ProfileView(name: name, email: email),
+    ];
     return Scaffold(
       key: scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,

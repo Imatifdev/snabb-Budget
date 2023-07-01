@@ -2,7 +2,7 @@
 
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction ;
+import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snabbudget/Screens/schedule_transactions.dart';
@@ -35,32 +35,31 @@ class _AddExpanseState extends State<AddExpanse> {
   bool isLoading = false;
   final storage = FirebaseStorage.instance;
 
-
   final TextEditingController _noteController = TextEditingController();
 
   Future<void> _takePicture() async {
-  final picker = ImagePicker();
-  var pickImage = await picker.pickImage(source: ImageSource.camera);
-  var pickImagePath = pickImage!.path;
-  if (pickImage != null) {
-    setState(() {
-      pathFile = pickImage!.path;
-    });
-
-    final File file = File(pickImage.path);
-    final String fileName = '${DateTime.now()}.jpg';
-    final Reference storageRef = storage.ref().child(fileName);
-    final UploadTask uploadTask = storageRef.putFile(file);
-
-    await uploadTask.whenComplete(() async {
-      final imageUrl = await storageRef.getDownloadURL();
-
+    final picker = ImagePicker();
+    var pickImage = await picker.pickImage(source: ImageSource.camera);
+    var pickImagePath = pickImage!.path;
+    if (pickImage != null) {
       setState(() {
-        pickImagePath = imageUrl;
+        pathFile = pickImage!.path;
       });
-    });
+
+      final File file = File(pickImage.path);
+      final String fileName = '${DateTime.now()}.jpg';
+      final Reference storageRef = storage.ref().child(fileName);
+      final UploadTask uploadTask = storageRef.putFile(file);
+
+      await uploadTask.whenComplete(() async {
+        final imageUrl = await storageRef.getDownloadURL();
+
+        setState(() {
+          pickImagePath = imageUrl;
+        });
+      });
+    }
   }
-}
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -85,7 +84,6 @@ class _AddExpanseState extends State<AddExpanse> {
       _selectedTime = pickedTime;
       formatTime = "${_selectedTime.hour}:${_selectedTime.minute}";
     }
-    
   }
 
   ExpanseDataCategory? selectedCategory;
@@ -93,81 +91,92 @@ class _AddExpanseState extends State<AddExpanse> {
 
 //function for storing data and passing to another screen
   void _saveExpense() async {
-  if (_formKey.currentState!.validate() && selectedCategory != null) {
-    setState(() {
-      isLoading = true; // Show the progress indicator
-    });
+    if (_formKey.currentState!.validate() && selectedCategory != null) {
+      setState(() {
+        isLoading = true; // Show the progress indicator
+      });
 
-    double amount = double.parse(_amountController.text);
-    String name = _nameController.text.isNotEmpty
-        ? _nameController.text
-        : selectedCategory!.name; // Use category name if name is not provided
-    DateTime dateTime = DateTime(
-      _selectedDate.year,
-      _selectedDate.month,
-      _selectedDate.day,
-    );
-    DateTime time = DateTime(
-      _selectedDate.hour,
-      _selectedDate.minute,
-    );
-    String image = selectedCategory!.image;
+      double amount = double.parse(_amountController.text);
+      String name = _nameController.text.isNotEmpty
+          ? _nameController.text
+          : selectedCategory!.name; // Use category name if name is not provided
+      DateTime dateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+      );
+      DateTime time = DateTime(
+        _selectedDate.hour,
+        _selectedDate.minute,
+      );
+      String image = selectedCategory!.image;
 
-    // Upload image to Firebase Cloud Storage
-    String imageUrl = "";
-    if (pathFile.isNotEmpty) {
-      Reference storageReference = FirebaseStorage.instance.ref().child('images');
-      TaskSnapshot taskSnapshot = await storageReference.putFile(File(pathFile));
-      imageUrl = await taskSnapshot.ref.getDownloadURL();
+      // Upload image to Firebase Cloud Storage
+      String imageUrl = "";
+      if (pathFile.isNotEmpty) {
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child('images');
+        TaskSnapshot taskSnapshot =
+            await storageReference.putFile(File(pathFile));
+        imageUrl = await taskSnapshot.ref.getDownloadURL();
+      }
+
+      // Save data to Firestore
+      await FirebaseFirestore.instance
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("transactions")
+          .add({
+        "name": name,
+        "amount": int.parse(_amountController.text),
+        "category": "TransactionCat.moneyTransfer",
+        "type": "TransactionType.expense",
+        "date": _selectedDate,
+        "time": formatTime,
+        "imgUrl": image,
+        "fileUrl": imageUrl // Use the obtained image URL
+      });
+
+      // Update user's balance
+      await FirebaseFirestore.instance
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("data")
+          .doc("userData")
+          .update({"balance": widget.balance - amount});
+
+      setState(() {
+        _nameController.clear();
+        _amountController.clear();
+        isLoading = false; // Hide the progress indicator
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(),
+        ),
+      );
     }
-
-    // Save data to Firestore
-    await FirebaseFirestore.instance.collection("UserTransactions").doc(userId).collection("transactions").add({
-      "name": name,
-      "amount": int.parse(_amountController.text),
-      "category": "TransactionCat.moneyTransfer",
-      "type": "TransactionType.expense",
-      "date": _selectedDate,
-      "time": formatTime,
-      "imgUrl": image,
-      "fileUrl": imageUrl // Use the obtained image URL
-    });
-
-    // Update user's balance
-    await FirebaseFirestore.instance.collection("UserTransactions")
-        .doc(userId).collection("data").doc("userData").update({"balance":widget.balance-amount});
-
-    setState(() {
-      _nameController.clear();
-      _amountController.clear();
-      isLoading = false; // Hide the progress indicator
-    });
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(),
-      ),
-    );
   }
-}
 
   void schedualeTransaction() async {
-    if ( _formKey.currentState!.validate() &&
-        selectedCategory != null) {
+    if (_formKey.currentState!.validate() && selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
       String image = selectedCategory!.image;
-      await FirebaseFirestore.instance.
-      collection("UserTransactions").doc(userId).
-      collection("SchedualTrsanactions").add({
-       "name": name,
-      "amount": int.parse(_amountController.text),
-      "category": "TransactionCat.moneyTransfer",
-      "type": "TransactionType.expense",
-      "date": _selectedDate,
-      "time": formatTime,
-      "imgUrl": image, 
+      await FirebaseFirestore.instance
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("SchedualTrsanactions")
+          .add({
+        "name": name,
+        "amount": int.parse(_amountController.text),
+        "category": "TransactionCat.moneyTransfer",
+        "type": "TransactionType.expense",
+        "date": _selectedDate,
+        "time": formatTime,
+        "imgUrl": image,
       });
     }
     Navigator.push(
@@ -177,7 +186,6 @@ class _AddExpanseState extends State<AddExpanse> {
       ),
     );
   }
-
 
   final List<File> _selectedFiles = [];
 
@@ -197,6 +205,7 @@ class _AddExpanseState extends State<AddExpanse> {
       _selectedFiles.removeAt(index);
     });
   }
+
   @override
   Widget build(BuildContext context) {
     // FloatingActionButton.extended(
@@ -453,7 +462,9 @@ class _AddExpanseState extends State<AddExpanse> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: _takePicture, child: Text(AppLocalizations.of(context)!.addFile)),
+                              onPressed: _takePicture,
+                              child:
+                                  Text(AppLocalizations.of(context)!.addFile)),
                           SizedBox(
                               width: 200,
                               child: Text(
@@ -464,9 +475,9 @@ class _AddExpanseState extends State<AddExpanse> {
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
-                        children:  [
+                        children: [
                           InkWell(
-                            onTap: (){
+                            onTap: () {
                               schedualeTransaction();
                             },
                             child: Text(
@@ -484,23 +495,22 @@ class _AddExpanseState extends State<AddExpanse> {
                   SizedBox(
                     height: height / 20,
                   ),
-                  !isLoading?
-                  Center(
-                    child: SizedBox(
-                      width: width / 2,
-                      child:  
-                      
-                      ElevatedButton(
-                        onPressed: () {
-                          _saveExpense();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50))),
-                        child: Text(AppLocalizations.of(context)!.add),
-                      ),
-                    ),
-                  ): CircularProgressIndicator()
+                  !isLoading
+                      ? Center(
+                          child: SizedBox(
+                            width: width / 2,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _saveExpense();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50))),
+                              child: Text(AppLocalizations.of(context)!.add),
+                            ),
+                          ),
+                        )
+                      : CircularProgressIndicator()
                 ],
               ),
             ),
