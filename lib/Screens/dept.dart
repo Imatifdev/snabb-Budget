@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 
+import '../models/currency_controller.dart';
 import '../utils/custom_drawer.dart';
 
 class Debt extends StatefulWidget {
@@ -15,6 +17,20 @@ class Debt extends StatefulWidget {
 
 class _DebtState extends State<Debt> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  String? currency = "";
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    currency = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    print(currency);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getCurrency();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +84,9 @@ class _DebtState extends State<Debt> {
                   AppLocalizations.of(context)!.residualAmount,
                   style: const TextStyle(fontSize: 22),
                 ),
-                const Text(
-                  "\$0.00",
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                Text(
+                  "${currency}0.00",
+                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
                 ),
               ],
             ).pSymmetric(h: 20),

@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
+import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -23,6 +24,18 @@ class DashboardScreen extends StatefulWidget {
 
 class _DashboardScreenState extends State<DashboardScreen> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
+  String? currency = "";
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    currency = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    print(currency);
+  }
+  @override
+  void initState(){
+    super.initState();
+    getCurrency();
+  }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
@@ -196,8 +209,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       textAlign: TextAlign.left,
                                     ),
                                     Text(
-                                      //"\$0.00",
-                                         "\$${double.parse((widget.balance).toStringAsFixed(2))}",
+                                      //"$currency0.00",
+                                         "$currency${double.parse((widget.balance).toStringAsFixed(2))}",
                                         style: const TextStyle(
                                             letterSpacing: 3,
                                             color: Colors.white,
@@ -247,7 +260,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                     height: 5,
                                   ),
                                   Text(
-                                    "\$${totalIncomeAmount.toString()}",                                  
+                                    "$currency${totalIncomeAmount.toString()}",                                  
                                     style: const TextStyle(
                                         color: Colors.white,
                                         fontSize: 15,
@@ -281,7 +294,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   const SizedBox(
                                     height: 5,
                                   ),
-                                  Text("\$${totalexpAmount.toString()}",
+                                  Text("$currency${totalexpAmount.toString()}",
                                       style: const TextStyle(
                                           color: Colors.white,
                                           fontSize: 14,
@@ -355,8 +368,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       //     trailing: Text(
                                       //         transaction.type ==
                                       //                 TransactionType.income
-                                      //             ? "+\$${transaction.amount}"
-                                      //             : "-\$${transaction.amount}",
+                                      //             ? "+$currency${transaction.amount}"
+                                      //             : "-$currency${transaction.amount}",
                                       //         style: TextStyle(
                                       //             color: transaction.type ==
                                       //                     TransactionType.income

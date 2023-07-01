@@ -1,11 +1,13 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import '../controller/balanceProvider.dart';
 import '../models/balance_data.dart';
+import '../models/currency_controller.dart';
 import '../utils/balance_ex.dart';
 import '../utils/custom_drawer.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -20,6 +22,19 @@ class BalanceScreen extends StatefulWidget {
 }
 
 class _BalanceScreenState extends State<BalanceScreen> {
+  String? currency = "";
+  final String userId = FirebaseAuth.instance.currentUser!.uid; 
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    currency = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    print(currency);
+  }
+  @override
+  void initState() {
+    super.initState();
+    getCurrency();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,11 +80,11 @@ class _BalanceScreenState extends State<BalanceScreen> {
                   builder: (context, balanceProvider, _) {
                     String balanceText;
                     if (balanceProvider.totalBalance >= 0) {
-                      balanceText = NumberFormat.currency(symbol: '\$')
+                      balanceText = NumberFormat.currency(symbol: '$currency')
                           .format(balanceProvider.totalBalance);
                     } else {
                       balanceText =
-                          '-${NumberFormat.currency(symbol: '\$').format(-balanceProvider.totalBalance)}';
+                          '-${NumberFormat.currency(symbol: '$currency').format(-balanceProvider.totalBalance)}';
                     }
                     return Text(balanceText);
                   },
@@ -220,7 +235,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          ' ${NumberFormat.currency(symbol: '\$').format(data.balance)}'),
+                                                          ' ${NumberFormat.currency(symbol: '$currency').format(data.balance)}'),
                                                     ],
                                                   ),
                                                   if (data.balanceType ==
@@ -257,7 +272,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          ' $status  ${NumberFormat.currency(symbol: '\$').format(data.balance)}',
+                                                          ' $status  ${NumberFormat.currency(symbol: '$currency').format(data.balance)}',
                                                           style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
@@ -367,7 +382,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          ' ${NumberFormat.currency(symbol: '\$').format(data.balance)}'),
+                                                          ' ${NumberFormat.currency(symbol: '$currency').format(data.balance)}'),
                                                     ],
                                                   ),
                                                   Row(
@@ -384,7 +399,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          ' $status  ${NumberFormat.currency(symbol: '\$').format(data.balance)}',
+                                                          ' $status  ${NumberFormat.currency(symbol: '$currency').format(data.balance)}',
                                                           style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:

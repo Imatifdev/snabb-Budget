@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:pie_chart/pie_chart.dart';
 
+import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 
 class SummaryWidget extends StatefulWidget {
@@ -15,6 +17,20 @@ class SummaryWidget extends StatefulWidget {
 }
 
 class _SummaryWidgetState extends State<SummaryWidget> {
+  String? currency = "";
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    currency = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    print(currency);
+  }
+  @override
+  void initState() {
+    super.initState();
+    getCurrency();
+  }
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -125,21 +141,21 @@ class _SummaryWidgetState extends State<SummaryWidget> {
                     Column(
                       children: [
                         Text(
-                          " \$$totalIncome",
+                          " $currency$totalIncome",
                           style: const TextStyle(
                               color: Colors.green,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10,),
                         Text(
-                          "-\$$totalExpense",
+                          "-$currency$totalExpense",
                           style: const TextStyle(
                               color: Colors.red,
                               fontWeight: FontWeight.bold),
                         ),
                         const SizedBox(height: 10,),
                         Text(
-                          balance > 0 ? "+\$$balance" : "\$$balance",
+                          balance > 0 ? "+$currency$balance" : "$currency$balance",
                           style: TextStyle(
                               fontWeight: FontWeight.bold,
                               color: balance > 0 ? Colors.green : Colors.red),

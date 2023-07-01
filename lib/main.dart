@@ -71,7 +71,7 @@ class _MyAppState extends State<MyApp> {
         builder: (context, brightnessProvider, _) {
           return MaterialApp(
             debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
+            title: 'Snabb Budget',
             theme: ThemeData(
               brightness: brightnessProvider.brightness == AppBrightness.light
                   ? Brightness.light

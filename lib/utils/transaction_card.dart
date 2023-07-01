@@ -1,10 +1,25 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
+import '../models/currency_controller.dart';
 import '../models/transaction.dart';
-class TransactionCard extends StatelessWidget {
+class TransactionCard extends StatefulWidget {
   final Transaction transaction;
   const TransactionCard({super.key, required this.transaction});
 
+  @override
+  State<TransactionCard> createState() => _TransactionCardState();
+}
+
+class _TransactionCardState extends State<TransactionCard> {
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  String? currency = "";
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    currency = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    print(currency);
+  }
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -15,23 +30,23 @@ class TransactionCard extends StatelessWidget {
                                   Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TransactionImageScreen(imageUrl: transaction.fileUrl),
+              builder: (context) => TransactionImageScreen(imageUrl: widget.transaction.fileUrl),
             ),
           );
                                 },
-                                leading: Image.asset(transaction.imgUrl),
+                                leading: Image.asset(widget.transaction.imgUrl),
                                 title: Text(
-                                  transaction.name,
+                                  widget.transaction.name,
                                   style: const TextStyle(
                                       fontWeight: FontWeight.bold),
                                 ),
-                                subtitle: Text(transaction.time),
+                                subtitle: Text(widget.transaction.time),
                                 trailing: Text(
-                                    transaction.type == TransactionType.income
-                                        ? "+\$${transaction.amount}"
-                                        : "-\$${transaction.amount}",
+                                    widget.transaction.type == TransactionType.income
+                                        ? "+$currency${widget.transaction.amount}"
+                                        : "-$currency${widget.transaction.amount}",
                                     style: TextStyle(
-                                        color: transaction.type ==
+                                        color: widget.transaction.type ==
                                                 TransactionType.income
                                             ? Colors.green
                                             : Colors.red,

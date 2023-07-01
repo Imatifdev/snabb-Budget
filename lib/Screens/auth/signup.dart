@@ -62,22 +62,7 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
-    void _submitForm() {
-      if (_formKey.currentState!.validate()) {
-        // Perform login or further actions
-        String email = _emailController.text;
-        String password = _passwordController.text;
-
-        // Process the login credentials
-        Navigator.of(context).pushNamed(HomeScreen.routeName);
-
-        print('Email: $email');
-        print('Password: $password');
-      }
-    }
-
     var height = MediaQuery.of(context).size.height;
-
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
       onTap: () {
@@ -278,7 +263,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   "income":0,
                                   "cash":0,
                                   "bankTransfer":0,
-                                  "creditCard":0
+                                  "creditCard":0,
+                                  "currency":"\$",
                                 });
                                 Navigator.pushAndRemoveUntil(
                                     context,

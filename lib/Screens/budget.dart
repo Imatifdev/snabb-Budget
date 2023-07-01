@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
+import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -20,7 +21,13 @@ class _BudgetScreenState extends State<BudgetScreen> {
 
   final PageController _controller = PageController(initialPage: 0);
   final PageController _controller2 = PageController(initialPage: 0);
-
+  String? currency = "";
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    currency = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    print(currency);
+  }
   
   
 
@@ -33,6 +40,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    getCurrency();
   TransactionData transactionData = TransactionData();
    transactionData.fetchTransactions(userId);
    transactions = transactionData.transactions;
@@ -150,7 +158,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                 const Text("Residual Amount"),
-                                Text("\$${totalExpense.toStringAsFixed(2)}")
+                                Text("$currency${totalExpense.toStringAsFixed(2)}")
                               ],)
                             ],
                           ),
@@ -232,7 +240,7 @@ class _BudgetScreenState extends State<BudgetScreen> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                 const Text("Residual Amount"),
-                                Text("\$${totalExpense.toStringAsFixed(2)}")
+                                Text("$currency${totalExpense.toStringAsFixed(2)}")
                               ],)
                             ],
                           ),

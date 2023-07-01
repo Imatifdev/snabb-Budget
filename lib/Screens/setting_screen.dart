@@ -11,8 +11,10 @@ import 'package:open_file/open_file.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 
+import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
+import 'currency_screen.dart';
 import 'language_screen.dart';
 class SettingScreen extends StatefulWidget {
   static const routeName = "settings-screen";
@@ -33,6 +35,7 @@ class _SettingScreenState extends State<SettingScreen> {
     super.initState();
     TransactionData transactionData = TransactionData();
    transactionData.fetchTransactions(userId);
+   getCurrency();
    transactions = transactionData.transactions;
   }
 
@@ -83,6 +86,19 @@ class _SettingScreenState extends State<SettingScreen> {
   OpenFile.open(fileName);
 }
 
+  String? currency = "";
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    String? local = await currencyData.fetchCurrency(userId);
+    setState(() {
+    currency = local;   
+    });
+    //currency = currencyData.currency;
+    print(currency);
+  }
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -128,7 +144,7 @@ class _SettingScreenState extends State<SettingScreen> {
                         child: Text(AppLocalizations.of(context)!.basicSettings, style: TextStyle(fontWeight: FontWeight.bold ,fontSize: 20, color: Theme.of(context).primaryColor ),)),
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.language,style: const TextStyle(fontWeight: FontWeight.bold),),
-                        subtitle: const Text(AppLocalizations.of(context)!.languageName),                        
+                        subtitle: Text(AppLocalizations.of(context)!.languageName),                        
                         trailing: const Icon(Icons.arrow_forward_ios_rounded),
                         onTap: (){
                           Navigator.of(context).push(MaterialPageRoute(builder: (context) => const LanguageScreen() ,));
@@ -136,9 +152,11 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       ListTile(
                         title: Text(AppLocalizations.of(context)!.currency,style: const TextStyle(fontWeight: FontWeight.bold),),
-                        subtitle: const Text("USD"),
+                        subtitle: Text(currency as String),
                         trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                        onTap: (){},
+                        onTap: (){
+                          Navigator.of(context).push(MaterialPageRoute(builder: (context) => const CurrencyScreen(),));
+                        },
                       ),
                       ListTile(
                         title: const Text("Change Theme",style: TextStyle(fontWeight: FontWeight.bold),),

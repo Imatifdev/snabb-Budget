@@ -1,9 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
-class DailyStats extends StatelessWidget {
-  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+import '../models/currency_controller.dart';
+
+class DailyStats extends StatefulWidget {
   final double balance;
   final int credit;
   final int dept;
@@ -13,6 +15,26 @@ class DailyStats extends StatelessWidget {
   final int bankTransfer;
   final int creditCard;
   DailyStats({super.key, required this.balance, required this.credit, required this.dept, required this.expense, required this.income, required this.cash, required this.bankTransfer, required this.creditCard});
+
+  @override
+  State<DailyStats> createState() => _DailyStatsState();
+}
+
+class _DailyStatsState extends State<DailyStats> {
+  String? currency = "";
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    currency = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    print(currency);
+  }
+  final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  @override
+  void initState() {
+    super.initState();
+    getCurrency();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,12 +69,12 @@ class DailyStats extends StatelessWidget {
               ],
             ),
           )),
-            statCard(size, AppLocalizations.of(context)!.wallet, AppLocalizations.of(context)!.balance,"\$${balance.toString()}",Colors.green),
-            // statCard(size, "Bank", "Balance", "\$${bankTransfer.toString()}",Colors.green),
-            // statCard(size, "Expense", "Amount", "\$${expense.toString()}",Colors.red),
-            // statCard(size, "Dept", "Amount", "\$${dept.toString()}",Colors.red),
-            // statCard(size, "Credit", "Amount", "\$${credit.toString()}",Colors.green),
-            // statCard(size, "Income", "Amount", "\$${income.toString()}",Colors.green),  
+            statCard(size, AppLocalizations.of(context)!.wallet, AppLocalizations.of(context)!.balance,"$currency${widget.balance.toString()}",Colors.green),
+            // statCard(size, "Bank", "Balance", "$currency${bankTransfer.toString()}",Colors.green),
+            // statCard(size, "Expense", "Amount", "$currency${expense.toString()}",Colors.red),
+            // statCard(size, "Dept", "Amount", "$currency${dept.toString()}",Colors.red),
+            // statCard(size, "Credit", "Amount", "$currency${credit.toString()}",Colors.green),
+            // statCard(size, "Income", "Amount", "$currency${income.toString()}",Colors.green),  
           ],
         ),
       ))

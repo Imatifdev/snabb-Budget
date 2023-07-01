@@ -36,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
  int cash=0;
  int bankTransfer=0;
  int creditCard=0;
+ String currency = "";
   List<Transaction> transactionsList= [];
   List<Transaction> transactionsList2= [];
   final userId = FirebaseAuth.instance.currentUser!.uid;
@@ -64,6 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
   cash=data["cash"];
   bankTransfer=data["bankTransfer"];
  creditCard=data["creditCard"];
+ currency = data["currency"];
       });
     }
     print(userId);

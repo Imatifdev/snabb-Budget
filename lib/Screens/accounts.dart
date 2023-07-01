@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/account.dart';
+import '../models/currency_controller.dart';
 import '../utils/custom_drawer.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -29,6 +30,13 @@ class _AccountsState extends State<Accounts> {
  int bankTransfer=0;
  int creditCard=0;
  int check = 0;
+ String? currency = "";
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    currency = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    print(currency);
+  }
 
   void _openAddTransactionDialog() async {
     final result = await showDialog(
@@ -93,6 +101,11 @@ class _AccountsState extends State<Accounts> {
         ],
       ),
     );
+  }
+  @override
+  void initState() {
+    super.initState();
+    getCurrency();
   }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -183,7 +196,7 @@ class _AccountsState extends State<Accounts> {
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                     "\$${balance.toString()}",
+                     "$currency${balance.toString()}",
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -299,8 +312,8 @@ class _AccountsState extends State<Accounts> {
                                       fontWeight: FontWeight.bold),
                                 ),
                                 Text(                                  
-                                  "\$${account.amount.toString()}",// //By Ammar
-                                  // "\$${double.parse((widget.balance).toStringAsFixed(2))}", //Previous Code
+                                  "$currency${account.amount.toString()}",// //By Ammar
+                                  // "$currency${double.parse((widget.balance).toStringAsFixed(2))}", //Previous Code
                                   style: const TextStyle(
                                       color: Colors.green,
                                       fontSize: 16,
@@ -423,7 +436,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                               borderSide: const BorderSide(color: Colors.green),
                               borderRadius: BorderRadius.circular(10)),
                           labelText: 'Currency',
-                          hintText: "USD \$"),
+                          hintText: "USD $_currency"),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a currency';

@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/utils/transaction_card.dart';
 
+import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 class CategoryWidget extends StatefulWidget {
   final List<Transaction> transactions;
@@ -46,6 +48,14 @@ class _CategoryWidgetState extends State<CategoryWidget> {
     'expense',
   ];
   double totalAmount = 0.0;
+    final String userId = FirebaseAuth.instance.currentUser!.uid;
+    String? currency = "";
+  getCurrency()async{
+    CurrencyData currencyData = CurrencyData();
+    currency = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    print(currency);
+  }
   
   List<Transaction> getFilteredTransactions() {
   List<Transaction> filteredList = widget.transactions;
@@ -88,6 +98,12 @@ class _CategoryWidgetState extends State<CategoryWidget> {
     return totalBalance;
   }
 
+  @override
+  void initState() {
+    super.initState();
+    getCurrency();
+  }
+  
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
@@ -230,7 +246,7 @@ class _CategoryWidgetState extends State<CategoryWidget> {
                 children: [
                   const Text("Total: "),
                   Text(
-          '\$${calculateTotalBalance()}',
+          '$currency${calculateTotalBalance()}',
           style: TextStyle(
             color: calculateTotalBalance() < 0 ? Colors.red : Colors.green,
             fontWeight: FontWeight.bold,
