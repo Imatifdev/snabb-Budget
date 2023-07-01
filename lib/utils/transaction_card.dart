@@ -68,7 +68,7 @@ class TransactionImageScreen extends StatelessWidget {
         title: const Text("Loading File"),
       ),
       body: Center(
-        child: Hero(
+        child:  imageUrl != ""? Hero(
           tag: imageUrl,
           child: FadeInImage.assetNetwork(
             placeholder: 'assets/images/bell.png',
@@ -77,7 +77,7 @@ class TransactionImageScreen extends StatelessWidget {
                   return CircularProgressIndicator();
                 },
           ),
-        ),
+        ): const Text("No file for this transaction"),
       ),
     );
   }
