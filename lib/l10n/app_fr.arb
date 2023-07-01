@@ -28,7 +28,7 @@
     "noTransaction": "Aucune transaction",
     "startAddingTransactions": "Commencez à ajouter vos transactions",
     "addIncome": "Ajouter un revenu",
-    "incomeName": "Nom du revenu",
+    "incomeName": "Revenu",
     "amount": "Montant",
     "category": "Catégorie",
     "addFile": "Ajouter un fichier",
