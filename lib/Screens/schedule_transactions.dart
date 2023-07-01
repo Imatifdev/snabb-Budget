@@ -196,9 +196,6 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
                     ),
                   ))),
             ),
-            ElevatedButton(onPressed: (){
-              calculateTotalAmount(transactions);
-            }, child:Text(" child")),
           ],
         ),
       ),
