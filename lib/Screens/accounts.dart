@@ -31,6 +31,7 @@ class _AccountsState extends State<Accounts> {
  int creditCard=0;
  int check = 0;
  String? currency = "";
+ bool deleteCheck = false;
   getCurrency()async{
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
@@ -75,7 +76,7 @@ class _AccountsState extends State<Accounts> {
     );
   }
 
-  void _deleteTransaction(int index) {
+  void _deleteTransaction(Account account) {
     showDialog(
       context: context,
       builder: (BuildContext context) => AlertDialog(
@@ -88,11 +89,20 @@ class _AccountsState extends State<Accounts> {
             },
             child: const Text('Cancel'),
           ),
-          TextButton(
-            onPressed: () {
+          deleteCheck? const CircularProgressIndicator() :TextButton(
+            onPressed: () async{
               setState(() {
-                balance -= accounts[index].amount as int;
-                accounts.removeAt(index);
+                deleteCheck = true;
+              });
+              await FirebaseFirestore.instance.collection("UserTransactions")
+                        .doc(userId).collection("Accounts").doc(account.id).delete();
+              await FirebaseFirestore.instance.collection("UserTransactions").doc(userId)
+              .collection("data").doc("userData")
+              .update({
+                "balance":balance-account.amount
+              });
+              setState(() {
+                deleteCheck = false;
               });
               Navigator.of(context).pop();
             },
@@ -292,11 +302,11 @@ class _AccountsState extends State<Accounts> {
                                               account);
                                         },
                                         icon: const Icon(Icons.visibility)),
-                                    // index!=69?IconButton(
-                                    //     onPressed: () {
-                                    //       _deleteTransaction(index);
-                                    //     },
-                                    //     icon: const Icon(Icons.delete_forever)): const SizedBox()
+                                    index!=69?IconButton(
+                                        onPressed: () {
+                                          _deleteTransaction(account);
+                                        },
+                                        icon: const Icon(Icons.delete_forever)): const SizedBox()
                                   ],
                                 ),
                               ],
@@ -489,6 +499,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                         setState(() {
                           isLoading = false;
                         });
+                        //await FirebaseFirestore.instance.collection(collectionPath)
                         Navigator.of(context).pop(account);
                       }
                     },
