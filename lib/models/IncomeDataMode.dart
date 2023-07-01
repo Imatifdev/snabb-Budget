@@ -25,8 +25,8 @@ class IncomeDataCategory {
   IncomeDataCategory({required this.name, required this.image});
 }
 
-List<IncomeDataCategory> incomeCategories = [
+List<IncomeDataCategory> incomeCategories = [  
+  IncomeDataCategory(name: 'Bank', image: 'assets/images/fiance.png'),
+  IncomeDataCategory(name: 'Cash', image: 'assets/images/income.png'),
   IncomeDataCategory(name: 'Others', image: 'assets/images/others.png'),
-  IncomeDataCategory(name: 'Finance', image: 'assets/images/fiance.png'),
-  IncomeDataCategory(name: 'Income', image: 'assets/images/income.png'),
 ];

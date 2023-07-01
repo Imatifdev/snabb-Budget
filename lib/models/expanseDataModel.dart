@@ -26,13 +26,13 @@ class ExpanseDataCategory {
 }
 
 List<ExpanseDataCategory> expanseCategories = [
-  ExpanseDataCategory(name: 'Pets', image: 'assets/images/pets.png'),
-  ExpanseDataCategory(name: 'Others', image: 'assets/images/others.png'),
-  ExpanseDataCategory(name: 'Transport', image: 'assets/images/transport.png'),
-  ExpanseDataCategory(name: 'Home', image: 'assets/images/home.png'),
-  ExpanseDataCategory(name: 'Health', image: 'assets/images/health.png'),
-  ExpanseDataCategory(name: 'Family', image: 'assets/images/family.png'),
   ExpanseDataCategory(name: 'Food/Drink', image: 'assets/images/food.png'),
+  ExpanseDataCategory(name: 'Family', image: 'assets/images/family.png'),  
+  ExpanseDataCategory(name: 'Home', image: 'assets/images/home.png'),
+  ExpanseDataCategory(name: 'Health', image: 'assets/images/health.png'),  
+  ExpanseDataCategory(name: 'Pets', image: 'assets/images/pets.png'),  
   ExpanseDataCategory(name: 'Shopping', image: 'assets/images/shopping.png'),
+  ExpanseDataCategory(name: 'Transport', image: 'assets/images/transport.png'),    
   ExpanseDataCategory(name: 'Travelling', image: 'assets/images/travel.png'),
+  ExpanseDataCategory(name: 'Others', image: 'assets/images/others.png'),
 ];
