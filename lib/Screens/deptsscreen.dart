@@ -23,18 +23,20 @@ class BalanceScreen extends StatefulWidget {
 
 class _BalanceScreenState extends State<BalanceScreen> {
   String? currency = "";
-  final String userId = FirebaseAuth.instance.currentUser!.uid; 
-  getCurrency()async{
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+  getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
     //currency = currencyData.currency;
     print(currency);
   }
+
   @override
   void initState() {
     super.initState();
     getCurrency();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,7 +88,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                       balanceText =
                           '-${NumberFormat.currency(symbol: '$currency').format(-balanceProvider.totalBalance)}';
                     }
-                    return Text(balanceText);
+                    return Text(' ${balanceText}');
                   },
                 ),
               ],
@@ -133,8 +135,8 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                   Card(
                                     child: Container(
                                         decoration: BoxDecoration(
-                                         // color: bgcolor,
-                                        ),
+                                            // color: bgcolor,
+                                            ),
                                         child: data.balanceType == "Credit"
                                             ? Column(
                                                 crossAxisAlignment:
@@ -160,7 +162,9 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                           Row(
                                                             children: [
                                                               Text(
-                                                                AppLocalizations.of(context)!.you,
+                                                                AppLocalizations.of(
+                                                                        context)!
+                                                                    .you,
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         20,
@@ -264,7 +268,9 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        AppLocalizations.of(context)!.residualAmount,
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .residualAmount,
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
@@ -327,7 +333,9 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                         .black,
                                                               ),
                                                               Text(
-                                                                AppLocalizations.of(context)!.you,
+                                                                AppLocalizations.of(
+                                                                        context)!
+                                                                    .you,
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         20,
@@ -391,7 +399,9 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                        AppLocalizations.of(context)!.residualAmount,
+                                                        AppLocalizations.of(
+                                                                context)!
+                                                            .residualAmount,
                                                         style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
@@ -411,11 +421,15 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                               ).p(20)),
                                   ),
                                   Positioned(
-                                      right: 10,
-                                      top: 10,
-                                      child: IconButton(
-                                          onPressed: () {},
-                                          icon: Icon(Icons.delete)))
+                                    right: 10,
+                                    top: 10,
+                                    child: IconButton(
+                                      onPressed: () {
+                                        balanceProvider.deleteBalance(index);
+                                      },
+                                      icon: Icon(Icons.delete),
+                                    ),
+                                  )
                                 ]),
                               ],
                             );
@@ -654,8 +668,9 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
                         controller: _balanceController,
                         keyboardType:
                             TextInputType.numberWithOptions(decimal: true),
-                        decoration:
-                            InputDecoration(labelText: "${AppLocalizations.of(context)!.balance}Amount"),
+                        decoration: InputDecoration(
+                            labelText:
+                                "${AppLocalizations.of(context)!.balance}Amount"),
                         validator: (value) {
                           if (value == null || value.isEmpty) {
                             return 'Please enter the balance amount';

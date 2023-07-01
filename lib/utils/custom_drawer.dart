@@ -2,7 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/accounts.dart';
 import 'package:snabbudget/Screens/auth/login.dart';
-import 'package:snabbudget/Screens/balance.dart';
+import 'package:snabbudget/Screens/deptsscreen.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/Screens/preferences.dart';
 import 'package:snabbudget/Screens/setting_screen.dart';
@@ -47,7 +47,7 @@ class CustomDrawer extends StatelessWidget {
                                 fontSize: 20,
                                 color: Colors.white,
                                 fontWeight: FontWeight.bold)),
-                       // Text("FOR BUISNESS", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 12),)        
+                        // Text("FOR BUISNESS", style: TextStyle(color: Colors.white,fontWeight: FontWeight.bold, fontSize: 12),)
                       ],
                     ),
                   ),

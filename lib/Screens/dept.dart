@@ -4,7 +4,6 @@ import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
-
 import '../models/currency_controller.dart';
 import '../utils/custom_drawer.dart';
 
@@ -19,7 +18,7 @@ class _DebtState extends State<Debt> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final String userId = FirebaseAuth.instance.currentUser!.uid;
   String? currency = "";
-  getCurrency()async{
+  getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
     //currency = currencyData.currency;
@@ -50,7 +49,7 @@ class _DebtState extends State<Debt> {
               height: 20,
             ),
             Card(
-             // color: bgcolor,
+              // color: bgcolor,
               elevation: 3,
               child: Row(
                 children: [
@@ -86,7 +85,8 @@ class _DebtState extends State<Debt> {
                 ),
                 Text(
                   "${currency}0.00",
-                  style: const TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 22, fontWeight: FontWeight.bold),
                 ),
               ],
             ).pSymmetric(h: 20),
@@ -193,7 +193,6 @@ class _DebtState extends State<Debt> {
   //         style: const TextStyle(fontSize: 14, color: Colors.white),
   //       ));
   // }
-
 }
 
 class ExpandableFloatingActionButton extends StatefulWidget {

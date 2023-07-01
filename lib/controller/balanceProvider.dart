@@ -13,10 +13,20 @@ class BalanceProvider extends ChangeNotifier {
   }
 
   void deleteBalance(int index) {
-    balanceList.removeAt(index);
-    calculateTotalBalance();
+    BalanceData removedBalance = balanceList.removeAt(index);
+    if (removedBalance.balanceType == "Credit") {
+      totalBalance -= removedBalance.balance;
+    } else if (removedBalance.balanceType == "Debit") {
+      totalBalance += removedBalance.balance;
+    }
     notifyListeners();
   }
+
+  // void deleteBalance(int index) {
+  //   balanceList.removeAt(index);
+  //   calculateTotalBalance();
+  //   notifyListeners();
+  // }
 
   void calculateTotalBalance() {
     double total = 0;

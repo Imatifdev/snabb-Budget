@@ -20,7 +20,7 @@ import 'package:snabbudget/utils/brighness_provider.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
 import 'Screens/accounts.dart';
 import 'Screens/addincome.dart';
-import 'Screens/balance.dart';
+import 'Screens/deptsscreen.dart';
 import 'Screens/dept.dart';
 import 'Screens/setting_screen.dart';
 import 'controller/IncomeProvider.dart';

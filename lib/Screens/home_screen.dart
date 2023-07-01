@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
     if (docSnapshot2.exists) {
       Map<String, dynamic>? data = docSnapshot2.data();
       setState(() {
-        balance = data!["balance"];
+        var balance = data!["balance"];
         credit = data["credit"];
         dept = data["dept"];
         expense = data["expense"];
@@ -68,7 +68,7 @@ class _HomeScreenState extends State<HomeScreen> {
         cash = data["cash"];
         bankTransfer = data["bankTransfer"];
         creditCard = data["creditCard"];
-        currency = data["currency"];
+        var currency = data["currency"];
       });
     }
     print(userId);
