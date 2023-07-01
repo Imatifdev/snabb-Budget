@@ -11,6 +11,7 @@ import '../utils/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 import '../utils/transaction_card.dart';
+import 'notification_screen.dart';
 
 
 class DashboardScreen extends StatefulWidget {
@@ -154,7 +155,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                         ),
                         IconButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationScreen(),));
+                            },
                             icon: const ImageIcon(
                               AssetImage("assets/images/bell.png"),
                               size: 40,
