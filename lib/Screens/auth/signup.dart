@@ -4,11 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:snabbudget/Screens/auth/verification.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/utils/mycolors.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../models/registerviewmodel.dart';
+import '../../testingfiles/testsc.dart';
 import 'login.dart';
 
 class SignupScreen extends StatefulWidget {
@@ -62,6 +64,22 @@ class _SignupScreenState extends State<SignupScreen> {
 
   @override
   Widget build(BuildContext context) {
+    void _submitForm() {
+      if (_formKey.currentState!.validate()) {
+        // Perform login or further actions
+        String email = _emailController.text;
+        String password = _passwordController.text;
+
+        // Process the login credentials
+        Navigator.of(context).pushNamed(HomeScreen.routeName);
+
+        Navigator.push(context,
+            MaterialPageRoute(builder: (ctx) => EmailVerificationScreen()));
+        print('Email: $email');
+        print('Password: $password');
+      }
+    }
+
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     return GestureDetector(
@@ -253,23 +271,26 @@ class _SignupScreenState extends State<SignupScreen> {
                                   "First Name": _name.text.trim(),
                                   "Email": _emailController.text.trim(),
                                 });
-                                await FirebaseFirestore.instance.collection("UserTransactions").
-                                doc(userId).collection("data").
-                                doc("userData").set({
-                                  "balance":0,
-                                  "credit":0,
-                                  "dept":0,
-                                  "expense":0,
-                                  "income":0,
-                                  "cash":0,
-                                  "bankTransfer":0,
-                                  "creditCard":0,
-                                  "currency":"\$",
+                                await FirebaseFirestore.instance
+                                    .collection("UserTransactions")
+                                    .doc(userId)
+                                    .collection("data")
+                                    .doc("userData")
+                                    .set({
+                                  "balance": 0,
+                                  "credit": 0,
+                                  "dept": 0,
+                                  "expense": 0,
+                                  "income": 0,
+                                  "cash": 0,
+                                  "bankTransfer": 0,
+                                  "creditCard": 0
                                 });
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (ctx) => HomeScreen()),
+                                        builder: (ctx) =>
+                                            EmailVerificationScreen()),
                                     (Route<dynamic> route) => false);
                               } else {
                                 setState(() {

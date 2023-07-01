@@ -11,9 +11,8 @@ import '../models/IncomeDataMode.dart';
 import 'schedule_transactions.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'dart:io';
-
+import 'package:firebase_storage/firebase_storage.dart';
 
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
@@ -36,7 +35,6 @@ class _AddIncomeState extends State<AddIncome> {
   String formatTime = "";
   bool isLoading = false;
   final storage = FirebaseStorage.instance;
-
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -65,103 +63,102 @@ class _AddIncomeState extends State<AddIncome> {
   }
 
   Future<void> _takePicture() async {
-  final picker = ImagePicker();
-  var pickImage = await picker.pickImage(source: ImageSource.camera);
-  var pathPickImage = pickImage!.path;
+    final picker = ImagePicker();
+    var pickImage = await picker.pickImage(source: ImageSource.camera);
+    var pathPickImage = pickImage!.path;
 
-  if (pickImage != null) {
-    setState(() {
-      pathFile = pickImage!.path;
-    });
-
-    final File file = File(pickImage.path);
-    final String fileName = '${DateTime.now()}.jpg';
-    final Reference storageRef = storage.ref().child(fileName);
-    final UploadTask uploadTask = storageRef.putFile(file);
-
-    await uploadTask.whenComplete(() async {
-      final imageUrl = await storageRef.getDownloadURL();
-
+    if (pickImage != null) {
       setState(() {
-        pathPickImage = imageUrl ;
+        pathFile = pickImage!.path;
       });
-    });
-  }
-}
 
+      final File file = File(pickImage.path);
+      final String fileName = '${DateTime.now()}.jpg';
+      final Reference storageRef = storage.ref().child(fileName);
+      final UploadTask uploadTask = storageRef.putFile(file);
+
+      await uploadTask.whenComplete(() async {
+        final imageUrl = await storageRef.getDownloadURL();
+
+        setState(() {
+          pathPickImage = imageUrl;
+        });
+      });
+    }
+  }
 
   IncomeDataCategory? selectedCategory;
   List<IncomeData> incomeDatList = [];
 
 //function for storing data and passing to another screen
   void _saveIncome() async {
-  if (_formKey.currentState!.validate() && selectedCategory != null) {
-    setState(() {
-      isLoading = true; // Show the progress indicator
-    });
+    if (_formKey.currentState!.validate() && selectedCategory != null) {
+      setState(() {
+        isLoading = true; // Show the progress indicator
+      });
 
-    double amount = double.parse(_amountController.text);
-    String name = _nameController.text.isNotEmpty
-        ? _nameController.text
-        : selectedCategory!.name; // Use category name if name is not provided
-    DateTime dateTime = DateTime(
-      _selectedDate.year,
-      _selectedDate.month,
-      _selectedDate.day,
-    );
-    String image = selectedCategory!.image;
+      double amount = double.parse(_amountController.text);
+      String name = _nameController.text.isNotEmpty
+          ? _nameController.text
+          : selectedCategory!.name; // Use category name if name is not provided
+      DateTime dateTime = DateTime(
+        _selectedDate.year,
+        _selectedDate.month,
+        _selectedDate.day,
+      );
+      String image = selectedCategory!.image;
 
-    // Upload image to Firebase Cloud Storage
-    String imageUrl = "";
-    if (pathFile.isNotEmpty) {
-      Reference storageReference = FirebaseStorage.instance.ref().child(DateTime.now().toString());
-      TaskSnapshot taskSnapshot = await storageReference.putFile(File(pathFile));
-      imageUrl = await taskSnapshot.ref.getDownloadURL();
+      // Upload image to Firebase Cloud Storage
+      String imageUrl = "";
+      if (pathFile.isNotEmpty) {
+        Reference storageReference =
+            FirebaseStorage.instance.ref().child(DateTime.now().toString());
+        TaskSnapshot taskSnapshot =
+            await storageReference.putFile(File(pathFile));
+        imageUrl = await taskSnapshot.ref.getDownloadURL();
+      }
+
+      // Save data to Firestore
+      DocumentReference transactionRef = await FirebaseFirestore.instance
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("transactions")
+          .add({
+        "name": name,
+        "amount": int.parse(_amountController.text),
+        "category": "TransactionCat.moneyTransfer",
+        "type": "TransactionType.income",
+        "date": _selectedDate,
+        "time": formatTime,
+        "imgUrl": image,
+        "fileUrl": imageUrl // Use the obtained image URL
+      });
+
+      // Update user's balance
+      await FirebaseFirestore.instance
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("data")
+          .doc("userData")
+          .update({"balance": widget.balance + amount});
+
+      setState(() {
+        _nameController.clear();
+        _amountController.clear();
+        isLoading = false; // Hide the progress indicator
+      });
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => HomeScreen(),
+        ),
+      );
     }
-
-    // Save data to Firestore
-    DocumentReference transactionRef = await FirebaseFirestore.instance
-        .collection("UserTransactions")
-        .doc(userId)
-        .collection("transactions")
-        .add({
-      "name": name,
-      "amount": int.parse(_amountController.text),
-      "category": "TransactionCat.moneyTransfer",
-      "type": "TransactionType.income",
-      "date": _selectedDate,
-      "time": formatTime,
-      "imgUrl": image,
-      "fileUrl":imageUrl // Use the obtained image URL
-    });
-
-    // Update user's balance
-    await FirebaseFirestore.instance
-        .collection("UserTransactions")
-        .doc(userId)
-        .collection("data")
-        .doc("userData")
-        .update({"balance": widget.balance + amount});
-
-    setState(() {
-      _nameController.clear();
-      _amountController.clear();
-      isLoading = false; // Hide the progress indicator
-    });
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => HomeScreen(),
-      ),
-    );
   }
-}
-
 
   void schedualeTransaction() async {
-    if ( _formKey.currentState!.validate() &&
-        selectedCategory != null) {
+    if (_formKey.currentState!.validate() && selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
       // DateTime dateTime = DateTime(
@@ -174,16 +171,18 @@ class _AddIncomeState extends State<AddIncome> {
       //   _selectedDate.minute,
       // );
       String image = selectedCategory!.image;
-      await FirebaseFirestore.instance.
-      collection("UserTransactions").doc(userId).
-      collection("SchedualTrsanactions").add({
-       "name": name,
-      "amount": int.parse(_amountController.text),
-      "category": "TransactionCat.moneyTransfer",
-      "type": "TransactionType.income",
-      "date": _selectedDate,
-      "time": formatTime,
-      "imgUrl": image, 
+      await FirebaseFirestore.instance
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("SchedualTrsanactions")
+          .add({
+        "name": name,
+        "amount": int.parse(_amountController.text),
+        "category": "TransactionCat.moneyTransfer",
+        "type": "TransactionType.income",
+        "date": _selectedDate,
+        "time": formatTime,
+        "imgUrl": image,
       });
     }
     Navigator.push(
@@ -293,7 +292,8 @@ class _AddIncomeState extends State<AddIncome> {
                           contentPadding:
                               EdgeInsets.symmetric(vertical: 0, horizontal: 20),
                           fillColor: Colors.black.withOpacity(0.2),
-                          hintText: "${AppLocalizations.of(context)!.incomeName} (optional) ",
+                          hintText:
+                              "${AppLocalizations.of(context)!.incomeName} (optional) ",
                           alignLabelWithHint: true,
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
@@ -510,7 +510,9 @@ class _AddIncomeState extends State<AddIncome> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: _takePicture, child: Text(AppLocalizations.of(context)!.addFile)),
+                              onPressed: _takePicture,
+                              child:
+                                  Text(AppLocalizations.of(context)!.addFile)),
                           SizedBox(
                               width: 200,
                               child: Text(
@@ -523,7 +525,7 @@ class _AddIncomeState extends State<AddIncome> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           InkWell(
-                            onTap: (){
+                            onTap: () {
                               schedualeTransaction();
                             },
                             child: Text(
@@ -541,23 +543,22 @@ class _AddIncomeState extends State<AddIncome> {
                   SizedBox(
                     height: height / 20,
                   ),
-                !isLoading?
-                  Center(
-                    child: SizedBox(
-                      width: width / 2,
-                      child:  
-                      
-                      ElevatedButton(
-                        onPressed: () {
-                          _saveIncome();
-                        },
-                        style: ElevatedButton.styleFrom(
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(50))),
-                        child: Text(AppLocalizations.of(context)!.add),
-                      ),
-                    ),
-                  ): CircularProgressIndicator()
+                  !isLoading
+                      ? Center(
+                          child: SizedBox(
+                            width: width / 2,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                _saveIncome();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(50))),
+                              child: Text(AppLocalizations.of(context)!.add),
+                            ),
+                          ),
+                        )
+                      : CircularProgressIndicator()
                 ],
               ),
             ),

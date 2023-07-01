@@ -83,7 +83,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             home: FirebaseAuth.instance.currentUser != null
-                ? HomeScreen()
+                ? Welcome()
                 : Welcome(),
             supportedLocales: L10n.all,
             locale: _locale,

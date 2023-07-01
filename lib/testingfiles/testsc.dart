@@ -96,7 +96,7 @@
 //         // Email is verified, navigate to the home screen
 //         Navigator.pushReplacement(
 //           context,
-//           MaterialPageRoute(builder: (context) => HomeScreen()),
+//           MaterialPageRoute(builder: (context) => HomeScreen1()),
 //         );
 //       }
 //     });
@@ -140,7 +140,7 @@
 //   }
 // }
 
-// class HomeScreen extends StatelessWidget {
+// class HomeScreen1 extends StatelessWidget {
 //   @override
 //   Widget build(BuildContext context) {
 //     return Scaffold(
