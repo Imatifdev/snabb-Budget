@@ -141,7 +141,7 @@ class _TransactionsScreenState extends State<TransactionsScreen>{
       "Jan","Feb","March","April","May","June","July","Aug","Sept","Oct","Nov","Dec"
     ];
     List<String> dates = List.from(
-  {...transactions.map((transaction) => "${month[transaction.date.month]}, ${transaction.date.day}, ${transaction.date.year}")}
+  {...transactions.map((transaction) => "${month[transaction.date.month-1]}, ${transaction.date.day}, ${transaction.date.year}")}
 );
     List<Widget> children = [
       DailyTransactions(transactions: transactions, dates: dates, month: month),

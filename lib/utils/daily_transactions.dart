@@ -22,17 +22,22 @@ class _DailyTransactionsState extends State<DailyTransactions> {
           itemBuilder: (context, index) {
           var  selectedDate = widget.dates[index];
           List specificTrans = [];
-          specificTrans = widget.transactions.where((transaction) => "${widget.month[transaction.date.month]}, ${transaction.date.day}, ${transaction.date.year}" == selectedDate).toList();
+          specificTrans = widget.transactions.where((transaction) =>
+  "${widget.month[transaction.date.month - 1]}, ${transaction.date.day}, ${transaction.date.year}" == selectedDate
+).toList();
           return Padding(
             padding: const EdgeInsets.all(20), 
             child: Column( 
             mainAxisAlignment: MainAxisAlignment.start,  
             children: [
               Align(
-                alignment: Alignment.topLeft,
-                child: "${widget.month[DateTime.now().month]}, ${DateTime.now().day}, ${DateTime.now().year}" == widget.dates[index]? 
-          const Text("Today") :Text(widget.dates[index].toString()),
-              ),
+  alignment: Alignment.topLeft,
+  child: "${widget.month[DateTime.now().month - 1]}, ${DateTime.now().day}, ${DateTime.now().year}" == widget.dates[index] ?
+    const Text("Today") :
+    Text(widget.dates[index].toString()),
+),
+
+
               SizedBox(
               height: specificTrans.length*80,
               //specificTrans.length == 1?80: specificTrans.length == 2?160: specificTrans.length == 3?240: specificTrans.length == 3?320 : 400 ,
