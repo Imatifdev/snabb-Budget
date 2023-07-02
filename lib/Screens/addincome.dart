@@ -65,7 +65,7 @@ class _AddIncomeState extends State<AddIncome> {
 
   Future<void> _takePicture() async {
     final picker = ImagePicker();
-    var pickImage = await picker.pickImage(source: ImageSource.camera);
+    var pickImage = await picker.getImage(source: ImageSource.camera);
     var pathPickImage = pickImage!.path;
 
     setState(() {

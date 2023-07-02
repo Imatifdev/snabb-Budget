@@ -110,7 +110,7 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
               ),
             ),
             transactions.isNotEmpty? SizedBox(
-              height: size.height - 300,
+              height: size.height - 200,
               child: ListView.builder(
                 itemCount: transactions.length,
                 itemBuilder: (context, index) {

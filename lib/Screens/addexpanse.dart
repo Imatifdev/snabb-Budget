@@ -38,7 +38,7 @@ class _AddExpanseState extends State<AddExpanse> {
 
   Future<void> _takePicture() async {
     final picker = ImagePicker();
-    var pickImage = await picker.pickImage(source: ImageSource.camera);
+    var pickImage = await picker.getImage(source: ImageSource.camera);
     var pickImagePath = pickImage!.path;
     setState(() {
       pathFile = pickImage.path;
