@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String name = "";
   String email = "";
   String phone = "";
-  var balance = 0;
+  double balance = 0;
   int credit = 0;
   int dept = 0;
   int expense = 0;
@@ -118,9 +118,9 @@ class _HomeScreenState extends State<HomeScreen> {
       check++;
     }
     final List<Widget> pages = [
-      DashboardScreen(transactions: transactionsList, balance: double.parse(balance.toString as String)),
+      DashboardScreen(transactions: transactionsList, balance: balance),
       DailyStats(
-          balance: double.parse(balance.toString as String),
+          balance: balance,
           credit: credit,
           dept: dept,
           expense: expense,
@@ -133,7 +133,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       key: scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: ExpandableFloatingActionButton(balance: double.parse(balance.toString as String)),
+      floatingActionButton: ExpandableFloatingActionButton(balance: balance),
       body: PageView(
         controller: _pageController,
         children: pages,

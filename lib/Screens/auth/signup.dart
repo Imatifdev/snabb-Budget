@@ -284,7 +284,8 @@ class _SignupScreenState extends State<SignupScreen> {
                                   "income": 0,
                                   "cash": 0,
                                   "bankTransfer": 0,
-                                  "creditCard": 0
+                                  "creditCard": 0,
+                                  "currency":"\$"
                                 });
                                 Navigator.pushAndRemoveUntil(
                                     context,
