@@ -16,7 +16,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
-  final double balance;
+  final num balance;
   const AddIncome({super.key, required this.balance});
 
   @override
@@ -180,7 +180,7 @@ class _AddIncomeState extends State<AddIncome> {
         "type": "TransactionType.income",
         "date": _selectedDate,
         "time": formatTime,
-        "fileUrl":imageUrl,
+        "fileUrl": imageUrl,
         "imgUrl": image,
       });
     }
@@ -526,21 +526,23 @@ class _AddIncomeState extends State<AddIncome> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          !schedual?InkWell(
-                            onTap: () {
-                              setState(() {
-                                schedual = true;
-                              });
-                              schedualeTransaction();
-                            },
-                            child: Text(
-                              AppLocalizations.of(context)!.schedule,
-                              style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Color(0xff2EA6C1)),
-                            ),
-                          ):CircularProgressIndicator(),
+                          !schedual
+                              ? InkWell(
+                                  onTap: () {
+                                    setState(() {
+                                      schedual = true;
+                                    });
+                                    schedualeTransaction();
+                                  },
+                                  child: Text(
+                                    AppLocalizations.of(context)!.schedule,
+                                    style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Color(0xff2EA6C1)),
+                                  ),
+                                )
+                              : CircularProgressIndicator(),
                         ],
                       )
                     ],
