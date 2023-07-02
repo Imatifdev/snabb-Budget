@@ -17,21 +17,20 @@ import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
 import 'currency_screen.dart';
-import 'export.dart';
 import 'language_screen.dart';
 
-class SettingScreen extends StatefulWidget {
+class ExportScreen extends StatefulWidget {
   static const routeName = "settings-screen";
 
-  SettingScreen({
+  ExportScreen({
     super.key,
   });
 
   @override
-  State<SettingScreen> createState() => _SettingScreenState();
+  State<ExportScreen> createState() => _ExportScreenState();
 }
 
-class _SettingScreenState extends State<SettingScreen> {
+class _ExportScreenState extends State<ExportScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final String userId = FirebaseAuth.instance.currentUser!.uid;
   List<Transaction> transactions = [];
@@ -41,7 +40,6 @@ class _SettingScreenState extends State<SettingScreen> {
     super.initState();
     TransactionData transactionData = TransactionData();
     transactionData.fetchTransactions(userId);
-    getCurrency();
     transactions = transactionData.transactions;
   }
 
@@ -141,17 +139,6 @@ class _SettingScreenState extends State<SettingScreen> {
     OpenFile.open(fileName);
   }
 
-  String? currency = "";
-  getCurrency() async {
-    CurrencyData currencyData = CurrencyData();
-    String? local = await currencyData.fetchCurrency(userId);
-    setState(() {
-      currency = local;
-    });
-    //currency = currencyData.currency;
-    print(currency);
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -181,7 +168,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               size: 40,
                             )),
                         Text(
-                          AppLocalizations.of(context)!.settings,
+                          "Export",
                           style: const TextStyle(
                               fontSize: 14, fontWeight: FontWeight.bold),
                         ),
@@ -199,73 +186,6 @@ class _SettingScreenState extends State<SettingScreen> {
                         Align(
                             alignment: Alignment.centerLeft,
                             child: Text(
-                              AppLocalizations.of(context)!.basicSettings,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Theme.of(context).primaryColor),
-                            )),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(context)!.language,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle:
-                              Text(AppLocalizations.of(context)!.languageName),
-                          trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const LanguageScreen(),
-                            ));
-                          },
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(context)!.currency,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(currency as String),
-                          trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const CurrencyScreen(),
-                            ));
-                          },
-                        ),
-                        ListTile(
-                          title: const Text(
-                            "Change Theme",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: const Text("Light"),
-                          trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                          onTap: () {
-                            Navigator.of(context).push(MaterialPageRoute(
-                              builder: (context) => const ThemeChangeScreen(),
-                            ));
-                          },
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(context)!.eraseAll,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle:
-                              Text(AppLocalizations.of(context)!.eraseAllData),
-                          trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                          onTap: () {},
-                        )
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 30, top: 41, right: 30),
-                    child: Column(
-                      children: [
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
                               AppLocalizations.of(context)!.databaseSettings,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
@@ -274,62 +194,25 @@ class _SettingScreenState extends State<SettingScreen> {
                             )),
                         ListTile(
                           title: Text(
-                            AppLocalizations.of(context)!.report,
+                            AppLocalizations.of(context)!.files,
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
-                          subtitle: Text(
-                              AppLocalizations.of(context)!.generateReports),
+                          subtitle:
+                              Text(AppLocalizations.of(context)!.xlsDownload),
                           trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                          onTap: () {},
+                          onTap: () {
+                            createExcel(transactions);
+                          },
                         ),
                         ListTile(
                           title: Text(
-                            "Export ",
+                            "Export as PDF",
                             style: const TextStyle(fontWeight: FontWeight.bold),
                           ),
                           trailing: const Icon(Icons.arrow_forward_ios_rounded),
                           onTap: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (ctx) => ExportScreen()));
+                            createPDF(transactions);
                           },
-                        ),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding:
-                        const EdgeInsets.only(left: 30, top: 41, right: 30),
-                    child: Column(
-                      children: [
-                        Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text(
-                              AppLocalizations.of(context)!.help,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                  color: Theme.of(context).primaryColor),
-                            )),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(context)!.feedback,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(AppLocalizations.of(context)!
-                              .giveFeedbackSupport),
-                          trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                          onTap: () {},
-                        ),
-                        ListTile(
-                          title: Text(
-                            AppLocalizations.of(context)!.help,
-                            style: const TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          subtitle: Text(AppLocalizations.of(context)!.askHelp),
-                          trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                          onTap: () {},
                         ),
                       ],
                     ),
