@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/addexpanse.dart';
 import 'package:snabbudget/Screens/addincome.dart';
 
+import '../Screens/transfer_screen.dart';
+
 class ExpandableFloatingActionButton extends StatefulWidget {
   final num balance;
   const ExpandableFloatingActionButton({super.key, required this.balance});
@@ -63,7 +65,7 @@ class _ExpandableFloatingActionButtonState
         if (_isExpanded)
           FloatingActionButton(
             onPressed: () {
-              // Handle first action
+              Navigator.of(context).push(MaterialPageRoute(builder: (context) => const TransferScreen(),));
             },
             backgroundColor: const Color.fromRGBO(86, 111, 245, 1),
             heroTag: null,

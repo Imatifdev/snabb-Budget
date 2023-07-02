@@ -3,12 +3,14 @@
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import '../models/IncomeDataMode.dart';
 import 'schedule_transactions.dart';
+import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -88,7 +90,69 @@ class _AddIncomeState extends State<AddIncome> {
 
   IncomeDataCategory? selectedCategory;
   List<IncomeData> incomeDatList = [];
-
+  
+  Future<void> selectImage(BuildContext context) async {
+  final PermissionStatus status = await Permission.photos.request();
+  if (status.isGranted) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Image'),
+          content: Text('Do you want to select an image from the gallery or take a picture?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Gallery'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final picker = ImagePicker();
+                final pickedImage = await picker.getImage(source: ImageSource.gallery);
+                // Handle the picked image
+                if (pickedImage != null) {
+                  // Do something with the picked image
+                  // For example, you can display it in an Image widget
+                }
+              },
+            ),
+            TextButton(
+              child: Text('Camera'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final picker = ImagePicker();
+                final pickedImage = await picker.getImage(source: ImageSource.camera);
+                // Handle the picked image
+                if (pickedImage != null) {
+                  // Do something with the picked image
+                  // For example, you can display it in an Image widget
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    // Handle the case where the user denied permission
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Permission Denied'),
+          content: Text('Please grant permission to access photos.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () async {
+                await Permission.photos.request();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
 //function for storing data and passing to another screen
   void _saveIncome() async {
     if (_formKey.currentState!.validate() && selectedCategory != null) {
@@ -144,7 +208,7 @@ class _AddIncomeState extends State<AddIncome> {
       setState(() {
         _nameController.clear();
         _amountController.clear();
-        isLoading = false; // Hide the progress indicator
+        isLoading = false; 
       });
 
       Navigator.push(
@@ -207,6 +271,33 @@ class _AddIncomeState extends State<AddIncome> {
     final cameras = await availableCameras();
     _cameraController = CameraController(cameras[0], ResolutionPreset.medium);
     await _cameraController!.initialize();
+  }
+
+  Future getImage(ImgSource source) async {
+    var image = await ImagePickerGC.pickImage(
+        enableCloseButton: true,
+        closeIcon: Icon(
+          Icons.close,
+          color: Colors.red,
+          size: 12,
+        ),
+        context: context,
+        source: source,
+        barrierDismissible: true,
+        cameraIcon: Icon(
+          Icons.camera_alt,
+          color: Colors.red,
+        ), //cameraIcon and galleryIcon can change. If no icon provided default icon will be present
+        cameraText: Text(
+          "From Camera",
+          style: TextStyle(color: Colors.red),
+        ),
+        galleryText: Text(
+          "From Gallery",
+          style: TextStyle(color: Colors.blue),
+        ));
+    setState(() {
+    });
   }
 
   @override
@@ -278,15 +369,6 @@ class _AddIncomeState extends State<AddIncome> {
                         height: height / 80,
                       ),
                       TextFormField(
-                        // validator: (value) {
-                        //   if (value!.isEmpty) {
-                        //     return 'Please enter a name';
-                        //   }
-                        //   if (value.length < 3) {
-                        //     return 'Name must be at least 3 characters long';
-                        //   }
-                        //   return null;
-                        // },
                         controller: _nameController,
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
@@ -394,34 +476,6 @@ class _AddIncomeState extends State<AddIncome> {
                             );
                           }).toList(),
                         ),
-
-                        // DropdownButtonFormField<DropdownItem>(
-                        //   hint: Text("Category"),
-                        //   value: _selectedItem,
-
-                        //   decoration: InputDecoration(
-                        //     contentPadding: EdgeInsets.all(10),
-                        //     border: OutlineInputBorder(
-                        //       borderRadius: BorderRadius.circular(10),
-                        //     ),
-                        //   ),
-                        //   items: _dropdownItems.map((DropdownItem item) {
-                        //     return DropdownMenuItem<DropdownItem>(
-                        //       value: item,
-                        //       child: Row(
-                        //         children: [
-                        //           Image.asset(
-                        //             item.imagePath,
-                        //             width: 30,
-                        //             height: 30,
-                        //           ),
-                        //           SizedBox(width: 10),
-                        //           Text(item.name),
-                        //         ],
-                        //       ),
-                        //     );
-                        //   }).toList(),
-                        // ),
                       ),
                       SizedBox(
                         height: height / 30,
@@ -512,7 +566,10 @@ class _AddIncomeState extends State<AddIncome> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: _takePicture,
+                              onPressed:() async{
+                               //_takePicture();
+                               selectImage(context);
+                                },
                               child:
                                   Text(AppLocalizations.of(context)!.addFile)),
                           SizedBox(

@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import '../controller/balanceProvider.dart';
 import '../models/balance_data.dart';
 import '../models/currency_controller.dart';
+import '../models/dept.dart';
 import '../utils/balance_ex.dart';
 import '../utils/custom_drawer.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -24,112 +26,198 @@ class BalanceScreen extends StatefulWidget {
 class _BalanceScreenState extends State<BalanceScreen> {
   String? currency = "";
   final String userId = FirebaseAuth.instance.currentUser!.uid;
+  
   getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
     //currency = currencyData.currency;
     print(currency);
   }
+  
+  Future<List<Dept>> fetchDepts(String userId) async {
+  List<Dept> depts = [];
+
+  try {
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("depts")
+        .get();
+
+    querySnapshot.docs.forEach((doc) {
+      Dept dept = Dept.fromDocumentSnapshot(doc, doc.id);
+      depts.add(dept);
+    });
+  } catch (e) {
+    print('Error fetching depts: $e');
+  }
+
+  return depts;
+}
+List<Dept> depts=[];
+  void getdepts()async{
+    depts = await fetchDepts(userId);
+  }
 
   @override
   void initState() {
     super.initState();
     getCurrency();
+    getdepts();
   }
 
   @override
   Widget build(BuildContext context) {
+    Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: widget.scaffoldKey,
       extendBody: true,
       drawer: CustomDrawer(),
       //backgroundColor: Colors.grey[100],
       body: SafeArea(
-        child: Column(
-          children: [
-            Card(
-                child: SizedBox(
-              height: 50,
-              child: Row(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              Card(
+                  child: SizedBox(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                        onPressed: () {
+                          widget.scaffoldKey.currentState?.openDrawer();
+                        },
+                        icon: const ImageIcon(
+                          AssetImage("assets/images/menu.png"),
+                          size: 40,
+                        )),
+                    const Text(
+                      "DEPTS",
+                      style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      width: 50,
+                    )
+                  ],
+                ),
+              )).pOnly(top: 10),
+              Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  IconButton(
-                      onPressed: () {
-                        widget.scaffoldKey.currentState?.openDrawer();
-                      },
-                      icon: const ImageIcon(
-                        AssetImage("assets/images/menu.png"),
-                        size: 40,
-                      )),
-                  const Text(
-                    "DEPTS",
-                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                  Text(
+                    AppLocalizations.of(context)!.residualAmount,
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  const SizedBox(
-                    width: 50,
-                  )
+                  Consumer<BalanceProvider>(
+                    builder: (context, balanceProvider, _) {
+                      String balanceText;
+                      if (balanceProvider.totalBalance >= 0) {
+                        balanceText = NumberFormat.currency(symbol: '$currency')
+                            .format(balanceProvider.totalBalance);
+                      } else {
+                        balanceText =
+                            '-${NumberFormat.currency(symbol: '$currency').format(-balanceProvider.totalBalance)}';
+                      }
+                      return Text(' ${balanceText}');
+                    },
+                  ),
                 ],
-              ),
-            )).pOnly(top: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  AppLocalizations.of(context)!.residualAmount,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                Consumer<BalanceProvider>(
-                  builder: (context, balanceProvider, _) {
-                    String balanceText;
-                    if (balanceProvider.totalBalance >= 0) {
-                      balanceText = NumberFormat.currency(symbol: '$currency')
-                          .format(balanceProvider.totalBalance);
-                    } else {
-                      balanceText =
-                          '-${NumberFormat.currency(symbol: '$currency').format(-balanceProvider.totalBalance)}';
-                    }
-                    return Text(' ${balanceText}');
-                  },
-                ),
-              ],
-            ).pSymmetric(h: 20, v: 20),
-            Consumer<BalanceProvider>(
-              builder: (context, balanceProvider, _) {
-                return balanceProvider.balanceList.isEmpty
-                    ? Column(
-                        children: [
-                          SizedBox(
-                            height: 200,
-                          ),
-                          Image.asset(
-                            'assets/images/icon.jpg',
-                            height: 100,
-                          ),
-                          SizedBox(
-                            height: 40,
-                          ),
-                          Center(
-                            child: Text(
-                              "  Your Debts are empty.\nWanna Create a Account?",
-                              style: TextStyle(fontSize: 19),
+              ).pSymmetric(h: 20, v: 20),
+              depts.isNotEmpty? Column(
+                          children: [
+                            SizedBox(
+                              height: 200,
                             ),
-                          ),
-                        ],
-                      )
-                    : Expanded(
-                        child: ListView.builder(
-                          itemCount: balanceProvider.balanceList.length,
+                            Image.asset(
+                              'assets/images/icon.jpg',
+                              height: 100,
+                            ),
+                            SizedBox(
+                              height: 40,
+                            ),
+                            Center(
+                              child: Text(
+                                "  Your Debts are empty.\nWanna Create a Account?",
+                                style: TextStyle(fontSize: 19),
+                              ),
+                            ),
+                          ],
+                        ):
+                        //:
+                      // : Expanded(
+                      //     child: ListView.builder(
+                      //       itemCount: balanceProvider.balanceList.length,
+                      //       itemBuilder: (context, index) {
+                      //         final data = balanceProvider.balanceList[index];
+                      //         String status;
+                      //         if (data.balanceType == "Credit") {
+                      //           status = "Paid";
+                      //         } else if (data.balanceType == "Debit") {
+                      //           status = "Pending";
+                      //         } else {
+                      //           status = "";
+                      //         }
+                      //         return deptCard(data, context, status, balanceProvider, index);
+                      //       },
+                      //     ).p(10),
+                      //   );
+                  SizedBox(
+                    height: 450,
+                    width: size.width-10,
+                    child: StreamBuilder<QuerySnapshot>(
+                    stream: FirebaseFirestore.instance
+                        .collection("UserTransactions")
+                        .doc(userId)
+                        .collection("depts")
+                        .snapshots(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData) {
+                        List<Dept> depts = snapshot.data!.docs
+                            .map((doc) => Dept.fromDocumentSnapshot(doc, doc.id))
+                            .toList();
+                  
+                        // Display the depts on the screen
+                        return ListView.builder(
+                          itemCount: depts.length,
                           itemBuilder: (context, index) {
-                            final data = balanceProvider.balanceList[index];
-                            String status;
-                            if (data.balanceType == "Credit") {
-                              status = "Paid";
-                            } else if (data.balanceType == "Debit") {
-                              status = "Pending";
-                            } else {
-                              status = "";
-                            }
-                            return Column(
+                            Dept dept = depts[index];
+                            return deptCard(dept, context);
+                          },
+                        );
+                      } else if (snapshot.hasError) {
+                        return Text('Error: ${snapshot.error}');
+                      } else {
+                        return CircularProgressIndicator();
+                      }
+                    },
+                  ),
+                  )
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: BlanceExpandableFloating(),
+      //  Column(
+      //   mainAxisAlignment: MainAxisAlignment.end,
+      //   children: [
+      //     FloatingActionButton(
+      //     onPressed: () => _openAddBalanceDialog(context, 'Credit'),
+      //       child: Icon(Icons.add),
+      //     ),
+      //     SizedBox(height: 16),
+      //     FloatingActionButton(
+      //       onPressed: () => _openAddBalanceDialog(context, 'Debit'),
+      //       child: Icon(Icons.remove),
+      //     ),
+      //   ],
+      // ),
+    );
+  }
+
+  Column deptCard(
+   Dept dept, BuildContext context,) {
+    return Column(
                               children: [
                                 Stack(children: [
                                   Card(
@@ -137,7 +225,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                         decoration: BoxDecoration(
                                             // color: bgcolor,
                                             ),
-                                        child: data.balanceType == "Credit"
+                                        child: dept.type == "Credit"
                                             ? Column(
                                                 crossAxisAlignment:
                                                     CrossAxisAlignment.start,
@@ -152,7 +240,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                 .start,
                                                         children: [
                                                           Text(
-                                                            '${data.balanceType}',
+                                                            '${dept.type}',
                                                             style: TextStyle(
                                                                 fontSize: 20,
                                                                 fontWeight:
@@ -176,7 +264,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                 Icons
                                                                     .arrow_right_alt_sharp,
                                                                 size: 35,
-                                                                color: data.balanceType ==
+                                                                color: dept.type ==
                                                                         "Credit"
                                                                     ? Colors
                                                                         .green
@@ -184,7 +272,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                         .black,
                                                               ),
                                                               Text(
-                                                                data.person,
+                                                                dept.to,
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         20,
@@ -204,7 +292,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                          '${DateFormat.yMMMd().format(data.currentDate)}'),
+                                                          '${DateFormat.yMMMd().format(dept.date)}'),
                                                       Text(
                                                         "%",
                                                         style: TextStyle(
@@ -214,12 +302,12 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          '${DateFormat.yMMMd().format(data.dueDate)}'),
+                                                          '${DateFormat.yMMMd().format(dept.backDate)}'),
                                                     ],
                                                   ),
                                                   Container(
                                                     height: 5,
-                                                    color: data.balanceType ==
+                                                    color: dept.type ==
                                                             "Credit"
                                                         ? Colors.green
                                                         : Colors.red,
@@ -239,10 +327,10 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          ' ${NumberFormat.currency(symbol: '$currency').format(data.balance)}'),
+                                                          ' ${NumberFormat.currency(symbol: '$currency').format(dept.amount)}'),
                                                     ],
                                                   ),
-                                                  if (data.balanceType ==
+                                                  if (dept.type ==
                                                       "Debit")
                                                     Row(
                                                       children: [
@@ -251,7 +339,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                         Column(
                                                           children: [
                                                             Text(
-                                                              '${data.balanceType}',
+                                                              '${dept.type}',
                                                               style: TextStyle(
                                                                   fontSize: 20,
                                                                   fontWeight:
@@ -278,7 +366,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          ' $status  ${NumberFormat.currency(symbol: '$currency').format(data.balance)}',
+                                                          ' ${dept.status}  ${NumberFormat.currency(symbol: '$currency').format(dept.amount)}',
                                                           style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
@@ -303,7 +391,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                 .start,
                                                         children: [
                                                           Text(
-                                                            '${data.balanceType}',
+                                                            '${dept.type}',
                                                             style: TextStyle(
                                                                 fontSize: 20,
                                                                 fontWeight:
@@ -313,7 +401,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                           Row(
                                                             children: [
                                                               Text(
-                                                                data.person,
+                                                                dept.to,
                                                                 style: TextStyle(
                                                                     fontSize:
                                                                         20,
@@ -325,7 +413,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                 Icons
                                                                     .arrow_right_alt_sharp,
                                                                 size: 35,
-                                                                color: data.balanceType ==
+                                                                color: dept.type ==
                                                                         "Credit"
                                                                     ? Colors
                                                                         .green
@@ -355,7 +443,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                             .spaceBetween,
                                                     children: [
                                                       Text(
-                                                          '${DateFormat.yMMMd().format(data.currentDate)}'),
+                                                          '${DateFormat.yMMMd().format(dept.date)}'),
                                                       Text(
                                                         "%",
                                                         style: TextStyle(
@@ -365,12 +453,12 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          '${DateFormat.yMMMd().format(data.dueDate)}'),
+                                                          '${DateFormat.yMMMd().format(dept.backDate)}'),
                                                     ],
                                                   ),
                                                   Container(
                                                     height: 5,
-                                                    color: data.balanceType ==
+                                                    color: dept.type ==
                                                             "Credit"
                                                         ? Colors.green
                                                         : Colors.red,
@@ -390,7 +478,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          ' ${NumberFormat.currency(symbol: '$currency').format(data.balance)}'),
+                                                          ' ${NumberFormat.currency(symbol: '$currency').format(dept.amount)}'),
                                                     ],
                                                   ),
                                                   Row(
@@ -409,7 +497,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                                                     .bold),
                                                       ),
                                                       Text(
-                                                          ' $status  ${NumberFormat.currency(symbol: '$currency').format(data.balance)}',
+                                                          ' ${dept.status}  ${NumberFormat.currency(symbol: '$currency').format(dept.amount)}',
                                                           style: TextStyle(
                                                             fontSize: 16,
                                                             fontWeight:
@@ -425,7 +513,6 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                     top: 10,
                                     child: IconButton(
                                       onPressed: () {
-                                        balanceProvider.deleteBalance(index);
                                       },
                                       icon: Icon(Icons.delete),
                                     ),
@@ -433,30 +520,6 @@ class _BalanceScreenState extends State<BalanceScreen> {
                                 ]),
                               ],
                             );
-                          },
-                        ).p(10),
-                      );
-              },
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: BlanceExpandableFloating(),
-      //  Column(
-      //   mainAxisAlignment: MainAxisAlignment.end,
-      //   children: [
-      //     FloatingActionButton(
-      //     onPressed: () => _openAddBalanceDialog(context, 'Credit'),
-      //       child: Icon(Icons.add),
-      //     ),
-      //     SizedBox(height: 16),
-      //     FloatingActionButton(
-      //       onPressed: () => _openAddBalanceDialog(context, 'Debit'),
-      //       child: Icon(Icons.remove),
-      //     ),
-      //   ],
-      // ),
-    );
   }
 
   void _openAddBalanceDialog(BuildContext context, String balanceType) {
@@ -495,7 +558,6 @@ class _ExpandableFloatingActionButtonState
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
-
   bool _isExpanded = false;
 
   @override
@@ -590,7 +652,7 @@ class AddBalanceDialog extends StatefulWidget {
 
 class _AddBalanceDialogState extends State<AddBalanceDialog> {
   final _formKey = GlobalKey<FormState>();
-
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
   TextEditingController _balanceController = TextEditingController();
   TextEditingController _currentDateController = TextEditingController();
   TextEditingController _dueDateController = TextEditingController();
@@ -608,7 +670,7 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
     super.dispose();
   }
 
-  void _saveBalanceData(BuildContext context) {
+  void _saveDeptData(BuildContext context) async{
     if (_formKey.currentState!.validate()) {
       final balanceData = BalanceData(
           balanceType: widget.balanceType,
@@ -619,7 +681,23 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
 
       Provider.of<BalanceProvider>(context, listen: false)
           .addBalance(balanceData);
-
+          Dept dept = Dept(
+            id: DateTime.now().millisecond.toString(),
+            status:"paid",
+            type: widget.balanceType,
+            amount: double.parse(_balanceController.text),
+            date: _currentDate,
+            backDate: _dueDate,
+            to: _person.text
+          );
+          await FirebaseFirestore.instance.collection("UserTransactions").doc(userId).collection("depts")
+          .add({
+            "type":dept.type,
+            "amount":dept.amount,
+            "date":dept.date,
+            "backDate":dept.backDate,
+            "to":dept.to
+          });
       Navigator.pop(context);
     }
   }
@@ -755,7 +833,7 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
                   controller: _person,
                   decoration: InputDecoration(
                     labelText: 'To',
-                    prefixIcon: Icon(Icons.person_2),
+                    prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -777,7 +855,7 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
           child: Text('Cancel'),
         ),
         TextButton(
-          onPressed: () => _saveBalanceData(context),
+          onPressed: () => _saveDeptData(context),
           child: Text('Save'),
         ),
       ],

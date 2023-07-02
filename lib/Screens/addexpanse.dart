@@ -5,6 +5,8 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:snabbudget/Screens/schedule_transactions.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../models/expanseDataModel.dart';
@@ -35,6 +37,71 @@ class _AddExpanseState extends State<AddExpanse> {
   final storage = FirebaseStorage.instance;
   bool schedual = false;
   final TextEditingController _noteController = TextEditingController();
+
+  Future<void> selectImage(BuildContext context) async {
+  final PermissionStatus status = await Permission.photos.request();
+  if (status.isGranted) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Select Image'),
+          content: Text('Do you want to select an image from the gallery or take a picture?'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Gallery'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final picker = ImagePicker();
+                final pickedImage = await picker.getImage(source: ImageSource.gallery);
+                // Handle the picked image
+                if (pickedImage != null) {
+                  // Do something with the picked image
+                  // For example, you can display it in an Image widget
+                }
+              },
+            ),
+            TextButton(
+              child: Text('Camera'),
+              onPressed: () async {
+                Navigator.of(context).pop();
+                final picker = ImagePicker();
+                final pickedImage = await picker.getImage(source: ImageSource.camera);
+                // Handle the picked image
+                if (pickedImage != null) {
+                  // Do something with the picked image
+                  // For example, you can display it in an Image widget
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  } else {
+    // Handle the case where the user denied permission
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Permission Denied'),
+          content: Text('Please grant permission to access photos.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('OK'),
+              onPressed: () async {
+                await Permission.photos.request();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+
 
   Future<void> _takePicture() async {
     final picker = ImagePicker();
@@ -471,7 +538,10 @@ class _AddExpanseState extends State<AddExpanse> {
                             width: 20,
                           ),
                           ElevatedButton(
-                              onPressed: _takePicture,
+                              onPressed:(){
+                                //_takePicture();
+                                selectImage(context);
+                                 },
                               child:
                                   Text(AppLocalizations.of(context)!.addFile)),
                           SizedBox(
