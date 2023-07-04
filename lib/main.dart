@@ -27,11 +27,14 @@ import 'controller/balanceProvider.dart';
 import 'l10n/l10n.dart';
 import 'utils/materialColor.dart';
 import 'package:provider/provider.dart';
+import 'firebase_options.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Firebase.initializeApp(
+  options: DefaultFirebaseOptions.currentPlatform,
+);
   runApp(MyApp());
 }
 
