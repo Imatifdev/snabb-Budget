@@ -19,7 +19,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 class AddIncome extends StatefulWidget {
   static const routeName = "add-income";
   final num balance;
-  const AddIncome({super.key, required this.balance});
+  final num snabWallet;
+  const AddIncome({super.key, required this.balance, required this.snabWallet});
 
   @override
   State<AddIncome> createState() => _AddIncomeState();
@@ -160,7 +161,7 @@ class _AddIncomeState extends State<AddIncome> {
         isLoading = true; // Show the progress indicator
       });
 
-      double amount = double.parse(_amountController.text);
+      num amount = double.parse(_amountController.text);
       String name = _nameController.text.isNotEmpty
           ? _nameController.text
           : selectedCategory!.name; // Use category name if name is not provided
@@ -204,6 +205,13 @@ class _AddIncomeState extends State<AddIncome> {
           .collection("data")
           .doc("userData")
           .update({"balance": widget.balance + amount});
+
+      await FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("Accounts")
+        .doc("snabbWallet")
+        .update({'amount': widget.snabWallet+amount});    
 
       setState(() {
         _nameController.clear();

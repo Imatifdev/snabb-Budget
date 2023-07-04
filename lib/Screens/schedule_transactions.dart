@@ -20,15 +20,43 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
   List<Transaction> transactions = [];
   int thisMonth = 0;
   int nextMonth = 0;
-
+  bool isLoadConfirm = false;
+  num balance = 0;
+  int check = 0;
+  num snabbWallet = 0;
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
   @override
   void initState() {
     super.initState();
     fetchTransactions();
   }
 
+  void getInfo() async {
+    var docSnapshot2 = await FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("data")
+        .doc("userData")
+        .get();
+    if (docSnapshot2.exists) {
+      Map<String, dynamic>? data = docSnapshot2.data();
+      setState(() {
+        balance = data!["balance"];
+      });
+    }
+    var docSnapshot3 = await FirebaseFirestore.instance
+    .collection('UserTransactions').doc(userId).collection("Accounts")
+    .doc("snabbWallet").get();
+    if(docSnapshot3.exists){
+      Map<String, dynamic>? data = docSnapshot3.data();
+      setState(() {
+        snabbWallet = data!["amount"];
+      });
+    }
+    print(userId);
+  }
+
   Future<void> fetchTransactions() async {
-    final String userId = FirebaseAuth.instance.currentUser!.uid;
     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance
         .collection('UserTransactions')
         .doc(userId)
@@ -76,6 +104,10 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
 
   @override
   Widget build(BuildContext context) {
+    if (check == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
+      check++;
+    }
     Size size = MediaQuery.of(context).size;
     return Scaffold(
       key: scaffoldKey,
@@ -130,11 +162,48 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
                               child: const Text("Cancel"),
                             ),
                             TextButton(
-                              onPressed: () {
-                                // Perform the transaction confirmation here
+                              onPressed: () async{
+                                num updatedBalance;
+                                num updatedSnabbWallet;
+                                setState(() {
+                                  isLoadConfirm = true;
+                                });
+                                Transaction confirmTransaction = 
+                                Transaction(
+                                  amount: transaction.amount,
+                                  category: transaction.category,
+                                  date: transaction.date,
+                                  fileUrl: transaction.fileUrl,
+                                  id: transaction.id,
+                                  imgUrl: transaction.imgUrl,
+                                  name: transaction.name,
+                                  time: transaction.time,
+                                  type: transaction.type                                  
+                                  );
+                                await FirebaseFirestore.instance.collection("UserTransactions")
+                                .doc(userId).collection("transactions").add(confirmTransaction.toJson());
+                                if(transaction.type == TransactionType.income){
+                                  updatedBalance = balance+transaction.amount;
+                                  updatedSnabbWallet = snabbWallet+transaction.amount;
+                                }else{
+                                  updatedBalance = balance-transaction.amount;
+                                  updatedSnabbWallet = snabbWallet-transaction.amount;
+                                }
+                                await FirebaseFirestore.instance.collection("UserTransactions")
+                                .doc(userId).collection("data").doc("userData")
+                                .update({"balance": updatedBalance});
+                                await FirebaseFirestore.instance.collection("UserTransactions")
+                                .doc(userId).collection("SchedualTrsanactions").doc(transaction.id).delete();
+                                await FirebaseFirestore.instance.collection("UserTransactions")
+                                .doc(userId).collection("Accounts").doc("snabbWallet")
+                                .update({'amount': updatedSnabbWallet}); 
+                                setState(() {
+                                  isLoadConfirm = false;
+                                  transactions.removeWhere((transactionz) => transaction.id == transactionz.id);
+                                });
                                 Navigator.of(ctx).pop();
                               },
-                              child: const Text("Confirm"),
+                              child: !isLoadConfirm? const Text("Confirm"):const CircularProgressIndicator(),
                             ),
                           ],
                         ),

@@ -1,4 +1,5 @@
 enum TransactionType { income, expense }
+
 enum TransactionCat {
   travelling,
   shopping,
@@ -19,7 +20,7 @@ class Transaction {
   final String time;
   final DateTime date;
   final String imgUrl;
-  final String fileUrl; 
+  final String fileUrl;
   final TransactionType type;
   final TransactionCat category;
   final int amount;
@@ -30,7 +31,7 @@ class Transaction {
     required this.time,
     required this.date,
     required this.imgUrl,
-    required this.fileUrl, 
+    required this.fileUrl,
     required this.type,
     required this.category,
     required this.amount,
@@ -53,10 +54,24 @@ class Transaction {
       time: json['time'],
       date: json['date'].toDate(),
       imgUrl: json['imgUrl'],
-      fileUrl: json['fileUrl'], // New property
+      fileUrl: json['fileUrl'],
       type: type,
       category: category,
       amount: json['amount'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'name': name,
+      'time': time,
+      'date': date,
+      'imgUrl': imgUrl,
+      'fileUrl': fileUrl,
+      'type': type.toString(),
+      'category': category.toString(),
+      'amount': amount,
+    };
   }
 }

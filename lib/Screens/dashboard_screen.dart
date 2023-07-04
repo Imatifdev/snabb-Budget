@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names
+// ignore_for_file: non_constant_identifier_names, unrelated_type_equality_checks
 
 // import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
@@ -16,8 +16,9 @@ import 'notification_screen.dart';
 class DashboardScreen extends StatefulWidget {
   final List<Transaction> transactions;
   final num balance;
+  final num snabbWallet;
   DashboardScreen(
-      {super.key, required this.transactions, required this.balance});
+      {super.key, required this.transactions, required this.balance, required this.snabbWallet});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -69,7 +70,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       }
     }
     Future<bool> deleteTransaction(
-        BuildContext context, String transactionId) async {
+        BuildContext context, Transaction transaction) async {
       bool confirmed = false;
       bool confirmDelete = await showDialog(
         context: context,
@@ -99,17 +100,35 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
       if (confirmDelete == true) {
         // Delete the transaction document from Firebase
+        num updatedBalance;
+        num updatedSnabbWallet;
+        if(transaction.type == "TransactionType.income"){
+                                  updatedBalance = widget.balance-transaction.amount;
+                                  updatedSnabbWallet = widget.snabbWallet-transaction.amount;
+                                }else{
+                                  updatedBalance = widget.balance+transaction.amount;
+                                  updatedSnabbWallet = widget.snabbWallet+transaction.amount;
+                                }
         try {
+          await FirebaseFirestore.instance.collection("UserTransactions")
+                                .doc(userId).collection("data").doc("userData")
+                                .update({"balance": updatedBalance});
           await FirebaseFirestore.instance
               .collection('UserTransactions')
               .doc(userId)
               .collection('transactions')
-              .doc(transactionId)
+              .doc(transaction.id)
               .delete();
+          await FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("Accounts")
+        .doc("snabbWallet")
+        .update({'amount': updatedSnabbWallet});    
           print('Transaction deleted successfully');
           setState(() {
             widget.transactions
-                .removeWhere((transaction) => transaction.id == transactionId);
+                .removeWhere((transactionz) => transactionz.id == transaction.id);
             confirmed = true;
           });
         } catch (e) {
@@ -362,7 +381,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               return Dismissible(
                                 confirmDismiss: (direction) async {
                                   bool delete = await deleteTransaction(
-                                      context, transaction.id);
+                                      context, transaction);
                                   return delete;
                                 },
                                 key: Key(transaction.id),

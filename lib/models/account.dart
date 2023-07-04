@@ -17,12 +17,12 @@ class Account {
 
   factory Account.fromJson(Map<String, dynamic> json, String id) {
     return Account(
-      id: id,
       name: json['name'],
       amount: json['amount'].toDouble(),
       currency: json['currency'],
       note: json['notes'],
       transferred: json['transferred'],
+      id: json['name'] == "Snabb Wallet"? "69":id 
     );
   }
 }

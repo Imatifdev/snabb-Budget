@@ -21,7 +21,7 @@ class Accounts extends StatefulWidget {
 class _AccountsState extends State<Accounts> {
   List<Account> accounts = [];
 
- var balance=0.0;
+ num balance=0.0;
  int credit=0;
  int dept=0;
  int expense=0;
@@ -216,7 +216,7 @@ class _AccountsState extends State<Accounts> {
                 height: 10,
               ),
               //transactions.isEmpty?
-              accountCard(Account(id: "ed51", name: "Wallet", amount: double.parse(balance.toString()), currency: "USD", note: "", transferred: false), 69),
+              //accountCard(Account(id: "ed51", name: "Wallet", amount: double.parse(balance.toString()), currency: "USD", note: "", transferred: false), 69),
               StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
               stream: FirebaseFirestore.instance
                   .collection('UserTransactions').doc(userId).collection("Accounts")
@@ -302,7 +302,7 @@ class _AccountsState extends State<Accounts> {
                                               account);
                                         },
                                         icon: const Icon(Icons.visibility)),
-                                    index!=69?IconButton(
+                                    account.id!="69"?IconButton(
                                         onPressed: () {
                                           _deleteTransaction(account);
                                         },

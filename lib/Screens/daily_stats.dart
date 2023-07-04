@@ -84,7 +84,7 @@ class _DailyStatsState extends State<DailyStats> {
               )),
               statCard(
                   size,
-                  AppLocalizations.of(context)!.wallet,
+                  "Snabb ${AppLocalizations.of(context)!.wallet}",
                   AppLocalizations.of(context)!.balance,
                   "$currency${widget.balance.toString()}",
                   Colors.green),

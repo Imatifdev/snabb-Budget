@@ -286,6 +286,15 @@ class _SignupScreenState extends State<SignupScreen> {
                                   "creditCard": 0,
                                   "currency":"\$"
                                 });
+                                await FirebaseFirestore.instance.collection("UserTransactions")
+                        .doc(userId).collection("Accounts").doc("snabbWallet").set({
+                          "id":"69",
+                          "name":"Snabb Wallet",
+                          "amount":0,
+                          "currency":"\$",
+                          "notes":"", 
+                          "transferred":false,
+                        });
                                 Navigator.pushAndRemoveUntil(
                                     context,
                                     MaterialPageRoute(

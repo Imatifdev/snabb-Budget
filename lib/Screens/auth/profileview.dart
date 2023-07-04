@@ -132,7 +132,7 @@ class _ProfileViewState extends State<ProfileView> {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Column(children: [
                   Container(
-                      height: MediaQuery.of(context).size.height / 14,
+                      height: MediaQuery.of(context).size.height / 11,
                       width: MediaQuery.of(context).size.width,
                       decoration: BoxDecoration(
                           color: bgcolor,
@@ -153,9 +153,12 @@ class _ProfileViewState extends State<ProfileView> {
                               SizedBox(
                                 height: 5,
                               ),
-                              Text(
-                                widget.email,
-                                style: TextStyle(fontSize: 14),
+                              SizedBox(
+                                child: Text(
+                                  widget.email,
+                                  softWrap: true,
+                                  style: TextStyle(fontSize: 14),
+                                ),
                               ),
                             ],
                           ),

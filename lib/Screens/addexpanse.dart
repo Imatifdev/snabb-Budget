@@ -18,7 +18,8 @@ import 'package:firebase_storage/firebase_storage.dart';
 class AddExpanse extends StatefulWidget {
   static const routeName = "add-expense";
   final num balance;
-  const AddExpanse({super.key, required this.balance});
+  final num snabWallet;
+  const AddExpanse({super.key, required this.balance, required this.snabWallet});
 
   @override
   State<AddExpanse> createState() => _AddExpanseState();
@@ -208,6 +209,12 @@ class _AddExpanseState extends State<AddExpanse> {
           .collection("data")
           .doc("userData")
           .update({"balance": widget.balance - amount});
+      await FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("Accounts")
+        .doc("snabbWallet")
+        .update({'amount': widget.snabWallet-amount});    
 
       setState(() {
         _nameController.clear();

@@ -127,7 +127,14 @@ class _TransferScreenState extends State<TransferScreen> {
   setState(() {
     isLoading = true;
   });
-
+  String seletedFromId = selectedFromAccount!.id;
+  if(selectedFromAccount!.id=="69"){
+    seletedFromId = "snabbWallet";
+  }
+  String seletedToId = selectedToAccount!.id;
+  if(selectedToAccount!.id=="69"){
+    seletedToId = "snabbWallet";
+  }
   try {
     // Subtract the amount from the "from" account
     double newFromAmount = selectedFromAccount!.amount - transferAmount;
@@ -135,16 +142,17 @@ class _TransferScreenState extends State<TransferScreen> {
         .collection("UserTransactions")
         .doc(userId)
         .collection("Accounts")
-        .doc(selectedFromAccount!.id)
+        .doc(seletedFromId)
         .update({'amount': newFromAmount});
 
     // Add the amount to the "to" account
     double newToAmount = selectedToAccount!.amount + transferAmount;
+    
     await FirebaseFirestore.instance
         .collection("UserTransactions")
         .doc(userId)
         .collection("Accounts")
-        .doc(selectedToAccount!.id)
+        .doc(seletedToId)
         .update({'amount': newToAmount});
 
     // Reset the form and controllers

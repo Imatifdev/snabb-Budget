@@ -8,7 +8,8 @@ import '../Screens/transfer_screen.dart';
 
 class ExpandableFloatingActionButton extends StatefulWidget {
   final num balance;
-  const ExpandableFloatingActionButton({super.key, required this.balance});
+  final num snabbWallet;
+  const ExpandableFloatingActionButton({super.key, required this.balance, required this.snabbWallet});
 
   @override
   _ExpandableFloatingActionButtonState createState() =>
@@ -76,7 +77,7 @@ class _ExpandableFloatingActionButtonState
           FloatingActionButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => AddExpanse(balance: widget.balance),
+                builder: (context) => AddExpanse(balance: widget.balance,snabWallet: widget.snabbWallet),
               ));
             },
             heroTag: null,
@@ -98,7 +99,7 @@ class _ExpandableFloatingActionButtonState
           FloatingActionButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => AddIncome(balance: widget.balance),
+                builder: (context) => AddIncome(balance: widget.balance,snabWallet: widget.snabbWallet),
               ));
             },
             heroTag: null,
