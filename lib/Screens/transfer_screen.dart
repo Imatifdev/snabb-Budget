@@ -1,7 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
@@ -81,32 +80,32 @@ class _TransferScreenState extends State<TransferScreen> {
     }
   }
 
-  Future getImage(ImgSource source) async {
-    var image = await ImagePickerGC.pickImage(
-        enableCloseButton: true,
-        closeIcon: const Icon(
-          Icons.close,
-          color: Colors.red,
-          size: 12,
-        ),
-        context: context,
-        source: source,
-        barrierDismissible: true,
-        cameraIcon: const Icon(
-          Icons.camera_alt,
-          color: Colors.red,
-        ), //cameraIcon and galleryIcon can change. If no icon provided default icon will be present
-        cameraText: const Text(
-          "From Camera",
-          style: TextStyle(color: Colors.red),
-        ),
-        galleryText: const Text(
-          "From Gallery",
-          style: TextStyle(color: Colors.blue),
-        ));
-    setState(() {
-    });
-  }
+  // Future getImage(ImgSource source) async {
+  //   var image = await ImagePickerGC.pickImage(
+  //       enableCloseButton: true,
+  //       closeIcon: const Icon(
+  //         Icons.close,
+  //         color: Colors.red,
+  //         size: 12,
+  //       ),
+  //       context: context,
+  //       source: source,
+  //       barrierDismissible: true,
+  //       cameraIcon: const Icon(
+  //         Icons.camera_alt,
+  //         color: Colors.red,
+  //       ), //cameraIcon and galleryIcon can change. If no icon provided default icon will be present
+  //       cameraText: const Text(
+  //         "From Camera",
+  //         style: TextStyle(color: Colors.red),
+  //       ),
+  //       galleryText: const Text(
+  //         "From Gallery",
+  //         style: TextStyle(color: Colors.blue),
+  //       ));
+  //   setState(() {
+  //   });
+  // }
   
   void transferAmount() async {
   if (!_formKey.currentState!.validate()) {

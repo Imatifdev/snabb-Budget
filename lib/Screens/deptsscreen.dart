@@ -26,13 +26,27 @@ class BalanceScreen extends StatefulWidget {
 class _BalanceScreenState extends State<BalanceScreen> {
   String? currency = "";
   final String userId = FirebaseAuth.instance.currentUser!.uid;
-  
+  num balance = 0;
   getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
     //currency = currencyData.currency;
     print(currency);
   }
+  
+  String calculateTotal(List<Dept> debts) {
+  double total = 0.0;
+
+  for (var debt in debts) {
+    if (debt.type == 'credit') {
+      total += debt.amount;
+    } else if (debt.type == 'debit') {
+      total -= debt.amount;
+    }
+  }
+
+  return total.toString();
+}
   
   Future<List<Dept>> fetchDepts(String userId) async {
   List<Dept> depts = [];
@@ -51,10 +65,16 @@ class _BalanceScreenState extends State<BalanceScreen> {
   } catch (e) {
     print('Error fetching depts: $e');
   }
-
+  setState(() {
+      for(Dept dept in depts){
+        if(dept.type == "Credit"){balance += dept.amount;}
+        if(dept.type == "Debit"){balance -= dept.amount;}
+        
+      }
+    });
   return depts;
 }
-List<Dept> depts=[];
+  List<Dept> depts=[];
   void getdepts()async{
     depts = await fetchDepts(userId);
   }
@@ -109,22 +129,10 @@ List<Dept> depts=[];
                     AppLocalizations.of(context)!.residualAmount,
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                   ),
-                  Consumer<BalanceProvider>(
-                    builder: (context, balanceProvider, _) {
-                      String balanceText;
-                      if (balanceProvider.totalBalance >= 0) {
-                        balanceText = NumberFormat.currency(symbol: '$currency')
-                            .format(balanceProvider.totalBalance);
-                      } else {
-                        balanceText =
-                            '-${NumberFormat.currency(symbol: '$currency').format(-balanceProvider.totalBalance)}';
-                      }
-                      return Text(' ${balanceText}');
-                    },
-                  ),
+                   Text(balance.toString())
                 ],
               ).pSymmetric(h: 20, v: 20),
-              depts.isNotEmpty? Column(
+              depts.isEmpty? Column(
                           children: [
                             SizedBox(
                               height: 200,
@@ -144,24 +152,6 @@ List<Dept> depts=[];
                             ),
                           ],
                         ):
-                        //:
-                      // : Expanded(
-                      //     child: ListView.builder(
-                      //       itemCount: balanceProvider.balanceList.length,
-                      //       itemBuilder: (context, index) {
-                      //         final data = balanceProvider.balanceList[index];
-                      //         String status;
-                      //         if (data.balanceType == "Credit") {
-                      //           status = "Paid";
-                      //         } else if (data.balanceType == "Debit") {
-                      //           status = "Pending";
-                      //         } else {
-                      //           status = "";
-                      //         }
-                      //         return deptCard(data, context, status, balanceProvider, index);
-                      //       },
-                      //     ).p(10),
-                      //   );
                   SizedBox(
                     height: 450,
                     width: size.width-10,
@@ -198,20 +188,6 @@ List<Dept> depts=[];
         ),
       ),
       floatingActionButton: BlanceExpandableFloating(),
-      //  Column(
-      //   mainAxisAlignment: MainAxisAlignment.end,
-      //   children: [
-      //     FloatingActionButton(
-      //     onPressed: () => _openAddBalanceDialog(context, 'Credit'),
-      //       child: Icon(Icons.add),
-      //     ),
-      //     SizedBox(height: 16),
-      //     FloatingActionButton(
-      //       onPressed: () => _openAddBalanceDialog(context, 'Debit'),
-      //       child: Icon(Icons.remove),
-      //     ),
-      //   ],
-      // ),
     );
   }
 
@@ -513,6 +489,7 @@ List<Dept> depts=[];
                                     top: 10,
                                     child: IconButton(
                                       onPressed: () {
+                                        deleteDept(dept);
                                       },
                                       icon: Icon(Icons.delete),
                                     ),
@@ -520,6 +497,14 @@ List<Dept> depts=[];
                                 ]),
                               ],
                             );
+  }
+
+  void deleteDept(Dept dept)async{
+    await FirebaseFirestore.instance.collection("UserTransactions").doc(userId).collection("depts").doc(dept.id).delete();
+  setState(() {
+  depts.removeWhere((deptz) => deptz.id == dept.id);
+  });
+
   }
 
   void _openAddBalanceDialog(BuildContext context, String balanceType) {
@@ -736,7 +721,7 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  'New ${widget.balanceType}',
+                  widget.balanceType=="Debit"?'New Deptor':"New Creditor",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
                 Row(
@@ -832,7 +817,7 @@ class _AddBalanceDialogState extends State<AddBalanceDialog> {
                 TextFormField(
                   controller: _person,
                   decoration: InputDecoration(
-                    labelText: 'To',
+                    labelText: widget.balanceType=="Debit"?'From':'To',
                     prefixIcon: Icon(Icons.person),
                   ),
                   validator: (value) {

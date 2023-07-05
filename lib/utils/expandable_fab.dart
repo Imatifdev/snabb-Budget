@@ -5,6 +5,7 @@ import 'package:snabbudget/Screens/addexpanse.dart';
 import 'package:snabbudget/Screens/addincome.dart';
 
 import '../Screens/transfer_screen.dart';
+import 'daimond_shape.dart';
 
 class ExpandableFloatingActionButton extends StatefulWidget {
   final num balance;
@@ -114,11 +115,12 @@ class _ExpandableFloatingActionButtonState
               width: 60,
               child: FittedBox(
                   child: FloatingActionButton(
+                shape: const DiamondBorder(),
                 backgroundColor: const Color.fromRGBO(46, 166, 193, 1),
                 onPressed: _toggleExpanded,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(40.0),
-                ),
+                // shape: RoundedRectangleBorder(
+                //   borderRadius: BorderRadius.circular(40.0),
+                // ),
                 //  heroTag: null,
                 child: AnimatedIcon(
                   icon: AnimatedIcons.add_event,

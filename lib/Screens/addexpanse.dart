@@ -5,10 +5,10 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:snabbudget/Screens/schedule_transactions.dart';
 import 'package:velocity_x/velocity_x.dart';
+import '../models/currency_controller.dart';
 import '../models/expanseDataModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'home_screen.dart';
@@ -38,6 +38,19 @@ class _AddExpanseState extends State<AddExpanse> {
   final storage = FirebaseStorage.instance;
   bool schedual = false;
   final TextEditingController _noteController = TextEditingController();
+  String? currency = "";
+  XFile? pickImage;
+  final picker = ImagePicker();
+  getCurrency() async {
+    CurrencyData currencyData = CurrencyData();
+    String? currencyThis = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    //print(currency);
+    setState(() {
+      currency = currencyThis;
+      print(currency);
+    });
+  }
 
   Future<void> selectImage(BuildContext context) async {
   final PermissionStatus status = await Permission.photos.request();
@@ -52,24 +65,27 @@ class _AddExpanseState extends State<AddExpanse> {
             TextButton(
               child: Text('Gallery'),
               onPressed: () async {
-                Navigator.of(context).pop();
-                final picker = ImagePicker();
-                final pickedImage = await picker.getImage(source: ImageSource.gallery);
+                //Navigator.of(context).pop();
+                //getImage(ImgSource.Gallery);
+                pickImage = await picker.pickImage(source: ImageSource.gallery);
+                
                 // Handle the picked image
-                if (pickedImage != null) {
+                if (pickImage != null) {
+                  _uploadPicture(pickImage as XFile);
                   // Do something with the picked image
                   // For example, you can display it in an Image widget
                 }
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: Text('Camera'),
               onPressed: () async {
                 Navigator.of(context).pop();
-                final picker = ImagePicker();
-                final pickedImage = await picker.getImage(source: ImageSource.camera);
+                pickImage = await picker.pickImage(source: ImageSource.camera);
                 // Handle the picked image
-                if (pickedImage != null) {
+                if (pickImage != null) {
+                  _uploadPicture(pickImage as XFile);
                   // Do something with the picked image
                   // For example, you can display it in an Image widget
                 }
@@ -102,17 +118,22 @@ class _AddExpanseState extends State<AddExpanse> {
   }
 }
 
+@override
+void initState() {
+  super.initState();
+  getCurrency();
+}
 
+  Future<void> _uploadPicture(XFile img) async {
+    // final picker = ImagePicker();
+    // var pickImage = await picker.pickImage(source: ImageSource.camera);
+    var pathPickImage = img.path;
 
-  Future<void> _takePicture() async {
-    final picker = ImagePicker();
-    var pickImage = await picker.getImage(source: ImageSource.camera);
-    var pickImagePath = pickImage!.path;
     setState(() {
-      pathFile = pickImage.path;
+      pathFile = img.path;
     });
 
-    final File file = File(pickImage.path);
+    final File file = File(img.path);
     final String fileName = '${DateTime.now()}.jpg';
     final Reference storageRef = storage.ref().child(fileName);
     final UploadTask uploadTask = storageRef.putFile(file);
@@ -121,7 +142,7 @@ class _AddExpanseState extends State<AddExpanse> {
       final imageUrl = await storageRef.getDownloadURL();
 
       setState(() {
-        pickImagePath = imageUrl;
+        pathPickImage = imageUrl;
       });
     });
   }
@@ -158,7 +179,7 @@ class _AddExpanseState extends State<AddExpanse> {
   void _saveExpense() async {
     if (_formKey.currentState!.validate() && selectedCategory != null) {
       setState(() {
-        isLoading = true; // Show the progress indicator
+        isLoading = true;
       });
 
       double amount = double.parse(_amountController.text);
@@ -176,7 +197,6 @@ class _AddExpanseState extends State<AddExpanse> {
       );
       String image = selectedCategory!.image;
 
-      // Upload image to Firebase Cloud Storage
       String imageUrl = "";
       if (pathFile.isNotEmpty) {
         Reference storageReference =
@@ -414,8 +434,10 @@ class _AddExpanseState extends State<AddExpanse> {
                               ),
                             ),
                           ),
-                          Icon(Icons.attach_money, color: Color(0xff2EA6C1))
-                              .pSymmetric(h: 16)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(currency.toString(), style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15, fontWeight: FontWeight.bold),),
+                          ),
                         ],
                       ),
                       SizedBox(

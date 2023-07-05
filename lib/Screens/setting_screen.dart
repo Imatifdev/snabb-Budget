@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction ;
 import 'package:flutter/material.dart';
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:snabbudget/Screens/theme_screen.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
@@ -148,6 +147,87 @@ Future<void> showDeleteConfirmationDialog(BuildContext context) async {
     OpenFile.open(fileName);
   }
 
+  Future<void> generateExcel() async {
+    // Create a new Excel document
+    final Workbook workbook = Workbook();
+    final Worksheet sheet = workbook.worksheets[0];
+
+    // Set column widths
+    sheet.getRangeByName('A1:D1').columnWidth = 15;
+
+    // Apply formatting to the header cells
+    final Style headerStyle = workbook.styles.add('headerStyle');
+    headerStyle.fontColorRgb = Colors.white;
+    headerStyle.backColorRgb = Colors.black;
+    headerStyle.bold = true;
+    headerStyle.hAlign = HAlignType.center;
+    headerStyle.vAlign = VAlignType.center;
+    sheet.getRangeByName('A1:D1').cellStyle = headerStyle;
+
+    // Set header row values
+    sheet.getRangeByName('A1').setText('S. No');
+    sheet.getRangeByName('B1').setText('Date');
+    sheet.getRangeByName('C1').setText('Type');
+    sheet.getRangeByName('D1').setText('Details');
+    sheet.getRangeByName('E1').setText('Amount');
+
+    // Set account rows
+    final List<List<dynamic>> accountData = [
+      [1, '300,000'],
+      [2, '200,000'],
+      [3, '60,000'],
+      [4, '100,000'],
+    ];
+    for (int i = 0; i < accountData.length; i++) {
+      final List<dynamic> row = accountData[i];
+      sheet.getRangeByIndex(i + 2, 1).setText(row[0].toString());
+      sheet.getRangeByIndex(i + 2, 5).setText(row[1].toString());
+    }
+
+    // Set total income and total expense rows
+    sheet.getRangeByIndex(6, 1).setText('Total Income');
+    sheet.getRangeByIndex(6, 5).setText('120,000');
+    sheet.getRangeByIndex(7, 1).setText('Total Expense');
+    sheet.getRangeByIndex(7, 5).setText('116,000');
+
+    // Set transaction rows
+    final List<List<dynamic>> transactionData = [
+      [1, 'Income', 'Rent', '50,000'],
+      [2, 'Income', 'Salary', '70,000'],
+      [1, 'Expense', 'Utilities', '30,000'],
+      [2, 'Expense', 'Phone Bill', '10,000'],
+      [3, 'Expense', 'Water Bill', '1,000'],
+      [4, 'Expense', 'Gas Bill', '20,000'],
+      [5, 'Expense', 'Electricity Bill', '15,000'],
+      [6, 'Expense', 'WiFi Bill', '15,000'],
+      [7, 'Expense', 'Education', '5,000'],
+      [8, 'Expense', 'Registration fee', '20,000'],
+    ];
+    for (int i = 0; i < transactionData.length; i++) {
+      final List<dynamic> row = transactionData[i];
+      sheet.getRangeByIndex(i + 9, 1).setText(row[0].toString());
+      sheet.getRangeByIndex(i + 9, 2).setText(row[1].toString());
+      sheet.getRangeByIndex(i + 9, 3).setText(row[2].toString());
+      sheet.getRangeByIndex(i + 9, 5).setText(row[3].toString());
+    }
+
+    // Save the Excel document
+    final List<int> bytes = workbook.saveAsStream();
+    workbook.dispose();
+
+    // Save the Excel document to a temporary file
+    final Directory tempDir = await getTemporaryDirectory();
+    final String tempPath = tempDir.path;
+    final String filePath = '$tempPath/excel.xlsx';
+    final File file = File(filePath);
+    await file.writeAsBytes(bytes);
+    print('Excel file generated at: $filePath');
+
+    // Open the Excel file
+    OpenFile.open(filePath);
+  }
+
+  
   Future<void> createPDF(List<Transaction> transactions) async {
     final pdf = pw.Document();
 
@@ -348,6 +428,7 @@ Future<void> showDeleteConfirmationDialog(BuildContext context) async {
                           subtitle: const Text("xls"),
                           trailing: const Icon(Icons.arrow_forward_ios_rounded),
                           onTap: () {
+                            //generateExcel();
                             createExcel(transactions);
                           },
                         ),

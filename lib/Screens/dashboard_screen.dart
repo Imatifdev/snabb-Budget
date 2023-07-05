@@ -15,10 +15,9 @@ import 'notification_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final List<Transaction> transactions;
-  final num balance;
   final num snabbWallet;
   DashboardScreen(
-      {super.key, required this.transactions, required this.balance, required this.snabbWallet});
+      {super.key, required this.transactions,required this.snabbWallet});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -27,6 +26,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   String? currency = "";
+  int check = 0;
   getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
@@ -39,11 +39,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     getCurrency();
   }
+  num balance = 0.0;
+  
+  void getInfo()async{
+    var docSnapshot = await FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("data")
+        .doc("userData")
+        .get();
+    if (docSnapshot.exists) {
+      Map<String, dynamic>? data = docSnapshot.data();
+      setState(() {
+        balance = data!["balance"];
+      });
+    }    
+  }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    if (check == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
+      check++;
+    }
     double totalIncomeAmount = 0;
     double totalexpAmount = 0;
     const List<String> month = [
@@ -60,15 +80,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
       "Nov",
       "Dec"
     ];
+    
     for (Transaction transaction in widget.transactions) {
       if (transaction.type == TransactionType.income) {
         totalIncomeAmount += transaction.amount;
       }
-
       if (transaction.type == TransactionType.expense) {
         totalexpAmount += transaction.amount;
       }
     }
+    
     Future<bool> deleteTransaction(
         BuildContext context, Transaction transaction) async {
       bool confirmed = false;
@@ -102,13 +123,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // Delete the transaction document from Firebase
         num updatedBalance;
         num updatedSnabbWallet;
-        if(transaction.type == "TransactionType.income"){
-                                  updatedBalance = widget.balance-transaction.amount;
+        if(transaction.type == TransactionType.income){
+                                  updatedBalance = balance-transaction.amount;
                                   updatedSnabbWallet = widget.snabbWallet-transaction.amount;
                                 }else{
-                                  updatedBalance = widget.balance+transaction.amount;
+                                  updatedBalance = balance+transaction.amount;
                                   updatedSnabbWallet = widget.snabbWallet+transaction.amount;
                                 }
+        print(updatedBalance);
         try {
           await FirebaseFirestore.instance.collection("UserTransactions")
                                 .doc(userId).collection("data").doc("userData")
@@ -130,11 +152,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
             widget.transactions
                 .removeWhere((transactionz) => transactionz.id == transaction.id);
             confirmed = true;
+            check = 0;
           });
         } catch (e) {
           confirmed = false;
           print('Error deleting transaction: $e');
         }
+        setState(() {
+        widget.transactions.removeWhere((trans) => trans.id == transaction.id);  
+        });
+        
       }
       return confirmed;
     }
@@ -240,7 +267,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                               Text(
                                   //"$currency0.00",
-                                  "$currency${double.parse((widget.balance).toStringAsFixed(2))}",
+                                  "$currency${double.parse((balance).toStringAsFixed(2))}",
                                   style: const TextStyle(
                                       letterSpacing: 3,
                                       color: Colors.white,

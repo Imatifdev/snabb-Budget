@@ -9,8 +9,8 @@ import 'package:velocity_x/velocity_x.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import '../models/IncomeDataMode.dart';
+import '../models/currency_controller.dart';
 import 'schedule_transactions.dart';
-import 'package:image_picker_gallery_camera/image_picker_gallery_camera.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
@@ -39,6 +39,18 @@ class _AddIncomeState extends State<AddIncome> {
   bool isLoading = false;
   final storage = FirebaseStorage.instance;
   bool schedual = false;
+  XFile? pickImage;
+  String? currency = "";
+  getCurrency() async {
+    CurrencyData currencyData = CurrencyData();
+    String? currencyThis = await currencyData.fetchCurrency(userId);
+    //currency = currencyData.currency;
+    //print(currency);
+    setState(() {
+      currency = currencyThis;
+      print(currency);
+    });
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? pickedDate = await showDatePicker(
@@ -66,16 +78,16 @@ class _AddIncomeState extends State<AddIncome> {
     }
   }
 
-  Future<void> _takePicture() async {
-    final picker = ImagePicker();
-    var pickImage = await picker.getImage(source: ImageSource.camera);
-    var pathPickImage = pickImage!.path;
+  Future<void> _uploadPicture(XFile img) async {
+    // final picker = ImagePicker();
+    // var pickImage = await picker.pickImage(source: ImageSource.camera);
+    var pathPickImage = img.path;
 
     setState(() {
-      pathFile = pickImage.path;
+      pathFile = img.path;
     });
 
-    final File file = File(pickImage.path);
+    final File file = File(img.path);
     final String fileName = '${DateTime.now()}.jpg';
     final Reference storageRef = storage.ref().child(fileName);
     final UploadTask uploadTask = storageRef.putFile(file);
@@ -91,6 +103,7 @@ class _AddIncomeState extends State<AddIncome> {
 
   IncomeDataCategory? selectedCategory;
   List<IncomeData> incomeDatList = [];
+  final picker = ImagePicker();
   
   Future<void> selectImage(BuildContext context) async {
   final PermissionStatus status = await Permission.photos.request();
@@ -105,24 +118,27 @@ class _AddIncomeState extends State<AddIncome> {
             TextButton(
               child: Text('Gallery'),
               onPressed: () async {
-                Navigator.of(context).pop();
-                final picker = ImagePicker();
-                final pickedImage = await picker.getImage(source: ImageSource.gallery);
+                //Navigator.of(context).pop();
+                //getImage(ImgSource.Gallery);
+                pickImage = await picker.pickImage(source: ImageSource.gallery);
+                
                 // Handle the picked image
-                if (pickedImage != null) {
+                if (pickImage != null) {
+                  _uploadPicture(pickImage as XFile);
                   // Do something with the picked image
                   // For example, you can display it in an Image widget
                 }
+                Navigator.of(context).pop();
               },
             ),
             TextButton(
               child: Text('Camera'),
               onPressed: () async {
                 Navigator.of(context).pop();
-                final picker = ImagePicker();
-                final pickedImage = await picker.getImage(source: ImageSource.camera);
+                pickImage = await picker.pickImage(source: ImageSource.camera);
                 // Handle the picked image
-                if (pickedImage != null) {
+                if (pickImage != null) {
+                  _uploadPicture(pickImage as XFile);
                   // Do something with the picked image
                   // For example, you can display it in an Image widget
                 }
@@ -272,45 +288,48 @@ class _AddIncomeState extends State<AddIncome> {
   @override
   void initState() {
     super.initState();
-    initializeCamera();
+    getCurrency();
+    //initializeCamera();
   }
 
   void initializeCamera() async {
+    await Permission.photos.request();
+    print("permission+${await Permission.photos.isGranted}");
     final cameras = await availableCameras();
     _cameraController = CameraController(cameras[0], ResolutionPreset.medium);
     await _cameraController!.initialize();
   }
 
-  Future getImage(ImgSource source) async {
-    var image = await ImagePickerGC.pickImage(
-        enableCloseButton: true,
-        closeIcon: Icon(
-          Icons.close,
-          color: Colors.red,
-          size: 12,
-        ),
-        context: context,
-        source: source,
-        barrierDismissible: true,
-        cameraIcon: Icon(
-          Icons.camera_alt,
-          color: Colors.red,
-        ), //cameraIcon and galleryIcon can change. If no icon provided default icon will be present
-        cameraText: Text(
-          "From Camera",
-          style: TextStyle(color: Colors.red),
-        ),
-        galleryText: Text(
-          "From Gallery",
-          style: TextStyle(color: Colors.blue),
-        ));
-    setState(() {
-    });
-  }
+  // Future getImage(ImgSource source) async {
+  //   var image = await ImagePickerGC.pickImage(
+  //       enableCloseButton: true,
+  //       closeIcon: Icon(
+  //         Icons.close,
+  //         color: Colors.red,
+  //         size: 12,
+  //       ),
+  //       context: context,
+  //       source: source,
+  //       barrierDismissible: true,
+  //       cameraIcon: Icon(
+  //         Icons.camera_alt,
+  //         color: Colors.red,
+  //       ), //cameraIcon and galleryIcon can change. If no icon provided default icon will be present
+  //       cameraText: Text(
+  //         "From Camera",
+  //         style: TextStyle(color: Colors.red),
+  //       ),
+  //       galleryText: Text(
+  //         "From Gallery",
+  //         style: TextStyle(color: Colors.blue),
+  //       ));
+  //   setState(() {
+  //   });
+  // }
 
   @override
   void dispose() {
-    _cameraController!.dispose();
+    //_cameraController!.dispose();
     super.dispose();
   }
 
@@ -441,8 +460,10 @@ class _AddIncomeState extends State<AddIncome> {
                               ),
                             ),
                           ),
-                          Icon(Icons.attach_money, color: Color(0xff2EA6C1))
-                              .pSymmetric(h: 16)
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(currency.toString(), style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15, fontWeight: FontWeight.bold),),
+                          ),
                         ],
                       ),
                       SizedBox(
