@@ -61,6 +61,7 @@ dependencies:
   #image_picker_gallery_camera: ^0.2.2
   permission_handler: ^10.4.1
   flutter_file_dialog: ^3.0.1
+  syncfusion_officechart: ^22.1.37
 
 dev_dependencies:
   flutter_test:
@@ -76,6 +77,7 @@ dev_dependencies:
   flutter_svg: ^2.0.6
   flutter_launcher_icons: ^0.13.1
   pdf: ^3.10.4
+  flutter_charts: ^0.5.1
 flutter_icons:
   image_path: "assets/images/icon.jpg"
   android: true
