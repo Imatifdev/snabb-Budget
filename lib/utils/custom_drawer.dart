@@ -9,7 +9,7 @@ import 'package:snabbudget/Screens/setting_screen.dart';
 import 'package:snabbudget/Screens/summary_screen.dart';
 import 'package:snabbudget/Screens/transactions_screen.dart';
 
-import '../Screens/budget.dart';
+import '../Screens/budget_screen.dart';
 import 'mycolors.dart';
 
 class CustomDrawer extends StatelessWidget {

@@ -30,7 +30,7 @@ class _TransactionCardState extends State<TransactionCard> {
                                   Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => TransactionImageScreen(imageUrl: widget.transaction.fileUrl),
+              builder: (context) => TransactionImageScreen(transaction:  widget.transaction),
             ),
           );
                                 },
@@ -57,27 +57,81 @@ class _TransactionCardState extends State<TransactionCard> {
 }
 
 class TransactionImageScreen extends StatelessWidget {
-  final String imageUrl;
+  final Transaction transaction;
 
-  const TransactionImageScreen({Key? key, required this.imageUrl}) : super(key: key);
+  const TransactionImageScreen({Key? key, required this.transaction}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Loading File"),
+        title: Text(transaction.name),
       ),
-      body: Center(
-        child:  imageUrl != ""? Hero(
-          tag: imageUrl,
-          child: FadeInImage.assetNetwork(
-            placeholder: 'assets/images/bell.png',
-            image: imageUrl,
-            placeholderErrorBuilder: (context, error, stackTrace) {
-                  return CircularProgressIndicator();
-                },
+      body: SafeArea(
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Transaction Name:"),
+                    Text(transaction.name),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Transaction Amount:"),
+                    Text(transaction.amount.toString()),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Transaction Type:"),
+                    Text(transaction.type.name),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Transaction Date:"),
+                    Text(transaction.date.toString()),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Transaction Time:"),
+                    Text(transaction.time),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text("Transaction Notes:"),
+                    Text(transaction.notes),
+                  ],
+                ),
+                const Text("Transaction file:"),
+                Center(
+                  child:  transaction.fileUrl != ""? Hero(
+                    tag: transaction.fileUrl,
+                    child: FadeInImage.assetNetwork(
+                      placeholder: 'assets/images/bell.png',
+                      image: transaction.fileUrl,
+                      placeholderErrorBuilder: (context, error, stackTrace) {
+                            return const CircularProgressIndicator();
+                          },
+                    ),
+                  ): const Text("No file for this transaction"),
+                ),
+              ],
+            ),
           ),
-        ): const Text("No file for this transaction"),
+        ),
       ),
     );
   }

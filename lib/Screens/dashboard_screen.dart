@@ -9,7 +9,6 @@ import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-
 import '../utils/transaction_card.dart';
 import 'notification_screen.dart';
 
@@ -27,6 +26,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   String? currency = "";
   int check = 0;
+
+  num calculateTotalBalance(List<Transaction> transactions) {
+  num totalBalance = 0;
+  for (Transaction transaction in transactions) {
+    if (transaction.type == TransactionType.income) {
+      totalBalance += transaction.amount;
+    } else {
+      totalBalance -= transaction.amount;
+    }
+  }
+  return totalBalance;
+}
+  
   getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
@@ -91,80 +103,85 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
     
     Future<bool> deleteTransaction(
-        BuildContext context, Transaction transaction) async {
-      bool confirmed = false;
-      bool confirmDelete = await showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: const Text('Confirm Deletion'),
-            content:
-                const Text('Are you sure you want to delete this transaction?'),
-            actions: <Widget>[
-              TextButton(
-                child: const Text('Cancel'),
-                onPressed: () {
-                  Navigator.of(context).pop(false);
-                },
-              ),
-              TextButton(
-                child: const Text('Confirm'),
-                onPressed: () {
-                  confirmed = true;
-                  Navigator.of(context).pop(true);
-                },
-              ),
-            ],
-          );
-        },
+  BuildContext context, Transaction transaction) async {
+  bool confirmed = false;
+  bool confirmDelete = await showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Confirm Deletion'),
+        content: const Text('Are you sure you want to delete this transaction?'),
+        actions: <Widget>[
+          TextButton(
+            child: const Text('Cancel'),
+            onPressed: () {
+              Navigator.of(context).pop(false);
+            },
+          ),
+          TextButton(
+            child: const Text('Confirm'),
+            onPressed: () {
+              confirmed = true;
+              Navigator.of(context).pop(true);
+            },
+          ),
+        ],
       );
+    },
+  );
 
-      if (confirmDelete == true) {
-        // Delete the transaction document from Firebase
-        num updatedBalance;
-        num updatedSnabbWallet;
-        if(transaction.type == TransactionType.income){
-                                  updatedBalance = balance-transaction.amount;
-                                  updatedSnabbWallet = widget.snabbWallet-transaction.amount;
-                                }else{
-                                  updatedBalance = balance+transaction.amount;
-                                  updatedSnabbWallet = widget.snabbWallet+transaction.amount;
-                                }
-        print(updatedBalance);
-        try {
-          await FirebaseFirestore.instance.collection("UserTransactions")
-                                .doc(userId).collection("data").doc("userData")
-                                .update({"balance": updatedBalance});
-          await FirebaseFirestore.instance
-              .collection('UserTransactions')
-              .doc(userId)
-              .collection('transactions')
-              .doc(transaction.id)
-              .delete();
-          await FirebaseFirestore.instance
-        .collection("UserTransactions")
-        .doc(userId)
-        .collection("Accounts")
-        .doc("snabbWallet")
-        .update({'amount': updatedSnabbWallet});    
-          print('Transaction deleted successfully');
-          setState(() {
-            widget.transactions
-                .removeWhere((transactionz) => transactionz.id == transaction.id);
-            confirmed = true;
-            check = 0;
-          });
-        } catch (e) {
-          confirmed = false;
-          print('Error deleting transaction: $e');
-        }
-        setState(() {
-        widget.transactions.removeWhere((trans) => trans.id == transaction.id);  
-        });
-        
+  if (confirmDelete == true) {
+    try {
+      // Update the balance and snabbWallet values
+      num updatedBalance;
+      num updatedSnabbWallet;
+      if (transaction.type == TransactionType.income) {
+        updatedBalance = balance - transaction.amount;
+        updatedSnabbWallet = widget.snabbWallet - transaction.amount;
+      } else {
+        updatedBalance = balance + transaction.amount;
+        updatedSnabbWallet = widget.snabbWallet + transaction.amount;
       }
-      return confirmed;
+
+      // Delete the transaction document from Firebase
+      await FirebaseFirestore.instance
+          .collection('UserTransactions')
+          .doc(userId)
+          .collection('transactions')
+          .doc(transaction.id)
+          .delete();
+
+      // Update the balance in Firebase
+      await FirebaseFirestore.instance
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("data")
+          .doc("userData")
+          .update({"balance": updatedBalance});
+
+      // Update the snabbWallet in Firebase
+      await FirebaseFirestore.instance
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("Accounts")
+          .doc("snabbWallet")
+          .update({'amount': updatedSnabbWallet});
+
+      print('Transaction deleted successfully');
+      setState(() {
+        widget.transactions.removeWhere((transactionz) => transactionz.id == transaction.id);
+        confirmed = true;
+        check = 0;
+      });
+    } catch (e) {
+      confirmed = false;
+      print('Error deleting transaction: $e');
+      // Handle error scenario, show error message, etc.
     }
+  }
+
+  return confirmed;
+}
 
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -267,7 +284,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                               Text(
                                   //"$currency0.00",
-                                  "$currency${double.parse((balance).toStringAsFixed(2))}",
+                                  "$currency${calculateTotalBalance(widget.transactions)}",
                                   style: const TextStyle(
                                       letterSpacing: 3,
                                       color: Colors.white,

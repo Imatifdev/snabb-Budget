@@ -130,6 +130,7 @@ class _HomeScreenState extends State<HomeScreen> {
     final List<Widget> pages = [
       DashboardScreen(transactions: transactionsList,snabbWallet: snabbWallet,),
       DailyStats(
+        transactions: transactionsList,
           balance: snabbWallet,
           credit: credit,
           dept: dept,
