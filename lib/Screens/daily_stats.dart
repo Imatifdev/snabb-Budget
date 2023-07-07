@@ -4,8 +4,10 @@ import 'package:snabbudget/utils/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 
 import '../models/currency_controller.dart';
+import '../models/transaction.dart';
 
 class DailyStats extends StatefulWidget {
+  final List<Transaction> transactions;
   final num balance;
   final int credit;
   final int dept;
@@ -23,7 +25,7 @@ class DailyStats extends StatefulWidget {
       required this.income,
       required this.cash,
       required this.bankTransfer,
-      required this.creditCard});
+      required this.creditCard, required this.transactions});
 
   @override
   State<DailyStats> createState() => _DailyStatsState();
@@ -38,6 +40,17 @@ class _DailyStatsState extends State<DailyStats> {
     //currency = currencyData.currency;
     print(currency);
   }
+  num calculateTotalBalance(List<Transaction> transactions) {
+  num totalBalance = 0;
+  for (Transaction transaction in transactions) {
+    if (transaction.type == TransactionType.income) {
+      totalBalance += transaction.amount;
+    } else {
+      totalBalance -= transaction.amount;
+    }
+  }
+  return totalBalance;
+}
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   @override
@@ -86,7 +99,7 @@ class _DailyStatsState extends State<DailyStats> {
                   size,
                   "Snabb ${AppLocalizations.of(context)!.wallet}",
                   AppLocalizations.of(context)!.balance,
-                  "$currency${widget.balance.toString()}",
+                  "$currency${calculateTotalBalance(widget.transactions)}",
                   Colors.green),
               // statCard(size, "Bank", "Balance", "$currency${bankTransfer.toString()}",Colors.green),
               // statCard(size, "Expense", "Amount", "$currency${expense.toString()}",Colors.red),

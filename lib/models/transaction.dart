@@ -24,8 +24,10 @@ class Transaction {
   final TransactionType type;
   final TransactionCat category;
   final int amount;
+  final String notes;
 
   Transaction({
+    required this.notes,
     required this.id,
     required this.name,
     required this.time,
@@ -57,7 +59,8 @@ class Transaction {
       fileUrl: json['fileUrl'],
       type: type,
       category: category,
-      amount: json['amount'],
+      amount: json['amount'], 
+      notes:json['notes'] ?? "" ,
     );
   }
 
@@ -72,6 +75,7 @@ class Transaction {
       'type': type.toString(),
       'category': category.toString(),
       'amount': amount,
+      'notes':notes
     };
   }
 }

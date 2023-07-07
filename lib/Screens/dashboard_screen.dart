@@ -9,7 +9,6 @@ import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-
 import '../utils/transaction_card.dart';
 import 'notification_screen.dart';
 
@@ -27,6 +26,19 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   String? currency = "";
   int check = 0;
+
+  num calculateTotalBalance(List<Transaction> transactions) {
+    num totalBalance = 0;
+    for (Transaction transaction in transactions) {
+      if (transaction.type == TransactionType.income) {
+        totalBalance += transaction.amount;
+      } else {
+        totalBalance -= transaction.amount;
+      }
+    }
+    return totalBalance;
+  }
+
   getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
@@ -271,7 +283,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                               Text(
                                   //"$currency0.00",
-                                  "$currency${double.parse((balance).toStringAsFixed(2))}",
+                                  "$currency${calculateTotalBalance(widget.transactions)}",
                                   style: const TextStyle(
                                       letterSpacing: 3,
                                       color: Colors.white,

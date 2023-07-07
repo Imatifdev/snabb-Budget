@@ -1,11 +1,12 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables
 
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import '../models/account.dart';
 import '../models/currency_controller.dart';
+import '../models/transaction.dart';
 import '../utils/custom_drawer.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -120,8 +121,41 @@ class _AccountsState extends State<Accounts> {
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final String userId = FirebaseAuth.instance.currentUser!.uid;
+  List<Account> accountzList = [];
+  List<Transaction> transactionzList = [];
 
   Future<void> getInfo()async{
+    List<Transaction> transactions = [];
+    QuerySnapshot<Map<String, dynamic>> querySnapshot2 = await FirebaseFirestore
+        .instance
+        .collection('UserTransactions')
+        .doc(userId)
+        .collection('transactions')
+        .get();
+
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> documents2 =
+        querySnapshot2.docs;
+
+    for (var document in documents2) {
+      Transaction transaction =
+          Transaction.fromJson(document.data(), document.id);
+      transactions.add(transaction);
+    }
+
+    setState(() {
+      transactionzList = transactions;
+    });
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance.collection("UserTransactions")
+                        .doc(userId).collection("Accounts").get();
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> documents =
+        querySnapshot.docs;
+        setState(() {
+          for (var document in documents) {
+      Account account =
+          Account.fromJson(document.data(), document.id);
+      accountzList.add(account);
+    }
+        });                    
     var docSnapshot2 = await FirebaseFirestore.instance
     .collection("UserTransactions").doc(userId)
     .collection("data").doc("userData").get();
@@ -139,6 +173,28 @@ class _AccountsState extends State<Accounts> {
       });
     }
   }
+
+  num calculateTotalAmount(List<Account> accounts) {
+  num totalAmount = 0;
+
+  for (Account account in accounts) {
+    totalAmount += account.amount;
+  }
+
+  return totalAmount;
+}
+
+  num calculateTotalBalance(List<Transaction> transactions) {
+  num totalBalance = 0;
+  for (Transaction transaction in transactions) {
+    if (transaction.type == TransactionType.income) {
+      totalBalance += transaction.amount;
+    } else {
+      totalBalance -= transaction.amount;
+    }
+  }
+  return totalBalance;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -206,7 +262,7 @@ class _AccountsState extends State<Accounts> {
                       style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                     "$currency${balance.toString()}",
+                     "$currency${calculateTotalAmount(accountzList)}",
                       style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -321,8 +377,16 @@ class _AccountsState extends State<Accounts> {
                                       fontSize: 14,color: Colors.grey,
                                       fontWeight: FontWeight.bold),
                                 ),
+                                account.id != "69"?
                                 Text(                                  
                                   "$currency${account.amount.toString()}",// //By Ammar
+                                  // "$currency${double.parse((widget.balance).toStringAsFixed(2))}", //Previous Code
+                                  style: const TextStyle(
+                                      color: Colors.green,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold),
+                                ):Text(                                  
+                                  "$currency${calculateTotalBalance(transactionzList)}",// //By Ammar
                                   // "$currency${double.parse((widget.balance).toStringAsFixed(2))}", //Previous Code
                                   style: const TextStyle(
                                       color: Colors.green,

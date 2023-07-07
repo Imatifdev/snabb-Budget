@@ -178,7 +178,7 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
                                   imgUrl: transaction.imgUrl,
                                   name: transaction.name,
                                   time: transaction.time,
-                                  type: transaction.type                                  
+                                  type: transaction.type, notes: transaction.notes                                  
                                   );
                                 await FirebaseFirestore.instance.collection("UserTransactions")
                                 .doc(userId).collection("transactions").add(confirmTransaction.toJson());
