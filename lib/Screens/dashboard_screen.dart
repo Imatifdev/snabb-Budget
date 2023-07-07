@@ -17,7 +17,7 @@ class DashboardScreen extends StatefulWidget {
   final List<Transaction> transactions;
   final num snabbWallet;
   DashboardScreen(
-      {super.key, required this.transactions,required this.snabbWallet});
+      {super.key, required this.transactions, required this.snabbWallet});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -39,9 +39,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     getCurrency();
   }
+
   num balance = 0.0;
-  
-  void getInfo()async{
+
+  void getInfo() async {
     var docSnapshot = await FirebaseFirestore.instance
         .collection("UserTransactions")
         .doc(userId)
@@ -53,7 +54,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         balance = data!["balance"];
       });
-    }    
+    }
   }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -80,7 +81,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       "Nov",
       "Dec"
     ];
-    
+
     for (Transaction transaction in widget.transactions) {
       if (transaction.type == TransactionType.income) {
         totalIncomeAmount += transaction.amount;
@@ -89,7 +90,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
         totalexpAmount += transaction.amount;
       }
     }
-    
+
     Future<bool> deleteTransaction(
         BuildContext context, Transaction transaction) async {
       bool confirmed = false;
@@ -123,18 +124,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
         // Delete the transaction document from Firebase
         num updatedBalance;
         num updatedSnabbWallet;
-        if(transaction.type == TransactionType.income){
-                                  updatedBalance = balance-transaction.amount;
-                                  updatedSnabbWallet = widget.snabbWallet-transaction.amount;
-                                }else{
-                                  updatedBalance = balance+transaction.amount;
-                                  updatedSnabbWallet = widget.snabbWallet+transaction.amount;
-                                }
+        if (transaction.type == TransactionType.income) {
+          updatedBalance = balance - transaction.amount;
+          updatedSnabbWallet = widget.snabbWallet - transaction.amount;
+        } else {
+          updatedBalance = balance + transaction.amount;
+          updatedSnabbWallet = widget.snabbWallet + transaction.amount;
+        }
         print(updatedBalance);
         try {
-          await FirebaseFirestore.instance.collection("UserTransactions")
-                                .doc(userId).collection("data").doc("userData")
-                                .update({"balance": updatedBalance});
+          await FirebaseFirestore.instance
+              .collection("UserTransactions")
+              .doc(userId)
+              .collection("data")
+              .doc("userData")
+              .update({"balance": updatedBalance});
           await FirebaseFirestore.instance
               .collection('UserTransactions')
               .doc(userId)
@@ -142,15 +146,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
               .doc(transaction.id)
               .delete();
           await FirebaseFirestore.instance
-        .collection("UserTransactions")
-        .doc(userId)
-        .collection("Accounts")
-        .doc("snabbWallet")
-        .update({'amount': updatedSnabbWallet});    
+              .collection("UserTransactions")
+              .doc(userId)
+              .collection("Accounts")
+              .doc("snabbWallet")
+              .update({'amount': updatedSnabbWallet});
           print('Transaction deleted successfully');
           setState(() {
-            widget.transactions
-                .removeWhere((transactionz) => transactionz.id == transaction.id);
+            widget.transactions.removeWhere(
+                (transactionz) => transactionz.id == transaction.id);
             confirmed = true;
             check = 0;
           });
@@ -159,9 +163,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
           print('Error deleting transaction: $e');
         }
         setState(() {
-        widget.transactions.removeWhere((trans) => trans.id == transaction.id);  
+          widget.transactions
+              .removeWhere((trans) => trans.id == transaction.id);
         });
-        
       }
       return confirmed;
     }
@@ -403,8 +407,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: ListView.builder(
                             itemCount: widget.transactions.length,
                             itemBuilder: (context, index) {
+                              // Transaction transaction =
+                              //     widget.transactions[index];
                               Transaction transaction =
-                                  widget.transactions[index];
+                                  widget.transactions.reversed.toList()[index];
+
                               return Dismissible(
                                 confirmDismiss: (direction) async {
                                   bool delete = await deleteTransaction(
@@ -414,30 +421,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 key: Key(transaction.id),
                                 child:
                                     TransactionCard(transaction: transaction),
-                                // Card(
-                                //   elevation: 0,
-                                //   child: ListTile(
-                                //     leading:
-                                //         Image.asset(transaction.imgUrl),
-                                //     title: Text(
-                                //       transaction.name,
-                                //       style: const TextStyle(
-                                //           fontWeight: FontWeight.bold),
-                                //     ),
-                                //     subtitle: Text(transaction.time),
-                                //     trailing: Text(
-                                //         transaction.type ==
-                                //                 TransactionType.income
-                                //             ? "+$currency${transaction.amount}"
-                                //             : "-$currency${transaction.amount}",
-                                //         style: TextStyle(
-                                //             color: transaction.type ==
-                                //                     TransactionType.income
-                                //                 ? Colors.green
-                                //                 : Colors.red,
-                                //             fontWeight: FontWeight.bold)),
-                                //   ),
-                                // ),
                               );
                             },
                           ),
