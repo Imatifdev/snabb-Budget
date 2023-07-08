@@ -299,43 +299,52 @@ class _SettingScreenState extends State<SettingScreen> {
     sheet.getRangeByIndex(startRow + accounts.length + 4, 1).setText('Balance');
     sheet.getRangeByIndex(startRow + accounts.length + 4, 2).setNumber(balance);
 
-    // Create an instance of chart collection
-    final ChartCollection charts = ChartCollection(sheet);
-
-    // Add the chart
-    final Chart chart = charts.add();
-
-    // Set Chart Type
-    chart.chartType = ExcelChartType.pie;
-
-  // Set data range in the worksheet
-  chart.dataRange = sheet.getRangeByName('A14:B15');
-  final ChartCollection charts2 = ChartCollection(sheet);
+  final ChartCollection charts = ChartCollection(sheet);
+print("test6");
 // Add the chart.
-final Chart chart1 = charts2.add();
+final Chart chart1 = charts.add();
+print("test7");
 // Set Chart Type.
 chart1.chartType = ExcelChartType.pie;
+print("test8");
 // Set data range in the worksheet.
 chart1.dataRange = sheet.getRangeByName('A14:B15');
-chart1.isSeriesInRows = true;
-// set charts to worksheet.
+print("test9");
+chart1.isSeriesInRows = false;
+print("test10");
+chart1.topRow = startRow + accounts.length + 6;
+  chart1.bottomRow = startRow + accounts.length + 20;
+  chart1.leftColumn = 1;
+  chart1.rightColumn = 8;
+//set charts to worksheet.
 sheet.charts = charts;
+print("test11");
+  //   // Create an instance of chart collection
+  //   final ChartCollection charts = ChartCollection(sheet);
+  //   // Add the chart
+  //   final Chart chart = charts.add();
+  //   // Set Chart Type
+  //   chart.chartType = ExcelChartType.pie;
+  // // Set data range in the worksheet
+  // chart.dataRange = sheet.getRangeByName('A14:B15');
+  // chart.isSeriesInRows = true;
 
-  // Set chart position
-  chart.topRow = startRow + accounts.length + 6;
-  chart.bottomRow = startRow + accounts.length + 20;
-  chart.leftColumn = 1;
-  chart.rightColumn = 8;
 
-  // Set chart title
-  chart.chartTitle = 'Income & Expense';
+  // // Set chart position
+  // chart.topRow = startRow + accounts.length + 6;
+  // chart.bottomRow = startRow + accounts.length + 20;
+  // chart.leftColumn = 1;
+  // chart.rightColumn = 8;
 
-    // Set chart legend
-    chart.hasLegend = true;
-    chart.legend?.position = ExcelLegendPosition.right;
+  // // Set chart title
+  // chart.chartTitle = 'Income & Expense';
 
-    // Set charts to worksheet
-    sheet.charts = charts;
+  //   // Set chart legend
+  //   chart.hasLegend = true;
+  //   chart.legend?.position = ExcelLegendPosition.right;
+
+  //   // Set charts to worksheet
+  //   sheet.charts = charts;
 
     final List<int> bytes = workbook.saveAsStream();
     workbook.dispose();
@@ -343,7 +352,6 @@ sheet.charts = charts;
     final directory = await getApplicationSupportDirectory();
     final file = File('${directory.path}/Output.xlsx');
     await file.writeAsBytes(bytes, flush: true);
-
     OpenFile.open(file.path);
   }
 

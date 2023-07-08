@@ -1,155 +1,81 @@
-// import 'package:flutter/material.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'dart:io';
 
-// final FirebaseAuth _auth = FirebaseAuth.instance;
+import 'package:flutter/material.dart';
+import 'package:open_file/open_file.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:syncfusion_flutter_xlsio/xlsio.dart';
+import 'package:syncfusion_officechart/officechart.dart';
 
-// class SignupScreen extends StatefulWidget {
-//   @override
-//   _SignupScreenState createState() => _SignupScreenState();
-// }
+class EXLChart extends StatefulWidget {
+  const EXLChart({super.key});
 
-// class _SignupScreenState extends State<SignupScreen> {
-//   TextEditingController _emailController = TextEditingController();
-//   TextEditingController _passwordController = TextEditingController();
+  @override
+  State<EXLChart> createState() => _EXLChartState();
+}
 
-//   String _errorMessage = '';
+class _EXLChartState extends State<EXLChart> {
+  createExlChart()async{
+    print("test2");
+    // Create a new Excel document.
+final Workbook workbook = Workbook();
+print("test3");
+// Accessing worksheet via index.
+final Worksheet sheet = workbook.worksheets[0];
+print("test4");
+// Setting value in the cell.
+sheet.getRangeByName('A11').setText('Venue');
+sheet.getRangeByName('A12').setText('Seating & Decor');
+sheet.getRangeByName('A13').setText('Technical Team');
+sheet.getRangeByName('A14').setText('performers');
+sheet.getRangeByName('A15').setText('performer\'s Transport');
+sheet.getRangeByName('B11:B15').numberFormat = '\$#,##0_)';
+sheet.getRangeByName('B11').setNumber(17500);
+sheet.getRangeByName('B12').setNumber(1828);
+sheet.getRangeByName('B13').setNumber(800);
+sheet.getRangeByName('B14').setNumber(14000);
+sheet.getRangeByName('B15').setNumber(2600);
+print("test5");
+// Create an instances of chart collection.
+final ChartCollection charts = ChartCollection(sheet);
+print("test6");
+// Add the chart.
+final Chart chart1 = charts.add();
+print("test7");
+// Set Chart Type.
+chart1.chartType = ExcelChartType.pie;
+print("test8");
+// Set data range in the worksheet.
+chart1.dataRange = sheet.getRangeByName('A11:B15');
+print("test9");
+chart1.isSeriesInRows = false;
+print("test10");
+// set charts to worksheet.
+sheet.charts = charts;
+print("test11");
+// save and dispose the workbook.
+List<int> bytes = workbook.saveAsStream();
+print("test12");
+workbook.dispose();
+print("test13");
 
-//   Future<void> signUp() async {
-//     String email = _emailController.text.trim();
-//     String password = _passwordController.text.trim();
-
-//     try {
-//       UserCredential userCredential =
-//           await _auth.createUserWithEmailAndPassword(
-//         email: email,
-//         password: password,
-//       );
-
-//       // Send email verification link
-//       await userCredential.user!.sendEmailVerification();
-
-//       // Navigate to email verification screen
-//       Navigator.pushReplacement(
-//         context,
-//         MaterialPageRoute(builder: (context) => EmailVerificationScreen()),
-//       );
-//     } catch (e) {
-//       setState(() {
-//         _errorMessage = 'Signup Error: $e';
-//       });
-//     }
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Signup'),
-//       ),
-//       body: Padding(
-//         padding: EdgeInsets.all(16.0),
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             TextField(
-//               controller: _emailController,
-//               decoration: InputDecoration(
-//                 labelText: 'Email',
-//               ),
-//             ),
-//             TextField(
-//               controller: _passwordController,
-//               decoration: InputDecoration(
-//                 labelText: 'Password',
-//               ),
-//               obscureText: true,
-//             ),
-//             SizedBox(height: 16.0),
-//             ElevatedButton(
-//               onPressed: signUp,
-//               child: Text('Sign Up'),
-//             ),
-//             Text(
-//               _errorMessage,
-//               style: TextStyle(color: Colors.red),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class EmailVerificationScreen extends StatefulWidget {
-//   @override
-//   _EmailVerificationScreenState createState() =>
-//       _EmailVerificationScreenState();
-// }
-
-// class _EmailVerificationScreenState extends State<EmailVerificationScreen> {
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Listen for changes in the user's authentication state
-//     _auth.authStateChanges().listen((User? user) {
-//       if (user != null && user.emailVerified) {
-//         // Email is verified, navigate to the home screen
-//         Navigator.pushReplacement(
-//           context,
-//           MaterialPageRoute(builder: (context) => HomeScreen1()),
-//         );
-//       }
-//     });
-
-//     // Send verification email if the user is still logged in and the email is not verified
-//     sendVerificationEmail();
-//   }
-
-//   Future<void> sendVerificationEmail() async {
-//     User user = _auth.currentUser!;
-//     await user.sendEmailVerification();
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       SnackBar(
-//         content: Text('Verification email sent. Please check your inbox.'),
-//       ),
-//     );
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Email Verification'),
-//       ),
-//       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Text(
-//               'Your email is not verified.',
-//               style: TextStyle(fontSize: 18),
-//             ),
-//             ElevatedButton(
-//               onPressed: sendVerificationEmail,
-//               child: Text('Resend Verification Email'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// class HomeScreen1 extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Home'),
-//       ),
-//       body: Center(
-//         child: Text('Welcome to the Home Screen!'),
-//       ),
-//     );
-//   }
-// }
+final directory = await getApplicationSupportDirectory();
+print("test14");
+    final file = File('${directory.path}/Output.xlsx');
+    print("test15");
+    await file.writeAsBytes(bytes, flush: true);
+    print("test16");
+    OpenFile.open(file.path);
+    print("test17");
+  }
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Center(
+        child: ElevatedButton(onPressed: (){
+          print("test");
+          createExlChart();
+        }, child:const Text("Chart")),
+      ),
+    );
+  }
+}
