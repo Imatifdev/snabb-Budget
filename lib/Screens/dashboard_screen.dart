@@ -16,7 +16,7 @@ class DashboardScreen extends StatefulWidget {
   final List<Transaction> transactions;
   final num snabbWallet;
   DashboardScreen(
-      {super.key, required this.transactions,required this.snabbWallet});
+      {super.key, required this.transactions, required this.snabbWallet});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -28,17 +28,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
   int check = 0;
 
   num calculateTotalBalance(List<Transaction> transactions) {
-  num totalBalance = 0;
-  for (Transaction transaction in transactions) {
-    if (transaction.type == TransactionType.income) {
-      totalBalance += transaction.amount;
-    } else {
-      totalBalance -= transaction.amount;
+    num totalBalance = 0;
+    for (Transaction transaction in transactions) {
+      if (transaction.type == TransactionType.income) {
+        totalBalance += transaction.amount;
+      } else {
+        totalBalance -= transaction.amount;
+      }
     }
+    return totalBalance;
   }
-  return totalBalance;
-}
-  
+
   getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
@@ -51,9 +51,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     getCurrency();
   }
+
   num balance = 0.0;
-  
-  void getInfo()async{
+
+  void getInfo() async {
     var docSnapshot = await FirebaseFirestore.instance
         .collection("UserTransactions")
         .doc(userId)
@@ -65,7 +66,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       setState(() {
         balance = data!["balance"];
       });
-    }    
+    }
   }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -92,7 +93,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       "Nov",
       "Dec"
     ];
-    
+
     for (Transaction transaction in widget.transactions) {
       if (transaction.type == TransactionType.income) {
         totalIncomeAmount += transaction.amount;
@@ -101,87 +102,85 @@ class _DashboardScreenState extends State<DashboardScreen> {
         totalexpAmount += transaction.amount;
       }
     }
-    
+
     Future<bool> deleteTransaction(
-  BuildContext context, Transaction transaction) async {
-  bool confirmed = false;
-  bool confirmDelete = await showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        title: const Text('Confirm Deletion'),
-        content: const Text('Are you sure you want to delete this transaction?'),
-        actions: <Widget>[
-          TextButton(
-            child: const Text('Cancel'),
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-          ),
-          TextButton(
-            child: const Text('Confirm'),
-            onPressed: () {
-              confirmed = true;
-              Navigator.of(context).pop(true);
-            },
-          ),
-        ],
+        BuildContext context, Transaction transaction) async {
+      bool confirmed = false;
+      bool confirmDelete = await showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: const Text('Confirm Deletion'),
+            content:
+                const Text('Are you sure you want to delete this transaction?'),
+            actions: <Widget>[
+              TextButton(
+                child: const Text('Cancel'),
+                onPressed: () {
+                  Navigator.of(context).pop(false);
+                },
+              ),
+              TextButton(
+                child: const Text('Confirm'),
+                onPressed: () {
+                  confirmed = true;
+                  Navigator.of(context).pop(true);
+                },
+              ),
+            ],
+          );
+        },
       );
-    },
-  );
 
-  if (confirmDelete == true) {
-    try {
-      // Update the balance and snabbWallet values
-      num updatedBalance;
-      num updatedSnabbWallet;
-      if (transaction.type == TransactionType.income) {
-        updatedBalance = balance - transaction.amount;
-        updatedSnabbWallet = widget.snabbWallet - transaction.amount;
-      } else {
-        updatedBalance = balance + transaction.amount;
-        updatedSnabbWallet = widget.snabbWallet + transaction.amount;
+      if (confirmDelete == true) {
+        // Delete the transaction document from Firebase
+        num updatedBalance;
+        num updatedSnabbWallet;
+        if (transaction.type == TransactionType.income) {
+          updatedBalance = balance - transaction.amount;
+          updatedSnabbWallet = widget.snabbWallet - transaction.amount;
+        } else {
+          updatedBalance = balance + transaction.amount;
+          updatedSnabbWallet = widget.snabbWallet + transaction.amount;
+        }
+        print(updatedBalance);
+        try {
+          await FirebaseFirestore.instance
+              .collection("UserTransactions")
+              .doc(userId)
+              .collection("data")
+              .doc("userData")
+              .update({"balance": updatedBalance});
+          await FirebaseFirestore.instance
+              .collection('UserTransactions')
+              .doc(userId)
+              .collection('transactions')
+              .doc(transaction.id)
+              .delete();
+          await FirebaseFirestore.instance
+              .collection("UserTransactions")
+              .doc(userId)
+              .collection("Accounts")
+              .doc("snabbWallet")
+              .update({'amount': updatedSnabbWallet});
+          print('Transaction deleted successfully');
+          setState(() {
+            widget.transactions.removeWhere(
+                (transactionz) => transactionz.id == transaction.id);
+            confirmed = true;
+            check = 0;
+          });
+        } catch (e) {
+          confirmed = false;
+          print('Error deleting transaction: $e');
+        }
+        setState(() {
+          widget.transactions
+              .removeWhere((trans) => trans.id == transaction.id);
+        });
       }
-
-      // Delete the transaction document from Firebase
-      await FirebaseFirestore.instance
-          .collection('UserTransactions')
-          .doc(userId)
-          .collection('transactions')
-          .doc(transaction.id)
-          .delete();
-
-      // Update the balance in Firebase
-      await FirebaseFirestore.instance
-          .collection("UserTransactions")
-          .doc(userId)
-          .collection("data")
-          .doc("userData")
-          .update({"balance": updatedBalance});
-
-      // Update the snabbWallet in Firebase
-      await FirebaseFirestore.instance
-          .collection("UserTransactions")
-          .doc(userId)
-          .collection("Accounts")
-          .doc("snabbWallet")
-          .update({'amount': updatedSnabbWallet});
-
-      print('Transaction deleted successfully');
-      setState(() {
-        widget.transactions.removeWhere((transactionz) => transactionz.id == transaction.id);
-        confirmed = true;
-        check = 0;
-      });
-    } catch (e) {
-      confirmed = false;
-      print('Error deleting transaction: $e');
-      // Handle error scenario, show error message, etc.
+      return confirmed;
     }
-  }
-
-  return confirmed;
-}
 
     Size size = MediaQuery.of(context).size;
     return Scaffold(
@@ -420,8 +419,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           child: ListView.builder(
                             itemCount: widget.transactions.length,
                             itemBuilder: (context, index) {
+                              // Transaction transaction =
+                              //     widget.transactions[index];
                               Transaction transaction =
-                                  widget.transactions[index];
+                                  widget.transactions.reversed.toList()[index];
+
                               return Dismissible(
                                 confirmDismiss: (direction) async {
                                   bool delete = await deleteTransaction(
@@ -431,30 +433,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 key: Key(transaction.id),
                                 child:
                                     TransactionCard(transaction: transaction),
-                                // Card(
-                                //   elevation: 0,
-                                //   child: ListTile(
-                                //     leading:
-                                //         Image.asset(transaction.imgUrl),
-                                //     title: Text(
-                                //       transaction.name,
-                                //       style: const TextStyle(
-                                //           fontWeight: FontWeight.bold),
-                                //     ),
-                                //     subtitle: Text(transaction.time),
-                                //     trailing: Text(
-                                //         transaction.type ==
-                                //                 TransactionType.income
-                                //             ? "+$currency${transaction.amount}"
-                                //             : "-$currency${transaction.amount}",
-                                //         style: TextStyle(
-                                //             color: transaction.type ==
-                                //                     TransactionType.income
-                                //                 ? Colors.green
-                                //                 : Colors.red,
-                                //             fontWeight: FontWeight.bold)),
-                                //   ),
-                                // ),
                               );
                             },
                           ),

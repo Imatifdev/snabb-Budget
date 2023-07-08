@@ -78,6 +78,8 @@ dev_dependencies:
   flutter_launcher_icons: ^0.13.1
   pdf: ^3.10.4
   flutter_charts: ^0.5.1
+  flutter_excel: ^1.0.1
+  excel: ^2.1.0
 flutter_icons:
   image_path: "assets/images/icon.jpg"
   android: true

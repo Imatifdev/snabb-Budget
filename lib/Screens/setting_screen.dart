@@ -13,6 +13,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart' as pdfWidgets;
 import 'package:syncfusion_officechart/officechart.dart';
 
+import '../models/account.dart';
 import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
@@ -34,6 +35,7 @@ class _SettingScreenState extends State<SettingScreen> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   final String userId = FirebaseAuth.instance.currentUser!.uid;
   List<Transaction> transactions = [];
+  List<Account> accounts = [];
 
   @override
   void initState() {
@@ -120,7 +122,8 @@ class _SettingScreenState extends State<SettingScreen> {
     );
   }
 
-  Future<void> createExcel(List<Transaction> transactions) async {
+  Future<void> createExcel(
+      List<Transaction> transactions, List<Account> account) async {
     final Workbook workbook = Workbook();
     final Worksheet sheet = workbook.worksheets[0];
     Style globalStyle = workbook.styles.add('style');
@@ -207,7 +210,26 @@ class _SettingScreenState extends State<SettingScreen> {
         sheet.getRangeByIndex(row, 5).setText(transaction.name);
       }
     }
+    for (int i = 0; i < account.length; i++) {
+      final Account accounts = account[i];
+      final int column = i + 3; // Starting from row 3
 
+      // Serial Number
+      sheet.getRangeByIndex(column, 1).setNumber(i + 1);
+
+      // Date
+
+      // Transaction Category
+      sheet.getRangeByIndex(column, 3).setText(accounts.name.split('.').last);
+
+      // Amount
+      sheet.getRangeByIndex(column, 4).setNumber(accounts.amount.toDouble());
+
+      // Note (if exists)
+      if (accounts.name.isNotEmpty) {
+        sheet.getRangeByIndex(column, 5).setText(accounts.name);
+      }
+    }
 // Create an instance of chart collection.
     final ChartCollection charts = ChartCollection(sheet);
 
@@ -215,8 +237,7 @@ class _SettingScreenState extends State<SettingScreen> {
     final Chart chart = charts.add();
 
 // Set Chart Type.
-    chart.chartType = ExcelChartType.pie;
-
+    chart.chartType = ExcelChartType.column3D;
 // Set data range in the worksheet.
     chart.dataRange = sheet.getRangeByName('C3:D${transactions.length + 2}');
 
@@ -227,7 +248,7 @@ class _SettingScreenState extends State<SettingScreen> {
     chart.rightColumn = 8;
 
 // Set chart title.
-    chart.chartTitle = 'Transaction Categories';
+    chart.chartTitle = 'Income Expanse';
 
 // Set chart title font properties.
 
@@ -651,7 +672,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           trailing: const Icon(Icons.arrow_forward_ios_rounded),
                           onTap: () {
                             //generateExcel();
-                            createExcel(transactions);
+                            createExcel(transactions, accounts);
                           },
                         ),
                       ],
