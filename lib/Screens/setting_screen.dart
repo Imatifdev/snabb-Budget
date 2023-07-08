@@ -1,3 +1,5 @@
+// ignore_for_file: deprecated_member_use
+
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:flutter/material.dart';
@@ -12,11 +14,13 @@ import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart' as pdfWidgets;
 import 'package:syncfusion_officechart/officechart.dart';
-
+import 'package:pdf/pdf.dart';
 import '../models/account.dart';
 import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
+import '../utils/mycolors.dart';
+import '../utils/mycolors.dart';
 import 'currency_screen.dart';
 import 'language_screen.dart';
 
@@ -237,7 +241,7 @@ class _SettingScreenState extends State<SettingScreen> {
     final Chart chart = charts.add();
 
 // Set Chart Type.
-    chart.chartType = ExcelChartType.column3D;
+    chart.chartType = ExcelChartType.pie;
 // Set data range in the worksheet.
     chart.dataRange = sheet.getRangeByName('C3:D${transactions.length + 2}');
 
@@ -471,7 +475,7 @@ class _SettingScreenState extends State<SettingScreen> {
     OpenFile.open(filePath);
   }
 
-  Future<void> createPDF(List<Transaction> transactions) async {
+  Future<void> createPDF2(List<Transaction> transactions) async {
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -482,8 +486,11 @@ class _SettingScreenState extends State<SettingScreen> {
               level: 0,
               child: pw.Text(
                 'Snabb Budget',
-                style:
-                    pw.TextStyle(fontSize: 24, fontWeight: pw.FontWeight.bold),
+                style: pw.TextStyle(
+                  fontSize: 33,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColor.fromInt(0xff3457a8),
+                ),
               ),
             ),
             pw.Table.fromTextArray(
@@ -496,14 +503,171 @@ class _SettingScreenState extends State<SettingScreen> {
                   'Amount',
                   'Note'
                 ],
-                ...transactions.map((transaction) => [
-                      '${transactions.indexOf(transaction) + 1}',
-                      '${transaction.date}',
-                      '${transaction.category.toString().split('.').last}',
-                      '${transaction.amount.toDouble()}',
-                      '${transaction.name}',
-                    ]),
+                ...transactions.map(
+                  (transaction) => [
+                    '${transactions.indexOf(transaction) + 1}',
+                    '${transaction.date}',
+                    '${transaction.category.toString().split('.').last}',
+                    '${transaction.amount.toDouble()}',
+                    '${transaction.name}',
+                  ],
+                ),
+              ].map((row) {
+                // Map each row to wrap cell contents in a Container with background color
+                return row.map((cell) {
+                  return pw.Container(
+                    color: PdfColors
+                        .grey100, // Set the background color for the cell
+                    padding:
+                        pw.EdgeInsets.all(10), // Optional: Set cell padding
+                    child: pw.Text(cell.toString()),
+                  );
+                }).toList();
+              }).toList(),
+            ),
+          ];
+        },
+      ),
+    );
+
+    final String path = (await getApplicationSupportDirectory()).path;
+    final String fileName = '$path/Output.pdf';
+    final File file = File(fileName);
+    await file.writeAsBytes(await pdf.save());
+
+    OpenFile.open(fileName);
+  }
+
+  Future<void> createPDF(List<Transaction> transactions) async {
+    final pdf = pw.Document();
+
+    pdf.addPage(
+      pw.MultiPage(
+        build: (pw.Context context) {
+          return [
+            pw.Header(
+              level: 0,
+              child: pw.Text(
+                'Snabb Budget',
+                style: pw.TextStyle(
+                  fontSize: 33,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColor.fromInt(0xff3457a8),
+                ),
+              ),
+            ),
+            pw.Padding(padding: pw.EdgeInsets.all(10)),
+            pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+              children: [
+                pw.Container(
+                  width: 130,
+                  color: PdfColor.fromInt(
+                      0xff2fc7b2), // Background color for the first column
+                  padding: pw.EdgeInsets.all(10),
+                  child: pw.Text(
+                    'Serial Number',
+                    style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                    textAlign: pw.TextAlign.left, // Set alignment to left
+                  ),
+                ),
+                pw.Container(
+                  width: 100,
+                  color: PdfColor.fromInt(
+                      0xff2fc7b2), // Background color for the first column
+                  padding: pw.EdgeInsets.all(10),
+                  child: pw.Text(
+                    'Date',
+                    style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                    textAlign: pw.TextAlign.left, // Set alignment to left
+                  ),
+                ),
+                pw.Container(
+                  width: 150,
+                  color: PdfColor.fromInt(
+                      0xff2fc7b2), // Background color for the first column
+                  // Background color for the third column
+                  padding: pw.EdgeInsets.all(10),
+                  child: pw.Text(
+                    'Transaction Category',
+                    style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                    textAlign: pw.TextAlign.left, // Set alignment to left
+                  ),
+                ),
+                pw.Container(
+                  width: 100,
+                  color: PdfColor.fromInt(
+                      0xff2fc7b2), // Background color for the first column
+// Background color for the fourth column
+                  padding: pw.EdgeInsets.all(10),
+                  child: pw.Text(
+                    'Amount',
+                    style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                    textAlign: pw.TextAlign.left, // Set alignment to left
+                  ),
+                ),
+                pw.Container(
+                  width: 200,
+                  color: PdfColor.fromInt(
+                      0xff2fc7b2), // Background color for the first column
+// Background color for the fifth column
+                  padding: pw.EdgeInsets.all(10),
+                  child: pw.Text(
+                    'Note',
+                    style: pw.TextStyle(
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                    textAlign: pw.TextAlign.left, // Set alignment to left
+                  ),
+                ),
               ],
+            ),
+            pw.Divider(),
+            ...transactions.map(
+              (transaction) => pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Container(
+                    width: 100,
+                    padding: pw.EdgeInsets.all(10),
+                    child: pw.Text('${transactions.indexOf(transaction) + 1}'),
+                  ),
+                  pw.Container(
+                    width: 100,
+                    padding: pw.EdgeInsets.all(10),
+                    child: pw.Text('${transaction.date}'),
+                  ),
+                  pw.Container(
+                    width: 150,
+                    padding: pw.EdgeInsets.all(10),
+                    child: pw.Text(
+                        '${transaction.category.toString().split('.').last}'),
+                  ),
+                  pw.Container(
+                    width: 100,
+                    padding: pw.EdgeInsets.all(10),
+                    child: pw.Text('${transaction.amount.toDouble()}'),
+                  ),
+                  pw.Container(
+                    width: 200,
+                    padding: pw.EdgeInsets.all(10),
+                    child: pw.Text('${transaction.name}'),
+                  ),
+                  pw.Container(
+                    width: 200,
+                    padding: pw.EdgeInsets.all(10),
+                    child: pw.Text('${transaction.notes}'),
+                  ),
+                ],
+              ),
             ),
           ];
         },
