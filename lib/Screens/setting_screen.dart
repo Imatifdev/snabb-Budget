@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
 import 'package:printing/printing.dart';
+import 'package:snabbudget/Screens/termsandcond.dart';
 import 'package:snabbudget/Screens/theme_screen.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column hide Row;
@@ -21,6 +22,7 @@ import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
 import 'currency_screen.dart';
+import 'faq.dart';
 import 'language_screen.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -975,7 +977,12 @@ class _SettingScreenState extends State<SettingScreen> {
                           subtitle: Text(AppLocalizations.of(context)!
                               .giveFeedbackSupport),
                           trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (ctx) => FAQScreen()));
+                          },
                         ),
                         ListTile(
                           title: Text(
@@ -984,7 +991,13 @@ class _SettingScreenState extends State<SettingScreen> {
                           ),
                           subtitle: Text(AppLocalizations.of(context)!.askHelp),
                           trailing: const Icon(Icons.arrow_forward_ios_rounded),
-                          onTap: () {},
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (ctx) =>
+                                        TermsAndConditionsScreen()));
+                          },
                         ),
                       ],
                     ),
