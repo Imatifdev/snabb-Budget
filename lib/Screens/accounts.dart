@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../models/account.dart';
 import '../models/currency_controller.dart';
 import '../models/transaction.dart';
+import '../models/transaction_controller.dart';
 import '../utils/custom_drawer.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
@@ -33,6 +34,7 @@ class _AccountsState extends State<Accounts> {
  int check = 0;
  String? currency = "";
  bool deleteCheck = false;
+ List<Transaction> transactions = [];
   getCurrency()async{
     CurrencyData currencyData = CurrencyData();
     currency = await currencyData.fetchCurrency(userId);
@@ -117,6 +119,9 @@ class _AccountsState extends State<Accounts> {
   void initState() {
     super.initState();
     getCurrency();
+    TransactionData transactionData = TransactionData();
+   transactionData.fetchTransactions(userId);
+   transactions = transactionData.transactions;
   }
 
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -226,28 +231,14 @@ class _AccountsState extends State<Accounts> {
                           AssetImage("assets/images/menu.png"),
                           size: 40,
                         )),
-                    ShaderMask(
-                      shaderCallback: (bounds) => const LinearGradient(
-                        colors: [
-                          Color(0xff9B710F),
-                          Color.fromRGBO(243, 215, 42, 1),
-                          Color(0xff9B710F),
-                        ],
-                      ).createShader(bounds),
-                      child: const Text(
-                        "SNABB BUDGET",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold),
-                      ),
+                    const Text(
+                      "Accounts",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold),
                     ),
-                    IconButton(
-                        onPressed: () {},
-                        icon: const ImageIcon(
-                          AssetImage("assets/images/bell.png"),
-                          size: 40,
-                        ))
+                    SizedBox(
+                      width: size.width/8.5,
+                    )
                   ],
                 ),
               ),
@@ -259,7 +250,7 @@ class _AccountsState extends State<Accounts> {
                   children: [
                     Text(
                       AppLocalizations.of(context)!.totalBalance,
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                     ),
                     Text(
                      "$currency${calculateTotalAmount(accountzList)}",
@@ -283,11 +274,11 @@ class _AccountsState extends State<Accounts> {
                 }
               
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator(); // Show a progress indicator while loading
+                  return const CircularProgressIndicator(); // Show a progress indicator while loading
                 }
               
                 List<Account> accounts = snapshot.data!.docs.map((doc) {
-                  return Account.fromJson(doc.data() as Map<String, dynamic>, doc.id);
+                  return Account.fromJson(doc.data(), doc.id);
                 }).toList();
               
                 return SizedBox(

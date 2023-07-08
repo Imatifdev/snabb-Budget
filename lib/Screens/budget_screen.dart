@@ -58,18 +58,27 @@ class _BudgetScreenState extends State<BudgetScreen> {
     List<Transaction> transactions, Budget budget) {
   double totalAmount = 0;
   int transactionCount = 0;
-
   for (Transaction transaction in transactions) {
-    if (transaction.category == budget.category &&
-        transaction.date.isAfter(budget.startDate) &&
-        transaction.date.isBefore(budget.endDate)) {
-      totalAmount += transaction.amount;
+    print(transaction.amount);
+    print("after${transaction.date.isAfter(budget.startDate)}");
+    print("before${transaction.date.isBefore(budget.endDate)}");
+    print(transaction.category.toString());
+    print(budget.category.toString());
+    print("cattt"+ (transaction.category == budget.category).toString());
+
+    if (transaction.category == budget.category) {
+          if(transaction.date.isAfter(budget.startDate) &&
+        transaction.date.isBefore(budget.endDate)){
+            print(transaction.name);
+      totalAmount = totalAmount + transaction.amount;
       transactionCount++;
+          }
+          
     }
   }
 
-  print(totalAmount);
-  print(transactionCount);
+  print("toooooooooooooootal: $totalAmount");
+  print("cccccount: ${transactionCount}");
 
   return {
     'totalAmount': totalAmount,
@@ -99,6 +108,17 @@ class _BudgetScreenState extends State<BudgetScreen> {
     transactionData.fetchTransactions(userId);
     transactions = transactionData.transactions;
     print(transactions);
+  }
+
+  Stream<List<Budget>> getBudgetsStream() {
+    return FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("budgets")
+        .snapshots()
+        .map((snapshot) => snapshot.docs
+            .map((doc) => Budget.fromJson(doc.data(), doc.id))
+            .toList());
   }
 
   @override
@@ -143,17 +163,44 @@ class _BudgetScreenState extends State<BudgetScreen> {
                       ],
                     ),
                   )),
-            budgetList.isNotEmpty? Expanded(child: 
-            ListView.builder(
-              itemCount: budgetList.length,
-              itemBuilder: (context, index) {
-                Budget budget = budgetList[index];
-                return budgetCard(budget, context);
-              },
-              )): const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text("No Budget"),
-              )      
+           StreamBuilder<List<Budget>>(
+      stream: getBudgetsStream(),
+      builder: (BuildContext context, AsyncSnapshot<List<Budget>> snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return CircularProgressIndicator();
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else {
+          final budgetList = snapshot.data ?? [];
+
+          return budgetList.isNotEmpty
+              ? Expanded(
+                  child: ListView.builder(
+                    itemCount: budgetList.length,
+                    itemBuilder: (context, index) {
+                      Budget budget = budgetList[index];
+                      return budgetCard(budget, context);
+                    },
+                  ),
+                )
+              : Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text("No Budget"),
+                );
+        }
+      },
+    )
+            // budgetList.isNotEmpty? Expanded(child: 
+            // ListView.builder(
+            //   itemCount: budgetList.length,
+            //   itemBuilder: (context, index) {
+            //     Budget budget = budgetList[index];
+            //     return budgetCard(budget, context);
+            //   },
+            //   )): const Padding(
+            //     padding: EdgeInsets.all(8.0),
+            //     child: Text("No Budget"),
+            //   )      
           ]),
         )
       ),
@@ -282,6 +329,10 @@ class _AddNewBudgetState extends State<AddNewBudget> {
     TransactionCat.health: 'assets/images/health.png',
     TransactionCat.family: 'assets/images/family.png',
     TransactionCat.foodDrink: 'assets/images/food.png',
+    TransactionCat.others: 'assets/images/others.png',
+    TransactionCat.bank: 'assets/images/fiance.png',
+    TransactionCat.pets: 'assets/images/pets.png',
+    TransactionCat.cash: 'assets/images/income.png',
   };
 
   return categoryImgUrls[category] ?? '';

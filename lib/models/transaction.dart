@@ -2,10 +2,10 @@ enum TransactionType { income, expense }
 
 enum TransactionCat {
   travelling,
+  bank,
   shopping,
   others,
-  finance,
-  income,
+  cash,
   pets,
   transport,
   home,

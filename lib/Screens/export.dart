@@ -8,16 +8,11 @@ import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column hide Row;
 import 'package:path_provider/path_provider.dart';
 import 'package:open_file/open_file.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
-import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:pdf/widgets.dart' as pdfWidgets;
-import 'package:printing/printing.dart';
 
-import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
-import 'currency_screen.dart';
-import 'language_screen.dart';
 
 class ExportScreen extends StatefulWidget {
   static const routeName = "settings-screen";

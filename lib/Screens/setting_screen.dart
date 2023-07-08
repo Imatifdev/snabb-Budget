@@ -17,7 +17,6 @@ import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
 import 'currency_screen.dart';
-import 'export.dart';
 import 'language_screen.dart';
 
 class SettingScreen extends StatefulWidget {

@@ -11,6 +11,7 @@ import 'package:velocity_x/velocity_x.dart';
 import '../models/currency_controller.dart';
 import '../models/expanseDataModel.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import '../models/transaction.dart';
 import 'home_screen.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -34,7 +35,7 @@ class _AddExpanseState extends State<AddExpanse> {
   DateTime _selectedDate = DateTime.now();
   String pathFile = "";
   TimeOfDay _selectedTime = TimeOfDay.now();
-  String formatTime = "";
+  String formatTime = "${TimeOfDay.now().hour}:${TimeOfDay.now().minute}";
   bool isLoading = false;
   final storage = FirebaseStorage.instance;
   bool schedual = false;
@@ -178,7 +179,7 @@ void initState() {
     }
   }
 
-  ExpanseDataCategory? selectedCategory;
+  TransactionCat? selectedCategory;
   List<ExpanseData> incomeDatList = [];
 
 //function for storing data and passing to another screen
@@ -191,17 +192,9 @@ void initState() {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text.isNotEmpty
           ? _nameController.text
-          : selectedCategory!.name; // Use category name if name is not provided
-      DateTime dateTime = DateTime(
-        _selectedDate.year,
-        _selectedDate.month,
-        _selectedDate.day,
-      );
-      DateTime time = DateTime(
-        _selectedDate.hour,
-        _selectedDate.minute,
-      );
-      String image = selectedCategory!.image;
+          : selectedCategory!.name.capitalized; // Use category name if name is not provided
+      
+      
 
       String imageUrl = "";
       if (pathFile.isNotEmpty) {
@@ -211,7 +204,6 @@ void initState() {
             await storageReference.putFile(File(pathFile));
         imageUrl = await taskSnapshot.ref.getDownloadURL();
       }
-
       // Save data to Firestore
       await FirebaseFirestore.instance
           .collection("UserTransactions")
@@ -220,15 +212,15 @@ void initState() {
           .add({
         "name": name,
         "amount": int.parse(_amountController.text),
-        "category": "TransactionCat.moneyTransfer",
+        "category": selectedCategory.toString(),
         "type": "TransactionType.expense",
         "date": _selectedDate,
         "time": formatTime,
-        "imgUrl": image,
+        "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat),
         "fileUrl": imageUrl,
         "notes":_noteController.text // Use the obtained image URL
       });
-
+      num updatedSnabBalance = widget.snabWallet-amount;
       // Update user's balance
       await FirebaseFirestore.instance
           .collection("UserTransactions")
@@ -241,7 +233,7 @@ void initState() {
         .doc(userId)
         .collection("Accounts")
         .doc("snabbWallet")
-        .update({'amount': widget.snabWallet-amount});    
+        .update({'amount': updatedSnabBalance});    
 
       setState(() {
         _nameController.clear();
@@ -262,7 +254,6 @@ void initState() {
     if (_formKey.currentState!.validate() && selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
-      String image = selectedCategory!.image;
       String imageUrl = "";
       if (pathFile.isNotEmpty) {
         Reference storageReference =
@@ -278,12 +269,12 @@ void initState() {
           .add({
         "name": name,
         "amount": int.parse(_amountController.text),
-        "category": "TransactionCat.moneyTransfer",
+        "category": selectedCategory.toString(),
         "type": "TransactionType.expense",
         "date": _selectedDate,
         "time": formatTime,
         "fileUrl": imageUrl,
-        "imgUrl": image,
+        "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat),
       });
     }
     setState(() {
@@ -323,6 +314,22 @@ void initState() {
       return true;
     }
   }
+  final Map<TransactionCat, String> categoryImgUrls = {
+    TransactionCat.travelling: 'assets/images/travel.png',
+    TransactionCat.shopping: 'assets/images/shopping.png',
+    TransactionCat.transport: 'assets/images/transport.png',
+    TransactionCat.home: 'assets/images/home.png',
+    TransactionCat.health: 'assets/images/health.png',
+    TransactionCat.family: 'assets/images/family.png',
+    TransactionCat.foodDrink: 'assets/images/food.png',
+    TransactionCat.others: 'assets/images/others.png',
+    //TransactionCat.bank: 'assets/images/fiance.png',
+    TransactionCat.pets: 'assets/images/pets.png',
+    //TransactionCat.cash: 'assets/images/income.png',
+  };
+  String getImgUrlForCategory(TransactionCat category) {
+  return categoryImgUrls[category] ?? 'assets/images/others.png';
+}
 
   @override
   Widget build(BuildContext context) {
@@ -375,6 +382,9 @@ void initState() {
                 key: _formKey,
                 child: Column(
                   children: [
+                    ElevatedButton(onPressed: (){
+                      print(widget.snabWallet);
+                    }, child: Text("test")),
                     SizedBox(
                       height: 50,
                     ),
@@ -471,34 +481,35 @@ void initState() {
                           height: height / 80,
                         ),
                         SizedBox(
-                          width: width / 1.3,
-                          child: DropdownButtonFormField<ExpanseDataCategory>(
-                            value: selectedCategory,
-                            hint: Text(AppLocalizations.of(context)!.category),
-                            onChanged: (ExpanseDataCategory? newValue) {
-                              setState(() {
-                                selectedCategory = newValue;
-                              });
-                            },
-                            items: expanseCategories
-                                .map((ExpanseDataCategory category) {
-                              return DropdownMenuItem<ExpanseDataCategory>(
-                                value: category,
-                                child: Row(
-                                  children: [
-                                    Image.asset(
-                                      category.image,
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(category.name),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
+  width: width / 1.3,
+  child: DropdownButtonFormField<TransactionCat>(
+    value: selectedCategory,
+    hint: Text(AppLocalizations.of(context)!.category),
+    onChanged: (TransactionCat? newValue) {
+      setState(() {
+        selectedCategory = newValue;
+      });
+    },
+    items: categoryImgUrls.keys.map((TransactionCat category) {
+      return DropdownMenuItem<TransactionCat>(
+        value: category,
+        child: Row(
+          children: [
+            Image.asset(
+              categoryImgUrls[category]!,
+              width: 30,
+              height: 30,
+            ),
+            SizedBox(width: 10),
+            Text(category.toString().split('.').last.capitalized),
+          ],
+        ),
+      );
+    }).toList(),
+  ),
+),
+
+
                         SizedBox(
                           height: height / 30,
                         ),
@@ -592,10 +603,11 @@ void initState() {
                                    },
                                 child:
                                     Text(AppLocalizations.of(context)!.addFile)),
+                            SizedBox(width: 5),
                             SizedBox(
                                 width: 200,
                                 child: Text(
-                                  pathFile,
+                                  pickImage !=null? pickImage!.name:"",
                                   softWrap: true,
                                 )),
                           ],

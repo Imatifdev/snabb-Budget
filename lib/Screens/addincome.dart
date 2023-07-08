@@ -10,6 +10,7 @@ import 'package:intl/intl.dart';
 import 'package:flutter_gen/gen_l10n/app_localization.dart';
 import '../models/IncomeDataMode.dart';
 import '../models/currency_controller.dart';
+import '../models/transaction.dart';
 import 'schedule_transactions.dart';
 import 'package:camera/camera.dart';
 import 'package:image_picker/image_picker.dart';
@@ -35,7 +36,7 @@ class _AddIncomeState extends State<AddIncome> {
   String pathFile = "";
   TimeOfDay _selectedTime = TimeOfDay.now();
   final userId = FirebaseAuth.instance.currentUser!.uid;
-  String formatTime = "";
+  String formatTime = "${TimeOfDay.now().hour}:${TimeOfDay.now().minute}";
   bool isLoading = false;
   final storage = FirebaseStorage.instance;
   bool schedual = false;
@@ -101,7 +102,7 @@ class _AddIncomeState extends State<AddIncome> {
     });
   }
 
-  IncomeDataCategory? selectedCategory;
+  TransactionCat? selectedCategory;
   List<IncomeData> incomeDatList = [];
   final picker = ImagePicker();
   
@@ -122,7 +123,7 @@ class _AddIncomeState extends State<AddIncome> {
                 //getImage(ImgSource.Gallery);
                 pickImage = await picker.pickImage(
                   source: ImageSource.gallery,
-                  imageQuality: 1
+                  imageQuality: 30
                   );
                 
                 // Handle the picked image
@@ -140,7 +141,7 @@ class _AddIncomeState extends State<AddIncome> {
                 Navigator.of(context).pop();
                 pickImage = await picker.pickImage(
                   source: ImageSource.camera,
-                  imageQuality: 1
+                  imageQuality: 30
                   );
                 // Handle the picked image
                 if (pickImage != null) {
@@ -192,7 +193,6 @@ class _AddIncomeState extends State<AddIncome> {
         _selectedDate.month,
         _selectedDate.day,
       );
-      String image = selectedCategory!.image;
 
       // Upload image to Firebase Cloud Storage
       String imageUrl = "";
@@ -212,11 +212,11 @@ class _AddIncomeState extends State<AddIncome> {
           .add({
         "name": name,
         "amount": int.parse(_amountController.text),
-        "category": "TransactionCat.moneyTransfer",
+        "category": selectedCategory.toString(),
         "type": "TransactionType.income",
         "date": _selectedDate,
         "time": formatTime,
-        "imgUrl": image,
+        "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat),
         "fileUrl": imageUrl,
         "notes": _noteController.text
       });
@@ -255,7 +255,6 @@ class _AddIncomeState extends State<AddIncome> {
     if (_formKey.currentState!.validate() && selectedCategory != null) {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text;
-      String image = selectedCategory!.image;
       String imageUrl = "";
       if (pathFile.isNotEmpty) {
         Reference storageReference =
@@ -271,12 +270,12 @@ class _AddIncomeState extends State<AddIncome> {
           .add({
         "name": name,
         "amount": int.parse(_amountController.text),
-        "category": "TransactionCat.moneyTransfer",
+        "category": selectedCategory.toString(),
         "type": "TransactionType.income",
         "date": _selectedDate,
         "time": formatTime,
         "fileUrl": imageUrl,
-        "imgUrl": image,
+        "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat) ,
       });
     }
     setState(() {
@@ -346,6 +345,22 @@ class _AddIncomeState extends State<AddIncome> {
       return true;
     }
   }
+  final Map<TransactionCat, String> categoryImgUrls = {
+    //TransactionCat.travelling: 'assets/images/travel.png',
+    //TransactionCat.shopping: 'assets/images/shopping.png',
+    //TransactionCat.transport: 'assets/images/transport.png',
+    //TransactionCat.home: 'assets/images/home.png',
+    //TransactionCat.health: 'assets/images/health.png',
+    //TransactionCat.family: 'assets/images/family.png',
+    //TransactionCat.foodDrink: 'assets/images/food.png',
+    TransactionCat.others: 'assets/images/others.png',
+    TransactionCat.bank: 'assets/images/fiance.png',
+    //TransactionCat.pets: 'assets/images/pets.png',
+    TransactionCat.cash: 'assets/images/income.png',
+  };
+  String getImgUrlForCategory(TransactionCat category) {
+  return categoryImgUrls[category] ?? 'assets/images/others.png';
+}
 
   @override
   Widget build(BuildContext context) {
@@ -496,34 +511,33 @@ class _AddIncomeState extends State<AddIncome> {
                           height: height / 80,
                         ),
                         SizedBox(
-                          width: width / 1.3,
-                          child: DropdownButtonFormField<IncomeDataCategory>(
-                            value: selectedCategory,
-                            hint: Text(AppLocalizations.of(context)!.category),
-                            onChanged: (IncomeDataCategory? newValue) {
-                              setState(() {
-                                selectedCategory = newValue;
-                              });
-                            },
-                            items: incomeCategories
-                                .map((IncomeDataCategory category) {
-                              return DropdownMenuItem<IncomeDataCategory>(
-                                value: category,
-                                child: Row(
-                                  children: [
-                                    Image.asset(
-                                      category.image,
-                                      width: 30,
-                                      height: 30,
-                                    ),
-                                    SizedBox(width: 10),
-                                    Text(category.name),
-                                  ],
-                                ),
-                              );
-                            }).toList(),
-                          ),
-                        ),
+  width: width / 1.3,
+  child: DropdownButtonFormField<TransactionCat>(
+    value: selectedCategory,
+    hint: Text(AppLocalizations.of(context)!.category),
+    onChanged: (TransactionCat? newValue) {
+      setState(() {
+        selectedCategory = newValue;
+      });
+    },
+    items: categoryImgUrls.keys.map((TransactionCat category) {
+      return DropdownMenuItem<TransactionCat>(
+        value: category,
+        child: Row(
+          children: [
+            Image.asset(
+              categoryImgUrls[category]!,
+              width: 30,
+              height: 30,
+            ),
+            SizedBox(width: 10),
+            Text(category.toString().split('.').last.capitalized),
+          ],
+        ),
+      );
+    }).toList(),
+  ),
+),
                         SizedBox(
                           height: height / 30,
                         ),
@@ -619,10 +633,11 @@ class _AddIncomeState extends State<AddIncome> {
                                   },
                                 child:
                                     Text(AppLocalizations.of(context)!.addFile)),
+                            SizedBox(width: 5,),
                             SizedBox(
                                 width: 200,
                                 child: Text(
-                                  pathFile,
+                                  pickImage!=null? pickImage!.name:"",
                                   softWrap: true,
                                 )),
                           ],
