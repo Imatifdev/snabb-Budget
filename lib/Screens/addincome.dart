@@ -42,6 +42,22 @@ class _AddIncomeState extends State<AddIncome> {
   bool schedual = false;
   XFile? pickImage;
   String? currency = "";
+  TransactionCat? selectedCategory;
+  num snabWalletBalance = 0;
+  List<IncomeData> incomeDatList = [];
+  final picker = ImagePicker();
+  int check = 0;
+  void getInfo()async{
+    var docSnapshot3 = await FirebaseFirestore.instance
+    .collection('UserTransactions').doc(userId).collection("Accounts")
+    .doc("snabbWallet").get();
+    if(docSnapshot3.exists){
+      Map<String, dynamic>? data = docSnapshot3.data();
+      setState(() {
+        snabWalletBalance = data!["amount"];
+      });
+    }
+  }
   getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     String? currencyThis = await currencyData.fetchCurrency(userId);
@@ -101,10 +117,6 @@ class _AddIncomeState extends State<AddIncome> {
       });
     });
   }
-
-  TransactionCat? selectedCategory;
-  List<IncomeData> incomeDatList = [];
-  final picker = ImagePicker();
   
   Future<void> selectImage(BuildContext context) async {
   final PermissionStatus status = await Permission.photos.request();
@@ -205,13 +217,14 @@ class _AddIncomeState extends State<AddIncome> {
       }
 
       // Save data to Firestore
+      num updatedSnabBalance = snabWalletBalance+amount;
       DocumentReference transactionRef = await FirebaseFirestore.instance
           .collection("UserTransactions")
           .doc(userId)
           .collection("transactions")
           .add({
         "name": name,
-        "amount": int.parse(_amountController.text),
+        "amount": double.parse(_amountController.text),
         "category": selectedCategory.toString(),
         "type": "TransactionType.income",
         "date": _selectedDate,
@@ -234,7 +247,7 @@ class _AddIncomeState extends State<AddIncome> {
         .doc(userId)
         .collection("Accounts")
         .doc("snabbWallet")
-        .update({'amount': widget.snabWallet+amount});    
+        .update({'amount': updatedSnabBalance});    
 
       setState(() {
         _nameController.clear();
@@ -364,15 +377,14 @@ class _AddIncomeState extends State<AddIncome> {
 
   @override
   Widget build(BuildContext context) {
-    FloatingActionButton.extended(
-        onPressed: () {}, label: Text("Add").pSymmetric(h: 60));
+  if (check == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
+      check++;
+    }
     var height = MediaQuery.of(context).size.height;
-
     var width = MediaQuery.of(context).size.width;
-
-    FloatingActionButton.extended(
-        onPressed: () {}, label: Text("Add").pSymmetric(h: 60));
-    return WillPopScope(
+  
+  return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(

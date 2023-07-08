@@ -51,7 +51,7 @@ class _AccountsState extends State<Accounts> {
     if (result != null) {
       setState(() {
         accounts.add(result);
-        //balance += int.parse(result.amount.toString());
+        check = 0;
       });
     }
   }
@@ -99,13 +99,14 @@ class _AccountsState extends State<Accounts> {
               });
               await FirebaseFirestore.instance.collection("UserTransactions")
                         .doc(userId).collection("Accounts").doc(account.id).delete();
-              await FirebaseFirestore.instance.collection("UserTransactions").doc(userId)
-              .collection("data").doc("userData")
-              .update({
-                "balance":balance-account.amount
-              });
+              // await FirebaseFirestore.instance.collection("UserTransactions").doc(userId)
+              // .collection("data").doc("userData")
+              // .update({
+              //   "balance":balance-account.amount
+              // });
               setState(() {
                 deleteCheck = false;
+                check = 0;
               });
               Navigator.of(context).pop();
             },
@@ -185,7 +186,6 @@ class _AccountsState extends State<Accounts> {
   for (Account account in accounts) {
     totalAmount += account.amount;
   }
-
   return totalAmount;
 }
 
@@ -205,7 +205,11 @@ class _AccountsState extends State<Accounts> {
   Widget build(BuildContext context) {
     //TransactionData wallet = TransactionData(amount: 100, transactionType: transactionType, currency: currency, notes: notes)
     if (check == 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        setState(() {
+    accountzList = [];
+  });
+     getInfo();});
       check++;
     }
     Size size = MediaQuery.of(context).size;
@@ -501,7 +505,7 @@ class _AddTransactionDialogState extends State<AddTransactionDialog> {
                               borderSide: const BorderSide(color: Colors.green),
                               borderRadius: BorderRadius.circular(10)),
                           labelText: 'Currency',
-                          hintText: "USD $_currency"),
+                          hintText: "USD"),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
                           return 'Please enter a currency';

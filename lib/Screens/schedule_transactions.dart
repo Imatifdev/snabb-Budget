@@ -18,8 +18,8 @@ class ScheduleTransactions extends StatefulWidget {
 class _ScheduleTransactionsState extends State<ScheduleTransactions> {
   final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
   List<Transaction> transactions = [];
-  int thisMonth = 0;
-  int nextMonth = 0;
+  num thisMonthBalance = 0;
+  num nextMonthBalance = 0;
   bool isLoadConfirm = false;
   num balance = 0;
   int check = 0;
@@ -74,30 +74,30 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
   int currentYear = DateTime.now().year;
   int currentMonth = DateTime.now().month;
   int nextMonth = currentMonth + 1;
-  int localThisMonth = 0;
-  int localNextMonth = 0;
+  num localThisMonthBalance = 0;
+  num localNextMonthBalance = 0;
 
   for (Transaction transaction in transactions) {
     if (transaction.date.year == currentYear && transaction.date.month == currentMonth) {
       if (transaction.type == TransactionType.expense) {
-        localThisMonth -= transaction.amount;
+        localThisMonthBalance -= transaction.amount;
       } else {
-        localThisMonth += transaction.amount;
+        localThisMonthBalance += transaction.amount;
       }
     }
     if (transaction.date.year == currentYear && transaction.date.month == nextMonth) {
       if (transaction.type == TransactionType.expense) {
-        localNextMonth -= transaction.amount;
+        localNextMonthBalance -= transaction.amount;
       } else {
-        localNextMonth += transaction.amount;
+        localNextMonthBalance += transaction.amount;
       }
     }
   }
 
   setState(() {
-    thisMonth = localThisMonth;
-    nextMonth = localNextMonth;
-    print("thissssss month $thisMonth nexxxxt month $nextMonth");
+    thisMonthBalance = localThisMonthBalance;
+    nextMonthBalance = localNextMonthBalance;
+    print("thissssss month $thisMonthBalance nexxxxt month $nextMonth");
   });
 }
 
@@ -245,9 +245,9 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
                           children: [
                           Text(AppLocalizations.of(context)!.thisMonth,
                       style: const TextStyle(fontWeight: FontWeight.bold),),
-                          Text("$thisMonth", 
+                          Text("$thisMonthBalance", 
                           style: TextStyle(
-                            color: thisMonth>=0? Colors.green:Colors.red,
+                            color: thisMonthBalance>=0? Colors.green:Colors.red,
                           ),)
                         ],),
                         Row(
@@ -255,9 +255,9 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
                           children: [
                           Text(AppLocalizations.of(context)!.nextMonth,
                       style: const TextStyle(fontWeight: FontWeight.bold),),
-                          Text("$nextMonth",
+                          Text("$nextMonthBalance",
                           style: TextStyle(
-                            color: nextMonth>=0? Colors.green:Colors.red,
+                            color: nextMonthBalance>=0? Colors.green:Colors.red,
                           ),
                           )
                         ],)

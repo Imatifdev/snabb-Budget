@@ -26,6 +26,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   final userId = FirebaseAuth.instance.currentUser!.uid;
   String? currency = "";
   int check = 0;
+  num snabWalletBalance = 0;
 
   num calculateTotalBalance(List<Transaction> transactions) {
     num totalBalance = 0;
@@ -65,6 +66,15 @@ class _DashboardScreenState extends State<DashboardScreen> {
       Map<String, dynamic>? data = docSnapshot.data();
       setState(() {
         balance = data!["balance"];
+      });
+    }
+    var docSnapshot3 = await FirebaseFirestore.instance
+    .collection('UserTransactions').doc(userId).collection("Accounts")
+    .doc("snabbWallet").get();
+    if(docSnapshot3.exists){
+      Map<String, dynamic>? data = docSnapshot3.data();
+      setState(() {
+        snabWalletBalance = data!["amount"];
       });
     }
   }
@@ -138,10 +148,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
         num updatedSnabbWallet;
         if (transaction.type == TransactionType.income) {
           updatedBalance = balance - transaction.amount;
-          updatedSnabbWallet = widget.snabbWallet - transaction.amount;
+          updatedSnabbWallet = snabWalletBalance - transaction.amount;
         } else {
           updatedBalance = balance + transaction.amount;
-          updatedSnabbWallet = widget.snabbWallet + transaction.amount;
+          updatedSnabbWallet = snabWalletBalance + transaction.amount;
         }
         print(updatedBalance);
         try {

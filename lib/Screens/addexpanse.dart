@@ -41,6 +41,10 @@ class _AddExpanseState extends State<AddExpanse> {
   bool schedual = false;
   String? currency = "";
   XFile? pickImage;
+  num snabWalletBalance = 0;
+  TransactionCat? selectedCategory;
+  List<ExpanseData> incomeDatList = [];
+  int check = 0;
   final picker = ImagePicker();
   getCurrency() async {
     CurrencyData currencyData = CurrencyData();
@@ -124,10 +128,23 @@ class _AddExpanseState extends State<AddExpanse> {
     );
   }
 }
+  
+  void getInfo()async{
+    var docSnapshot3 = await FirebaseFirestore.instance
+    .collection('UserTransactions').doc(userId).collection("Accounts")
+    .doc("snabbWallet").get();
+    if(docSnapshot3.exists){
+      Map<String, dynamic>? data = docSnapshot3.data();
+      setState(() {
+        snabWalletBalance = data!["amount"];
+      });
+    }
+  }
 
 @override
 void initState() {
   super.initState();
+  getInfo();
   getCurrency();
 }
 
@@ -179,8 +196,6 @@ void initState() {
     }
   }
 
-  TransactionCat? selectedCategory;
-  List<ExpanseData> incomeDatList = [];
 
 //function for storing data and passing to another screen
   void _saveExpense() async {
@@ -211,7 +226,7 @@ void initState() {
           .collection("transactions")
           .add({
         "name": name,
-        "amount": int.parse(_amountController.text),
+        "amount": double.parse(_amountController.text),
         "category": selectedCategory.toString(),
         "type": "TransactionType.expense",
         "date": _selectedDate,
@@ -220,7 +235,7 @@ void initState() {
         "fileUrl": imageUrl,
         "notes":_noteController.text // Use the obtained image URL
       });
-      num updatedSnabBalance = widget.snabWallet-amount;
+      num updatedSnabBalance = snabWalletBalance-amount;
       // Update user's balance
       await FirebaseFirestore.instance
           .collection("UserTransactions")
@@ -333,19 +348,18 @@ void initState() {
 
   @override
   Widget build(BuildContext context) {
-    // FloatingActionButton.extended(
-    //     onPressed: () {}, label: Text("Add").pSymmetric(h: 60));
+    if (check == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
+      check++;
+    }
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-    // FloatingActionButton.extended(
-    //     onPressed: () {}, label: Text("Add").pSymmetric(h: 60));
     return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
           toolbarHeight: 100,
           elevation: 0,
-          //backgroundColor: Colors.white,
           title: Text(AppLocalizations.of(context)!.addExpense,
               style: TextStyle(
                   color: Colors.white,
@@ -382,9 +396,9 @@ void initState() {
                 key: _formKey,
                 child: Column(
                   children: [
-                    ElevatedButton(onPressed: (){
-                      print(widget.snabWallet);
-                    }, child: Text("test")),
+                    // ElevatedButton(onPressed: (){
+                    //   print(snabWalletBalance);
+                    // }, child: Text("test")),
                     SizedBox(
                       height: 50,
                     ),

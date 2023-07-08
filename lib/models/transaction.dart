@@ -23,7 +23,7 @@ class Transaction {
   final String fileUrl;
   final TransactionType type;
   final TransactionCat category;
-  final int amount;
+  final num amount;
   final String notes;
 
   Transaction({
