@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:pie_chart/pie_chart.dart';
+import 'package:get/get.dart';
 import 'package:snabbudget/Screens/theme_screen.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
 import 'package:syncfusion_flutter_xlsio/xlsio.dart' hide Column hide Row;
@@ -19,10 +19,7 @@ import '../models/account.dart';
 import '../models/currency_controller.dart';
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
-import '../utils/mycolors.dart';
-import '../utils/mycolors.dart';
 import 'currency_screen.dart';
-import 'export.dart';
 import 'language_screen.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -128,153 +125,167 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   Future<void> createExcel(
-      List<Transaction> transactions, List<Account> account) async {
-    final Workbook workbook = Workbook();
-    final Worksheet sheet = workbook.worksheets[0];
-    Style globalStyle = workbook.styles.add('style');
-    globalStyle.backColor = '#37D8E9';
+  List<Transaction> transactions, List<Account> accounts) async {
+  final Workbook workbook = Workbook();
+  final Worksheet sheet = workbook.worksheets[0];
+  Style globalStyle = workbook.styles.add('style');
+  globalStyle.backColor = '#37D8E9';
 
-    // Set header "Snabb Budget"
-    sheet.getRangeByName('B1').setText('Snabb Budget!');
+  // Set header "Snabb Budget"
+  sheet.getRangeByName('B1').setText('Snabb Budget');
 
-    sheet.getRangeByName('B1').columnWidth = 25;
-    sheet.getRangeByName('B1').rowHeight = 80;
+  sheet.getRangeByName('B1').columnWidth = 25;
+  sheet.getRangeByName('B1').rowHeight = 80;
 
-    final Range rangeA1C1 = sheet.getRangeByName('A1:D1');
-    rangeA1C1.cellStyle.backColor = '#87CEEB';
-    final Style cellStyle = sheet.getRangeByName('B1').cellStyle;
+  final Range rangeA1C1 = sheet.getRangeByName('A1:E1');
+  rangeA1C1.cellStyle.backColor = '#87CEEB';
+  final Style cellStyle = sheet.getRangeByName('B1').cellStyle;
 
-    cellStyle.backColor = '#87CEEB';
-    cellStyle.fontSize = 28;
+  cellStyle.backColor = '#87CEEB';
+  cellStyle.fontSize = 28;
 
-    // Replace with your desired color
-    sheet.getRangeByName('A1').cellStyle = cellStyle;
-    final Range rangeA2 = sheet.getRangeByIndex(2, 1);
-    rangeA2.setText('Serial Number');
-    rangeA2.cellStyle
-      ..backColor = '#FFFF00' // Yellow background color
-      ..hAlign = HAlignType.center;
-    sheet.getRangeByIndex(1, 1).columnWidth = 15; // Increase width of column 1
+  // Replace with your desired color
+  sheet.getRangeByName('A1').cellStyle = cellStyle;
+  final Range rangeA2 = sheet.getRangeByIndex(2, 1);
+  rangeA2.setText('Serial Number');
+  rangeA2.cellStyle
+    ..backColor = '#FFFF00' // Yellow background color
+    ..hAlign = HAlignType.center;
+  sheet.getRangeByIndex(1, 1).columnWidth = 15; // Increase width of column 1
 
-    final Range rangeB2 = sheet.getRangeByIndex(2, 2);
-    rangeB2.setText('Date');
-    rangeB2.cellStyle
-      ..backColor = '#FFFF00' // Yellow background color
-      ..hAlign = HAlignType.center;
-    sheet.getRangeByIndex(1, 2).columnWidth = 10; // Increase width of column 2
+  final Range rangeB2 = sheet.getRangeByIndex(2, 2);
+  rangeB2.setText('Date');
+  rangeB2.cellStyle
+    ..backColor = '#FFFF00' // Yellow background color
+    ..hAlign = HAlignType.center;
+  sheet.getRangeByIndex(1, 2).columnWidth = 10; // Increase width of column 2
 
-    final Range rangeC2 = sheet.getRangeByIndex(2, 3);
-    rangeC2.setText('Transaction Category');
-    rangeC2.cellStyle
-      ..backColor = '#FFFF00' // Yellow background color
-      ..hAlign = HAlignType.center;
-    sheet.getRangeByIndex(1, 3).columnWidth = 18; // Increase width of column 3
+  final Range rangeC2 = sheet.getRangeByIndex(2, 3);
+  rangeC2.setText('Transaction Category');
+  rangeC2.cellStyle
+    ..backColor = '#FFFF00' // Yellow background color
+    ..hAlign = HAlignType.center;
+  sheet.getRangeByIndex(1, 3).columnWidth = 18; // Increase width of column 3
 
-    final Range rangeD2 = sheet.getRangeByIndex(2, 4);
-    rangeD2.setText('Amount');
-    rangeD2.cellStyle
-      ..backColor = '#FFFF00' // Yellow background color
-      ..hAlign = HAlignType.center;
-    sheet.getRangeByIndex(1, 4).columnWidth = 8; // Increase width of column 4
+  final Range rangeD2 = sheet.getRangeByIndex(2, 4);
+  rangeD2.setText('Amount');
+  rangeD2.cellStyle
+    ..backColor = '#FFFF00' // Yellow background color
+    ..hAlign = HAlignType.center;
+  sheet.getRangeByIndex(1, 4).columnWidth = 8; // Increase width of column 4
 
-    final Range rangeE2 = sheet.getRangeByIndex(2, 5);
-    rangeE2.setText('Note');
-    rangeE2.cellStyle
-      ..backColor = '#FFFF00' // Yellow background color
-      ..hAlign = HAlignType.center;
-    sheet.getRangeByIndex(1, 5).columnWidth = 7; // Increase width of column 4
+  final Range rangeE2 = sheet.getRangeByIndex(2, 5);
+  rangeE2.setText('Name');
+  rangeE2.cellStyle
+    ..backColor = '#FFFF00' // Yellow background color
+    ..hAlign = HAlignType.center;
+  sheet.getRangeByIndex(1, 5).columnWidth = 7; // Increase width of column 4
 
-    sheet.getRangeByIndex(1, 5).columnWidth = 30; // Increase width of column 5
-    sheet.getRangeByIndex(2, 1).setText('Serial Number');
-    sheet.getRangeByIndex(2, 2).setText('Date');
-    sheet.getRangeByIndex(2, 3).setText('Transaction Category');
-    sheet.getRangeByIndex(2, 4).setText('Amount');
-    sheet.getRangeByIndex(2, 5).setText('Note');
+  sheet.getRangeByIndex(1, 5).columnWidth = 30; // Increase width of column 5
+  sheet.getRangeByIndex(2, 1).setText('Serial Number');
+  sheet.getRangeByIndex(2, 2).setText('Date');
+  sheet.getRangeByIndex(2, 3).setText('Transaction Category');
+  sheet.getRangeByIndex(2, 4).setText('Amount');
+  sheet.getRangeByIndex(2, 5).setText('Note');
 
-    // Add transaction data
-    for (int i = 0; i < transactions.length; i++) {
-      final Transaction transaction = transactions[i];
-      final int row = i + 3; // Starting from row 3
+  // Add transaction data
+  double totalIncome = 0;
+  double totalExpense = 0;
+  for (int i = 0; i < transactions.length; i++) {
+    final Transaction transaction = transactions[i];
+    final int row = i + 3; // Starting from row 3
 
-      // Serial Number
-      sheet.getRangeByIndex(row, 1).setNumber(i + 1);
+    // Serial Number
+    sheet.getRangeByIndex(row, 1).setNumber(i + 1);
 
-      // Date
-      sheet.getRangeByIndex(row, 2).setDateTime(transaction.date);
+    // Date
+    sheet.getRangeByIndex(row, 2).setDateTime(transaction.date);
 
-      // Transaction Category
-      sheet
-          .getRangeByIndex(row, 3)
-          .setText(transaction.category.toString().split('.').last);
+    // Transaction Category
+    sheet
+        .getRangeByIndex(row, 3)
+        .setText(transaction.category.toString().split('.').last);
 
-      // Amount
-      sheet.getRangeByIndex(row, 4).setNumber(transaction.amount.toDouble());
+    // Amount
+    double amount = transaction.amount.toDouble();
+    sheet.getRangeByIndex(row, 4).setNumber(amount);
 
-      // Note (if exists)
-      if (transaction.name.isNotEmpty) {
-        sheet.getRangeByIndex(row, 5).setText(transaction.name);
-      }
+    // Note (if exists)
+    if (transaction.name.isNotEmpty) {
+      sheet.getRangeByIndex(row, 5).setText(transaction.name);
     }
-    for (int i = 0; i < account.length; i++) {
-      final Account accounts = account[i];
-      final int column = i + 3; // Starting from row 3
 
-      // Serial Number
-      sheet.getRangeByIndex(column, 1).setNumber(i + 1);
-
-      // Date
-
-      // Transaction Category
-      sheet.getRangeByIndex(column, 3).setText(accounts.name.split('.').last);
-
-      // Amount
-      sheet.getRangeByIndex(column, 4).setNumber(accounts.amount.toDouble());
-
-      // Note (if exists)
-      if (accounts.name.isNotEmpty) {
-        sheet.getRangeByIndex(column, 5).setText(accounts.name);
-      }
+    // Calculate total income and expense
+    if (amount > 0) {
+      totalIncome += amount;
+    } else {
+      totalExpense += amount;
     }
-// Create an instance of chart collection.
-    final ChartCollection charts = ChartCollection(sheet);
-
-// Add the chart.
-    final Chart chart = charts.add();
-
-// Set Chart Type.
-    chart.chartType = ExcelChartType.pie;
-// Set data range in the worksheet.
-    chart.dataRange = sheet.getRangeByName('C3:D${transactions.length + 2}');
-
-// Set chart position.
-    chart.topRow = transactions.length + 5;
-    chart.bottomRow = transactions.length + 25;
-    chart.leftColumn = 1;
-    chart.rightColumn = 8;
-
-// Set chart title.
-    chart.chartTitle = 'Income Expanse';
-
-// Set chart title font properties.
-
-// Set chart data labels.
-    //chart.hasTitle = true;
-
-// Set chart legend.
-    chart.hasLegend = true;
-    chart.legend?.position = ExcelLegendPosition.right;
-
-// Set charts to worksheet.
-    sheet.charts = charts;
-    final List<int> bytes = workbook.saveAsStream();
-    workbook.dispose();
-
-    final directory = await getApplicationSupportDirectory();
-    final file = File('${directory.path}/Output.xlsx');
-    await file.writeAsBytes(bytes, flush: true);
-
-    OpenFile.open(file.path);
   }
+
+  // Add account details
+  final int startRow = transactions.length + 5;
+  sheet.getRangeByIndex(startRow, 1).setText('Account ID');
+  sheet.getRangeByIndex(startRow, 2).setText('Account Amount');
+  sheet.getRangeByIndex(startRow, 3).setText('Account Name');
+
+  for (int i = 0; i < accounts.length; i++) {
+    final Account account = accounts[i];
+    final int row = startRow + i + 1;
+
+    sheet.getRangeByIndex(row, 1).setNumber(i + 1);
+    sheet.getRangeByIndex(row, 2).setNumber(account.amount.toDouble());
+    sheet.getRangeByIndex(row, 3).setText(account.name);
+  }
+
+  // Calculate balance
+  final double balance = totalIncome + totalExpense;
+
+  // Add total income, total expense, and balance
+  sheet.getRangeByIndex(startRow + accounts.length + 2, 1).setText('Total Income');
+  sheet.getRangeByIndex(startRow + accounts.length + 2, 2).setNumber(totalIncome);
+  sheet.getRangeByIndex(startRow + accounts.length + 3, 1).setText('Total Expense');
+  sheet.getRangeByIndex(startRow + accounts.length + 3, 2).setNumber(totalExpense);
+  sheet.getRangeByIndex(startRow + accounts.length + 4, 1).setText('Balance');
+  sheet.getRangeByIndex(startRow + accounts.length + 4, 2).setNumber(balance);
+
+  // Create an instance of chart collection
+  final ChartCollection charts = ChartCollection(sheet);
+
+  // Add the chart
+  final Chart chart = charts.add();
+
+  // Set Chart Type
+  chart.chartType = ExcelChartType.pie;
+
+  // Set data range in the worksheet
+  chart.dataRange = sheet.getRangeByName('D3:D${transactions.length + 2}');
+
+  // Set chart position
+  chart.topRow = startRow + accounts.length + 7;
+  chart.bottomRow = startRow + accounts.length + 27;
+  chart.leftColumn = 1;
+  chart.rightColumn = 8;
+
+  // Set chart title
+  chart.chartTitle = 'Income Expense';
+
+  // Set chart legend
+  chart.hasLegend = true;
+  chart.legend?.position = ExcelLegendPosition.right;
+
+  // Set charts to worksheet
+  sheet.charts = charts;
+
+  final List<int> bytes = workbook.saveAsStream();
+  workbook.dispose();
+
+  final directory = await getApplicationSupportDirectory();
+  final file = File('${directory.path}/Output.xlsx');
+  await file.writeAsBytes(bytes, flush: true);
+
+  OpenFile.open(file.path);
+}
 
   Future<void> createExcelWithChart() async {
     // Create a new Excel document.
@@ -427,69 +438,6 @@ class _SettingScreenState extends State<SettingScreen> {
     OpenFile.open(filePath);
   }
 
-  Future<void> createPDF2(List<Transaction> transactions) async {
-    final pdf = pw.Document();
-
-    pdf.addPage(
-      pw.MultiPage(
-        build: (pw.Context context) {
-          return [
-            pw.Header(
-              level: 0,
-              child: pw.Text(
-                'Snabb Budget',
-                style: pw.TextStyle(
-                  fontSize: 33,
-                  fontWeight: pw.FontWeight.bold,
-                  color: const PdfColor.fromInt(0xff3457a8),
-                ),
-              ),
-            ),
-            pw.Table.fromTextArray(
-              context: context,
-              data: [
-                <String>[
-                  'Serial Number',
-                  'Date',
-                  'Transaction Category',
-                  'Amount',
-                  'Note'
-                ],
-                ...transactions.map(
-                  (transaction) => [
-                    '${transactions.indexOf(transaction) + 1}',
-                    '${transaction.date}',
-                    '${transaction.category.toString().split('.').last}',
-                    '${transaction.amount.toDouble()}',
-                    '${transaction.name}',
-                  ],
-                ),
-              ].map((row) {
-                // Map each row to wrap cell contents in a Container with background color
-                return row.map((cell) {
-                  return pw.Container(
-                    color: PdfColors
-                        .grey100, // Set the background color for the cell
-                    padding:
-                        const pw.EdgeInsets.all(10), // Optional: Set cell padding
-                    child: pw.Text(cell.toString()),
-                  );
-                }).toList();
-              }).toList(),
-            ),
-          ];
-        },
-      ),
-    );
-
-    final String path = (await getApplicationSupportDirectory()).path;
-    final String fileName = '$path/Output.pdf';
-    final File file = File(fileName);
-    await file.writeAsBytes(await pdf.save());
-
-    OpenFile.open(fileName);
-  }
-
   final userId1 = FirebaseAuth.instance.currentUser!.uid;
   int check = 0;
   String name = "loading....";
@@ -523,7 +471,7 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   
-  Future<void> createPdf(BuildContext context) async {
+  Future<void> createPdf(BuildContext context, String currency) async {
     final pdf = pdfWidgets.Document();
     pdf.addPage(pdfWidgets.MultiPage(
         build: (context) => [
@@ -532,7 +480,7 @@ class _SettingScreenState extends State<SettingScreen> {
               child: pw.Text(
                 'Snabb Budget',
                 style: pw.TextStyle(
-                  fontSize: 33,
+                  fontSize: 20,
                   fontWeight: pw.FontWeight.bold,
                   color: const PdfColor.fromInt(0xff3457a8),
                 ),
@@ -542,7 +490,7 @@ class _SettingScreenState extends State<SettingScreen> {
               pw.Text(
                 'Name:',
                 style: pw.TextStyle(
-                  fontSize: 20,
+                  fontSize: 14,
                   fontWeight: pw.FontWeight.bold,
                   color: const PdfColor.fromInt(0x000000),
                 ),
@@ -551,7 +499,7 @@ class _SettingScreenState extends State<SettingScreen> {
               pw.Text(
                 name,
                 style: const pw.TextStyle(
-                  fontSize: 20,
+                  fontSize: 12,
                   color: PdfColor.fromInt(0x000000),
                 ),
               ),
@@ -561,7 +509,7 @@ class _SettingScreenState extends State<SettingScreen> {
               pw.Text(
                 'Email:',
                 style: pw.TextStyle(
-                  fontSize: 20,
+                  fontSize: 14,
                   fontWeight: pw.FontWeight.bold,
                   color: const PdfColor.fromInt(0x000000),
                 ),
@@ -570,7 +518,7 @@ class _SettingScreenState extends State<SettingScreen> {
               pw.Text(
                 email,
                 style: const pw.TextStyle(
-                  fontSize: 20,
+                  fontSize: 12,
                   color: PdfColor.fromInt(0x000000),
                 ),
               ),
@@ -587,13 +535,13 @@ class _SettingScreenState extends State<SettingScreen> {
                       0xff2fc7b2), // Background color for the first column
                   padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
-                    'Serial Number',
+                    'Serial Number',textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
-                    textAlign: pw.TextAlign.left, // Set alignment to left
+                    // textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
@@ -605,11 +553,11 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: pw.Text(
                     'Date',
                     style: pw.TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
-                    textAlign: pw.TextAlign.left, // Set alignment to left
+                    //textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
@@ -620,13 +568,13 @@ class _SettingScreenState extends State<SettingScreen> {
                   // Background color for the third column
                   padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
-                    'Transaction Category',
+                    'Transaction Category', textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
-                    textAlign: pw.TextAlign.left, // Set alignment to left
+                    //textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
@@ -637,30 +585,28 @@ class _SettingScreenState extends State<SettingScreen> {
 // Background color for the fourth column
                   padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
-                    'Amount',
+                    'Amount',textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
-                    textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
                   height: 60,
                   width: 70,
                   color: const PdfColor.fromInt(
-                      0xff2fc7b2), // Background color for the first column
-// Background color for the fifth column
+                      0xff2fc7b2),
                   padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
-                    'Name',
+                    'Name',textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
-                    textAlign: pw.TextAlign.left, // Set alignment to left
+                    //textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
               ],
@@ -673,34 +619,29 @@ class _SettingScreenState extends State<SettingScreen> {
                   pw.Container(
                     width: 100,
                     padding: const pw.EdgeInsets.all(10),
-                    child: pw.Text('${transactions.indexOf(transaction) + 1}'),
+                    child: pw.Text('${transactions.indexOf(transaction) + 1}',textAlign: pw.TextAlign.center,),
                   ),
                   pw.Container(
                     width: 100,
                     padding: const pw.EdgeInsets.all(10),
                     child: pw.Text(
-                        '${transaction.date.day}/ ${transaction.date.month}/ ${transaction.date.year}'),
+                        '${transaction.date.day}/ ${transaction.date.month}/ ${transaction.date.year}',textAlign: pw.TextAlign.center,),
                   ),
                   pw.Container(
                     width: 150,
                     padding: const pw.EdgeInsets.all(10),
                     child: pw.Text(
-                        '${transaction.category.toString().split('.').last}'),
+                        transaction.category.toString().split('.').last.capitalize as String ,textAlign: pw.TextAlign.center,),
                   ),
                   pw.Container(
                     width: 100,
                     padding: const pw.EdgeInsets.all(10),
-                    child: pw.Text('${transaction.amount.toDouble()}'),
+                    child: pw.Text('$currency ${transaction.amount.toDouble()}',textAlign: pw.TextAlign.center,),
                   ),
                   pw.Container(
                     width: 200,
                     padding: const pw.EdgeInsets.all(10),
-                    child: pw.Text('${transaction.name}'),
-                  ),
-                  pw.Container(
-                    width: 200,
-                    padding: const pw.EdgeInsets.all(10),
-                    child: pw.Text('${transaction.notes}'),
+                    child: pw.Text(transaction.name),
                   ),
                 ],
               ),
@@ -711,65 +652,66 @@ class _SettingScreenState extends State<SettingScreen> {
               level: 1,
               text: 'Accounts',
               textStyle: pw.TextStyle(
-                fontSize: 20,
+                fontSize: 16,
                 fontWeight: pw.FontWeight.bold,
                 color: const PdfColor.fromInt(0xff3457a8),
               ),
             ),
             pw.Row(
+              mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
                 pw.Container(
-                  height: 60,
+                 // height: 60,
                   width: 130,
                   color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
                   padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
-                    'Account Id',
+                    'Account Id',textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
-                    textAlign: pw.TextAlign.left, // Set alignment to left
+                    //textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
-                  height: 60,
-                  width: 90,
+                  //height: 60,
+                  width: 100,
                   color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
                   padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
-                    'Ammount',
+                    'Amount',textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
-                    textAlign: pw.TextAlign.left, // Set alignment to left
+                    //textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
-                  height: 60,
-                  width: 130,
+                  //height: 60,
+                  width: 100,
                   color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
                   // Background color for the third column
                   padding: const pw.EdgeInsets.all(10),
-                  child: pw.Text(
-                    'Name ',
+                  child: 
+                  pw.Text(
+                    'Name ',textAlign: pw.TextAlign.center,
                     style: pw.TextStyle(
-                      fontSize: 18,
+                      fontSize: 14,
                       color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
-                    textAlign: pw.TextAlign.left, // Set alignment to left
+                    //textAlign: pw.TextAlign.left,
                   ),
                 ),
               ],
             ),
-
             pw.Divider(),
             ...accounts.map(
               (account) => pw.Row(
@@ -778,28 +720,18 @@ class _SettingScreenState extends State<SettingScreen> {
                   pw.Container(
                     width: 100,
                     padding: const pw.EdgeInsets.all(10),
-                    child: pw.Text('${account.id}'),
+                    child: pw.Text( account.id == "69"? "5d2edc51ed52" :account.id, textAlign: pw.TextAlign.center),
                   ),
                   pw.Container(
                     width: 150,
                     padding: const pw.EdgeInsets.all(10),
-                    child: pw.Text('${account.amount}'),
+                    child: pw.Text('$currency ${account.amount}', textAlign: pw.TextAlign.center),
                   ),
                   pw.Container(
                     width: 100,
                     padding: const pw.EdgeInsets.all(10),
-                    child: pw.Text('${account.name}'),
+                    child: pw.Text(account.name, textAlign: pw.TextAlign.center),
                   ),
-                  pw.Column(
-                children:[
-                  pw.Text("heh"),
-                  pw.Text("heh"),
-                  pw.Text("heh"),
-                  pw.Text("heh"),
-                  pw.Text("heh"),
-                  pw.Text("heh"),
-                  pw.Text("heh"),
-                ] )
                 ],
               ),
             ),
@@ -808,7 +740,6 @@ class _SettingScreenState extends State<SettingScreen> {
     final String fileName = '$path/Output.pdf';
     final File file = File(fileName);
     await file.writeAsBytes(await pdf.save());
-
     OpenFile.open(fileName);
     // Save pdfBytes to Firebase Cloud Storage
   }
@@ -960,7 +891,7 @@ class _SettingScreenState extends State<SettingScreen> {
                           trailing: const Icon(Icons.arrow_forward_ios_rounded),
                           onTap: () {
                             //createPDF(transactions, accounts);
-                           createPdf(context);
+                           createPdf(context, currency as String);
                           },
                         ),
                         ListTile(
