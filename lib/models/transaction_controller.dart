@@ -4,6 +4,7 @@ import 'package:snabbudget/models/transaction.dart';
 class TransactionData {
   static TransactionData? _instance;
   final List<Transaction> _transactions = [];
+  List<Transaction> sortedList = [];
 
   factory TransactionData() {
     _instance ??= TransactionData._internal();
@@ -27,9 +28,13 @@ class TransactionData {
       Transaction transaction = Transaction.fromJson(document.data(),document.id);
       _transactions.add(transaction);
     });
+    sortedList = _transactions;
+    sortedList.sort((a, b) => b.date.compareTo(a.date));
   }
 
+
+
   List<Transaction> get transactions {
-    return _transactions;
+    return sortedList;
   }
 }

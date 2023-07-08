@@ -102,9 +102,10 @@ class _HomeScreenState extends State<HomeScreen> {
           Transaction.fromJson(document.data(), document.id);
       transactions.add(transaction);
     }
-
+    List<Transaction> sortedList = transactions;
+    sortedList.sort((a, b) => b.date.compareTo(a.date));
     setState(() {
-      transactionsList = transactions;
+      transactionsList = sortedList;
     });
     return transactions;
   }

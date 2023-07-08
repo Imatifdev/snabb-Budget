@@ -100,55 +100,8 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
     print("thissssss month $thisMonthBalance nexxxxt month $nextMonth");
   });
 }
-
-
-  @override
-  Widget build(BuildContext context) {
-    if (check == 0) {
-      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
-      check++;
-    }
-    Size size = MediaQuery.of(context).size;
-    return Scaffold(
-      key: scaffoldKey,
-      drawer: const CustomDrawer(),
-      body: SafeArea(
-        child: Column(
-          children: [
-            Card(
-              child: SizedBox(
-                height: 50,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    IconButton(
-                      onPressed: () {
-                        scaffoldKey.currentState?.openDrawer();
-                      },
-                      icon: const ImageIcon(
-                        AssetImage("assets/images/menu.png"),
-                        size: 40,
-                      ),
-                    ),
-                    Text(
-                      AppLocalizations.of(context)!.scheduledTransactions,
-                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(
-                      width: 50,
-                    )
-                  ],
-                ),
-              ),
-            ),
-            transactions.isNotEmpty? SizedBox(
-              height: size.height - 200,
-              child: ListView.builder(
-                itemCount: transactions.length,
-                itemBuilder: (context, index) {
-                  Transaction transaction = transactions[index];
-                  return InkWell(
-                    onTap: () {
+  
+  void confirmPopup(Transaction transaction){
                       showDialog(
                         context: context,
                         builder: (ctx) => AlertDialog(
@@ -208,13 +161,66 @@ class _ScheduleTransactionsState extends State<ScheduleTransactions> {
                           ],
                         ),
                       );
-                    },
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Icon(Icons.add),
-                        TransactionCard(transaction: transaction),
-                      ],
+                    }
+  @override
+  Widget build(BuildContext context) {
+    if (check == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
+      check++;
+    }
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      key: scaffoldKey,
+      drawer: const CustomDrawer(),
+      body: SafeArea(
+        child: Column(
+          children: [
+            Card(
+              child: SizedBox(
+                height: 50,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        scaffoldKey.currentState?.openDrawer();
+                      },
+                      icon: const ImageIcon(
+                        AssetImage("assets/images/menu.png"),
+                        size: 40,
+                      ),
+                    ),
+                    Text(
+                      AppLocalizations.of(context)!.scheduledTransactions,
+                      style: const TextStyle(fontSize: 14, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(
+                      width: 50,
+                    )
+                  ],
+                ),
+              ),
+            ),
+            transactions.isNotEmpty? SizedBox(
+              height: size.height - 200,
+              child: ListView.builder(
+                itemCount: transactions.length,
+                itemBuilder: (context, index) {
+                  Transaction transaction = transactions[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 20),
+                    child: Container(
+                      color: Colors.white,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          TextButton(onPressed: (){
+                            confirmPopup(transaction);
+                          }, child: const Text("Confirm This Transaction"),),
+                          Divider(),
+                          TransactionCard(transaction: transaction),
+                        ],
+                      ),
                     ),
                   );
                 },

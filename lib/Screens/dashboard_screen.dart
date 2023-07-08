@@ -106,10 +106,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     for (Transaction transaction in widget.transactions) {
       if (transaction.type == TransactionType.income) {
-        totalIncomeAmount += transaction.amount;
+        if(transaction.date.month == DateTime.now().month){
+          totalIncomeAmount += transaction.amount;
+        }
       }
       if (transaction.type == TransactionType.expense) {
-        totalexpAmount += transaction.amount;
+        if(transaction.date.month == DateTime.now().month){
+          totalexpAmount += transaction.amount;
+        }
       }
     }
 
@@ -425,15 +429,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Column(
                       children: [
                         SizedBox(
-                          height: 410,
+                          height: size.height/2,
+                          width: double.infinity,
                           child: ListView.builder(
                             itemCount: widget.transactions.length,
                             itemBuilder: (context, index) {
-                              // Transaction transaction =
-                              //     widget.transactions[index];
                               Transaction transaction =
-                                  widget.transactions.reversed.toList()[index];
-
+                                  widget.transactions[index];
                               return Dismissible(
                                 confirmDismiss: (direction) async {
                                   bool delete = await deleteTransaction(
