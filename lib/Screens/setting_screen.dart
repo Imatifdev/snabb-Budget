@@ -441,7 +441,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 style: pw.TextStyle(
                   fontSize: 33,
                   fontWeight: pw.FontWeight.bold,
-                  color: PdfColor.fromInt(0xff3457a8),
+                  color: const PdfColor.fromInt(0xff3457a8),
                 ),
               ),
             ),
@@ -471,7 +471,7 @@ class _SettingScreenState extends State<SettingScreen> {
                     color: PdfColors
                         .grey100, // Set the background color for the cell
                     padding:
-                        pw.EdgeInsets.all(10), // Optional: Set cell padding
+                        const pw.EdgeInsets.all(10), // Optional: Set cell padding
                     child: pw.Text(cell.toString()),
                   );
                 }).toList();
@@ -508,17 +508,25 @@ class _SettingScreenState extends State<SettingScreen> {
         //phone = data?["Phone"];
       });
     }
+     QuerySnapshot<Map<String, dynamic>> querySnapshot = await FirebaseFirestore.instance.collection("UserTransactions")
+                        .doc(userId).collection("Accounts").get();
+    List<QueryDocumentSnapshot<Map<String, dynamic>>> documents =
+        querySnapshot.docs;
+        setState(() {
+          for (var document in documents) {
+      Account account =
+          Account.fromJson(document.data(), document.id);
+      accounts.add(account);
+    }
+        });
     print(userId);
   }
 
-  Future<void> createPDF(
-      List<Transaction> transactions, List<Account> accounts) async {
-    final pdf = pw.Document();
-
-    pdf.addPage(
-      pw.MultiPage(
-        build: (pw.Context context) {
-          return [
+  
+  Future<void> createPdf(BuildContext context) async {
+    final pdf = pdfWidgets.Document();
+    pdf.addPage(pdfWidgets.MultiPage(
+        build: (context) => [
             pw.Header(
               level: 0,
               child: pw.Text(
@@ -526,7 +534,7 @@ class _SettingScreenState extends State<SettingScreen> {
                 style: pw.TextStyle(
                   fontSize: 33,
                   fontWeight: pw.FontWeight.bold,
-                  color: PdfColor.fromInt(0xff3457a8),
+                  color: const PdfColor.fromInt(0xff3457a8),
                 ),
               ),
             ),
@@ -536,13 +544,13 @@ class _SettingScreenState extends State<SettingScreen> {
                 style: pw.TextStyle(
                   fontSize: 20,
                   fontWeight: pw.FontWeight.bold,
-                  color: PdfColor.fromInt(0x000000),
+                  color: const PdfColor.fromInt(0x000000),
                 ),
               ),
               pw.SizedBox(width: 20),
               pw.Text(
                 name,
-                style: pw.TextStyle(
+                style: const pw.TextStyle(
                   fontSize: 20,
                   color: PdfColor.fromInt(0x000000),
                 ),
@@ -555,34 +563,34 @@ class _SettingScreenState extends State<SettingScreen> {
                 style: pw.TextStyle(
                   fontSize: 20,
                   fontWeight: pw.FontWeight.bold,
-                  color: PdfColor.fromInt(0x000000),
+                  color: const PdfColor.fromInt(0x000000),
                 ),
               ),
               pw.SizedBox(width: 20),
               pw.Text(
                 email,
-                style: pw.TextStyle(
+                style: const pw.TextStyle(
                   fontSize: 20,
                   color: PdfColor.fromInt(0x000000),
                 ),
               ),
               pw.SizedBox(width: 20),
             ]),
-            pw.Padding(padding: pw.EdgeInsets.all(10)),
+            pw.Padding(padding: const pw.EdgeInsets.all(10)),
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
                 pw.Container(
                   height: 60,
                   width: 130,
-                  color: PdfColor.fromInt(
+                  color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
-                  padding: pw.EdgeInsets.all(10),
+                  padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
                     'Serial Number',
                     style: pw.TextStyle(
                       fontSize: 18,
-                      color: PdfColor.fromInt(0xFFFFFF),
+                      color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
@@ -591,14 +599,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 pw.Container(
                   height: 60,
                   width: 90,
-                  color: PdfColor.fromInt(
+                  color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
-                  padding: pw.EdgeInsets.all(10),
+                  padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
                     'Date',
                     style: pw.TextStyle(
                       fontSize: 18,
-                      color: PdfColor.fromInt(0xFFFFFF),
+                      color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
@@ -607,15 +615,15 @@ class _SettingScreenState extends State<SettingScreen> {
                 pw.Container(
                   height: 60,
                   width: 130,
-                  color: PdfColor.fromInt(
+                  color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
                   // Background color for the third column
-                  padding: pw.EdgeInsets.all(10),
+                  padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
                     'Transaction Category',
                     style: pw.TextStyle(
                       fontSize: 18,
-                      color: PdfColor.fromInt(0xFFFFFF),
+                      color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
@@ -624,15 +632,15 @@ class _SettingScreenState extends State<SettingScreen> {
                 pw.Container(
                   height: 60,
                   width: 90,
-                  color: PdfColor.fromInt(
+                  color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
 // Background color for the fourth column
-                  padding: pw.EdgeInsets.all(10),
+                  padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
                     'Amount',
                     style: pw.TextStyle(
                       fontSize: 18,
-                      color: PdfColor.fromInt(0xFFFFFF),
+                      color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
@@ -641,15 +649,15 @@ class _SettingScreenState extends State<SettingScreen> {
                 pw.Container(
                   height: 60,
                   width: 70,
-                  color: PdfColor.fromInt(
+                  color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
 // Background color for the fifth column
-                  padding: pw.EdgeInsets.all(10),
+                  padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
                     'Name',
                     style: pw.TextStyle(
                       fontSize: 18,
-                      color: PdfColor.fromInt(0xFFFFFF),
+                      color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
@@ -664,48 +672,48 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   pw.Container(
                     width: 100,
-                    padding: pw.EdgeInsets.all(10),
+                    padding: const pw.EdgeInsets.all(10),
                     child: pw.Text('${transactions.indexOf(transaction) + 1}'),
                   ),
                   pw.Container(
                     width: 100,
-                    padding: pw.EdgeInsets.all(10),
+                    padding: const pw.EdgeInsets.all(10),
                     child: pw.Text(
                         '${transaction.date.day}/ ${transaction.date.month}/ ${transaction.date.year}'),
                   ),
                   pw.Container(
                     width: 150,
-                    padding: pw.EdgeInsets.all(10),
+                    padding: const pw.EdgeInsets.all(10),
                     child: pw.Text(
                         '${transaction.category.toString().split('.').last}'),
                   ),
                   pw.Container(
                     width: 100,
-                    padding: pw.EdgeInsets.all(10),
+                    padding: const pw.EdgeInsets.all(10),
                     child: pw.Text('${transaction.amount.toDouble()}'),
                   ),
                   pw.Container(
                     width: 200,
-                    padding: pw.EdgeInsets.all(10),
+                    padding: const pw.EdgeInsets.all(10),
                     child: pw.Text('${transaction.name}'),
                   ),
                   pw.Container(
                     width: 200,
-                    padding: pw.EdgeInsets.all(10),
+                    padding: const pw.EdgeInsets.all(10),
                     child: pw.Text('${transaction.notes}'),
                   ),
                 ],
               ),
             ),
             pw.Padding(
-                padding: pw.EdgeInsets.all(20)), // Add padding between lists
+                padding: const pw.EdgeInsets.all(20)), // Add padding between lists
             pw.Header(
               level: 1,
               text: 'Accounts',
               textStyle: pw.TextStyle(
                 fontSize: 20,
                 fontWeight: pw.FontWeight.bold,
-                color: PdfColor.fromInt(0xff3457a8),
+                color: const PdfColor.fromInt(0xff3457a8),
               ),
             ),
             pw.Row(
@@ -713,14 +721,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 pw.Container(
                   height: 60,
                   width: 130,
-                  color: PdfColor.fromInt(
+                  color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
-                  padding: pw.EdgeInsets.all(10),
+                  padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
                     'Account Id',
                     style: pw.TextStyle(
                       fontSize: 18,
-                      color: PdfColor.fromInt(0xFFFFFF),
+                      color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
@@ -729,14 +737,14 @@ class _SettingScreenState extends State<SettingScreen> {
                 pw.Container(
                   height: 60,
                   width: 90,
-                  color: PdfColor.fromInt(
+                  color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
-                  padding: pw.EdgeInsets.all(10),
+                  padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
                     'Ammount',
                     style: pw.TextStyle(
                       fontSize: 18,
-                      color: PdfColor.fromInt(0xFFFFFF),
+                      color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
@@ -745,15 +753,15 @@ class _SettingScreenState extends State<SettingScreen> {
                 pw.Container(
                   height: 60,
                   width: 130,
-                  color: PdfColor.fromInt(
+                  color: const PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
                   // Background color for the third column
-                  padding: pw.EdgeInsets.all(10),
+                  padding: const pw.EdgeInsets.all(10),
                   child: pw.Text(
                     'Name ',
                     style: pw.TextStyle(
                       fontSize: 18,
-                      color: PdfColor.fromInt(0xFFFFFF),
+                      color: const PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
@@ -769,33 +777,40 @@ class _SettingScreenState extends State<SettingScreen> {
                 children: [
                   pw.Container(
                     width: 100,
-                    padding: pw.EdgeInsets.all(10),
+                    padding: const pw.EdgeInsets.all(10),
                     child: pw.Text('${account.id}'),
                   ),
                   pw.Container(
                     width: 150,
-                    padding: pw.EdgeInsets.all(10),
+                    padding: const pw.EdgeInsets.all(10),
                     child: pw.Text('${account.amount}'),
                   ),
                   pw.Container(
                     width: 100,
-                    padding: pw.EdgeInsets.all(10),
+                    padding: const pw.EdgeInsets.all(10),
                     child: pw.Text('${account.name}'),
                   ),
+                  pw.Column(
+                children:[
+                  pw.Text("heh"),
+                  pw.Text("heh"),
+                  pw.Text("heh"),
+                  pw.Text("heh"),
+                  pw.Text("heh"),
+                  pw.Text("heh"),
+                  pw.Text("heh"),
+                ] )
                 ],
               ),
             ),
-          ];
-        },
-      ),
-    );
-
+          ]));
     final String path = (await getApplicationSupportDirectory()).path;
     final String fileName = '$path/Output.pdf';
     final File file = File(fileName);
     await file.writeAsBytes(await pdf.save());
 
     OpenFile.open(fileName);
+    // Save pdfBytes to Firebase Cloud Storage
   }
 
   String? currency = "";
@@ -944,7 +959,8 @@ class _SettingScreenState extends State<SettingScreen> {
                               AppLocalizations.of(context)!.generateReports),
                           trailing: const Icon(Icons.arrow_forward_ios_rounded),
                           onTap: () {
-                            createPDF(transactions, accounts);
+                            //createPDF(transactions, accounts);
+                           createPdf(context);
                           },
                         ),
                         ListTile(
