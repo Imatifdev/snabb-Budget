@@ -511,7 +511,8 @@ class _SettingScreenState extends State<SettingScreen> {
     print(userId);
   }
 
-  Future<void> createPDF(List<Transaction> transactions) async {
+  Future<void> createPDF(
+      List<Transaction> transactions, List<Account> accounts) async {
     final pdf = pw.Document();
 
     pdf.addPage(
@@ -572,6 +573,7 @@ class _SettingScreenState extends State<SettingScreen> {
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
               children: [
                 pw.Container(
+                  height: 60,
                   width: 130,
                   color: PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
@@ -579,26 +581,32 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: pw.Text(
                     'Serial Number',
                     style: pw.TextStyle(
+                      fontSize: 18,
+                      color: PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
-                  width: 100,
+                  height: 60,
+                  width: 90,
                   color: PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
                   padding: pw.EdgeInsets.all(10),
                   child: pw.Text(
                     'Date',
                     style: pw.TextStyle(
+                      fontSize: 18,
+                      color: PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
-                  width: 150,
+                  height: 60,
+                  width: 130,
                   color: PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
                   // Background color for the third column
@@ -606,13 +614,16 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: pw.Text(
                     'Transaction Category',
                     style: pw.TextStyle(
+                      fontSize: 18,
+                      color: PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
-                  width: 100,
+                  height: 60,
+                  width: 90,
                   color: PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
 // Background color for the fourth column
@@ -620,20 +631,25 @@ class _SettingScreenState extends State<SettingScreen> {
                   child: pw.Text(
                     'Amount',
                     style: pw.TextStyle(
+                      fontSize: 18,
+                      color: PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
                 ),
                 pw.Container(
-                  width: 200,
+                  height: 60,
+                  width: 70,
                   color: PdfColor.fromInt(
                       0xff2fc7b2), // Background color for the first column
 // Background color for the fifth column
                   padding: pw.EdgeInsets.all(10),
                   child: pw.Text(
-                    'Note',
+                    'Name',
                     style: pw.TextStyle(
+                      fontSize: 18,
+                      color: PdfColor.fromInt(0xFFFFFF),
                       fontWeight: pw.FontWeight.bold,
                     ),
                     textAlign: pw.TextAlign.left, // Set alignment to left
@@ -654,7 +670,8 @@ class _SettingScreenState extends State<SettingScreen> {
                   pw.Container(
                     width: 100,
                     padding: pw.EdgeInsets.all(10),
-                    child: pw.Text('${transaction.date}'),
+                    child: pw.Text(
+                        '${transaction.date.day}/ ${transaction.date.month}/ ${transaction.date.year}'),
                   ),
                   pw.Container(
                     width: 150,
@@ -677,151 +694,93 @@ class _SettingScreenState extends State<SettingScreen> {
                     padding: pw.EdgeInsets.all(10),
                     child: pw.Text('${transaction.notes}'),
                   ),
-                  pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Container(
-                        width: 130,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Serial Number',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                      pw.Container(
-                        width: 100,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Date',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                      pw.Container(
-                        width: 150,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-                        // Background color for the third column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Transaction Category',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                      pw.Container(
-                        width: 100,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-// Background color for the fourth column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Amount',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                      pw.Container(
-                        width: 200,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-// Background color for the fifth column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Note',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                    ],
+                ],
+              ),
+            ),
+            pw.Padding(
+                padding: pw.EdgeInsets.all(20)), // Add padding between lists
+            pw.Header(
+              level: 1,
+              text: 'Accounts',
+              textStyle: pw.TextStyle(
+                fontSize: 20,
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColor.fromInt(0xff3457a8),
+              ),
+            ),
+            pw.Row(
+              children: [
+                pw.Container(
+                  height: 60,
+                  width: 130,
+                  color: PdfColor.fromInt(
+                      0xff2fc7b2), // Background color for the first column
+                  padding: pw.EdgeInsets.all(10),
+                  child: pw.Text(
+                    'Account Id',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      color: PdfColor.fromInt(0xFFFFFF),
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                    textAlign: pw.TextAlign.left, // Set alignment to left
                   ),
-                  pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Container(
-                        width: 130,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Serial Number',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                      pw.Container(
-                        width: 100,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Date',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                      pw.Container(
-                        width: 150,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-                        // Background color for the third column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Transaction Category',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                      pw.Container(
-                        width: 100,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-// Background color for the fourth column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Amount',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                      pw.Container(
-                        width: 200,
-                        color: PdfColor.fromInt(
-                            0xff2fc7b2), // Background color for the first column
-// Background color for the fifth column
-                        padding: pw.EdgeInsets.all(10),
-                        child: pw.Text(
-                          'Note',
-                          style: pw.TextStyle(
-                            fontWeight: pw.FontWeight.bold,
-                          ),
-                          textAlign: pw.TextAlign.left, // Set alignment to left
-                        ),
-                      ),
-                    ],
+                ),
+                pw.Container(
+                  height: 60,
+                  width: 90,
+                  color: PdfColor.fromInt(
+                      0xff2fc7b2), // Background color for the first column
+                  padding: pw.EdgeInsets.all(10),
+                  child: pw.Text(
+                    'Ammount',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      color: PdfColor.fromInt(0xFFFFFF),
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                    textAlign: pw.TextAlign.left, // Set alignment to left
+                  ),
+                ),
+                pw.Container(
+                  height: 60,
+                  width: 130,
+                  color: PdfColor.fromInt(
+                      0xff2fc7b2), // Background color for the first column
+                  // Background color for the third column
+                  padding: pw.EdgeInsets.all(10),
+                  child: pw.Text(
+                    'Name ',
+                    style: pw.TextStyle(
+                      fontSize: 18,
+                      color: PdfColor.fromInt(0xFFFFFF),
+                      fontWeight: pw.FontWeight.bold,
+                    ),
+                    textAlign: pw.TextAlign.left, // Set alignment to left
+                  ),
+                ),
+              ],
+            ),
+
+            pw.Divider(),
+            ...accounts.map(
+              (account) => pw.Row(
+                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                children: [
+                  pw.Container(
+                    width: 100,
+                    padding: pw.EdgeInsets.all(10),
+                    child: pw.Text('${account.id}'),
+                  ),
+                  pw.Container(
+                    width: 150,
+                    padding: pw.EdgeInsets.all(10),
+                    child: pw.Text('${account.amount}'),
+                  ),
+                  pw.Container(
+                    width: 100,
+                    padding: pw.EdgeInsets.all(10),
+                    child: pw.Text('${account.name}'),
                   ),
                 ],
               ),
@@ -985,7 +944,7 @@ class _SettingScreenState extends State<SettingScreen> {
                               AppLocalizations.of(context)!.generateReports),
                           trailing: const Icon(Icons.arrow_forward_ios_rounded),
                           onTap: () {
-                            createPDF(transactions);
+                            createPDF(transactions, accounts);
                           },
                         ),
                         ListTile(
