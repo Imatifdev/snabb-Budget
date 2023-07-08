@@ -22,6 +22,7 @@ import '../models/transaction_controller.dart';
 import '../utils/mycolors.dart';
 import '../utils/mycolors.dart';
 import 'currency_screen.dart';
+import 'export.dart';
 import 'language_screen.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -343,55 +344,6 @@ class _SettingScreenState extends State<SettingScreen> {
     OpenFile.open(filePath);
   }
 
-  // Future<void> createExcel(List<Transaction> transactions) async {
-  //   final Workbook workbook = Workbook();
-  //   final Worksheet sheet = workbook.worksheets[0];
-
-  //   // Set header "Snabb Budget"
-  //   sheet.getRangeByName('A1').setText('Snabb Budget!');
-
-  //   // Set column headers
-  //   sheet.getRangeByIndex(2, 1).setText('Serial Number');
-  //   sheet.getRangeByIndex(2, 2).setText('Date');
-  //   sheet.getRangeByIndex(2, 3).setText('Transaction Category');
-  //   sheet.getRangeByIndex(2, 4).setText('Amount');
-  //   sheet.getRangeByIndex(2, 5).setText('Note');
-
-  //   // Add transaction data
-  //   for (int i = 0; i < transactions.length; i++) {
-  //     final Transaction transaction = transactions[i];
-  //     final int row = i + 3; // Starting from row 3
-
-  //     // Serial Number
-  //     sheet.getRangeByIndex(row, 1).setNumber(i + 1);
-
-  //     // Date
-  //     sheet.getRangeByIndex(row, 2).setDateTime(transaction.date);
-
-  //     // Transaction Category
-  //     sheet
-  //         .getRangeByIndex(row, 3)
-  //         .setText(transaction.category.toString().split('.').last);
-
-  //     // Amount
-  //     sheet.getRangeByIndex(row, 4).setNumber(transaction.amount.toDouble());
-
-  //     // Note (if exists)
-  //     if (transaction.name.isNotEmpty) {
-  //       sheet.getRangeByIndex(row, 5).setText(transaction.name);
-  //     }
-  //   }
-
-  //   final List<int> bytes = workbook.saveAsStream();
-  //   workbook.dispose();
-
-  //   final String path = (await getApplicationSupportDirectory()).path;
-  //   final String fileName = '$path/Output.xlsx';
-  //   final File file = File(fileName);
-  //   await file.writeAsBytes(bytes, flush: true);
-  //   OpenFile.open(fileName);
-  // }
-
   Future<void> generateExcel() async {
     // Create a new Excel document
     final Workbook workbook = Workbook();
@@ -538,6 +490,27 @@ class _SettingScreenState extends State<SettingScreen> {
     OpenFile.open(fileName);
   }
 
+  final userId1 = FirebaseAuth.instance.currentUser!.uid;
+  int check = 0;
+  String name = "loading....";
+  String email = "loading....";
+  String phone = 'loading....';
+
+  void getInfo() async {
+    var collection = FirebaseFirestore.instance.collection('UsersData');
+    var docSnapshot = await collection.doc(userId).get();
+    if (docSnapshot.exists) {
+      print("ok");
+      Map<String, dynamic>? data = docSnapshot.data();
+      setState(() {
+        name = data?["First Name"];
+        email = data?["Email"];
+        //phone = data?["Phone"];
+      });
+    }
+    print(userId);
+  }
+
   Future<void> createPDF(List<Transaction> transactions) async {
     final pdf = pw.Document();
 
@@ -556,6 +529,44 @@ class _SettingScreenState extends State<SettingScreen> {
                 ),
               ),
             ),
+            pw.Row(children: [
+              pw.Text(
+                'Name:',
+                style: pw.TextStyle(
+                  fontSize: 20,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColor.fromInt(0x000000),
+                ),
+              ),
+              pw.SizedBox(width: 20),
+              pw.Text(
+                name,
+                style: pw.TextStyle(
+                  fontSize: 20,
+                  color: PdfColor.fromInt(0x000000),
+                ),
+              ),
+              pw.SizedBox(width: 20),
+            ]),
+            pw.Row(children: [
+              pw.Text(
+                'Email:',
+                style: pw.TextStyle(
+                  fontSize: 20,
+                  fontWeight: pw.FontWeight.bold,
+                  color: PdfColor.fromInt(0x000000),
+                ),
+              ),
+              pw.SizedBox(width: 20),
+              pw.Text(
+                email,
+                style: pw.TextStyle(
+                  fontSize: 20,
+                  color: PdfColor.fromInt(0x000000),
+                ),
+              ),
+              pw.SizedBox(width: 20),
+            ]),
             pw.Padding(padding: pw.EdgeInsets.all(10)),
             pw.Row(
               mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
@@ -666,6 +677,152 @@ class _SettingScreenState extends State<SettingScreen> {
                     padding: pw.EdgeInsets.all(10),
                     child: pw.Text('${transaction.notes}'),
                   ),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Container(
+                        width: 130,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Serial Number',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                      pw.Container(
+                        width: 100,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Date',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                      pw.Container(
+                        width: 150,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+                        // Background color for the third column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Transaction Category',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                      pw.Container(
+                        width: 100,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+// Background color for the fourth column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Amount',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                      pw.Container(
+                        width: 200,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+// Background color for the fifth column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Note',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                    ],
+                  ),
+                  pw.Row(
+                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                    children: [
+                      pw.Container(
+                        width: 130,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Serial Number',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                      pw.Container(
+                        width: 100,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Date',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                      pw.Container(
+                        width: 150,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+                        // Background color for the third column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Transaction Category',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                      pw.Container(
+                        width: 100,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+// Background color for the fourth column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Amount',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                      pw.Container(
+                        width: 200,
+                        color: PdfColor.fromInt(
+                            0xff2fc7b2), // Background color for the first column
+// Background color for the fifth column
+                        padding: pw.EdgeInsets.all(10),
+                        child: pw.Text(
+                          'Note',
+                          style: pw.TextStyle(
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                          textAlign: pw.TextAlign.left, // Set alignment to left
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),
@@ -695,6 +852,10 @@ class _SettingScreenState extends State<SettingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if (check == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
+      check++;
+    }
     return Scaffold(
       key: scaffoldKey,
       drawer: const CustomDrawer(),
