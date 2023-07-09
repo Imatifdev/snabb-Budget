@@ -645,24 +645,7 @@ class _SettingScreenState extends State<SettingScreen> {
 
               pw.Padding(padding: const pw.EdgeInsets.all(10)),
               pw.Row(
-                mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Container(
-                    height: 60,
-                    width: 130,
-                    color: const PdfColor.fromInt(
-                        0xff2fc7b2), // Background color for the first column
-                    padding: const pw.EdgeInsets.all(10),
-                    child: pw.Text(
-                      'Serial Number', textAlign: pw.TextAlign.center,
-                      style: pw.TextStyle(
-                        fontSize: 14,
-                        color: const PdfColor.fromInt(0xFFFFFF),
-                        fontWeight: pw.FontWeight.bold,
-                      ),
-                      // textAlign: pw.TextAlign.left, // Set alignment to left
-                    ),
-                  ),
                   pw.Container(
                     height: 60,
                     width: 90,
@@ -735,14 +718,6 @@ class _SettingScreenState extends State<SettingScreen> {
                 (transaction) => pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
-                    pw.Container(
-                      width: 100,
-                      padding: const pw.EdgeInsets.all(10),
-                      child: pw.Text(
-                        '${transactions.indexOf(transaction) + 1}',
-                        textAlign: pw.TextAlign.center,
-                      ),
-                    ),
                     pw.Container(
                       width: 100,
                       padding: const pw.EdgeInsets.all(10),

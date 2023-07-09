@@ -1,4 +1,4 @@
-// ignore_for_file: non_constant_identifier_names, unrelated_type_equality_checks
+// ignore_for_file: non_constant_identifier_names, unrelated_type_equality_checks, prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 // import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
@@ -27,6 +27,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
   String? currency = "";
   int check = 0;
   num snabWalletBalance = 0;
+
+  var name;
 
   num calculateTotalBalance(List<Transaction> transactions) {
     num totalBalance = 0;
@@ -68,13 +70,28 @@ class _DashboardScreenState extends State<DashboardScreen> {
         balance = data!["balance"];
       });
     }
+
     var docSnapshot3 = await FirebaseFirestore.instance
-    .collection('UserTransactions').doc(userId).collection("Accounts")
-    .doc("snabbWallet").get();
-    if(docSnapshot3.exists){
+        .collection('UserTransactions')
+        .doc(userId)
+        .collection("Accounts")
+        .doc("snabbWallet")
+        .get();
+    if (docSnapshot3.exists) {
       Map<String, dynamic>? data = docSnapshot3.data();
       setState(() {
         snabWalletBalance = data!["amount"];
+      });
+    }
+
+    var collection = FirebaseFirestore.instance.collection('UsersData');
+    var docSnapshot4 = await collection.doc(userId).get();
+    if (docSnapshot.exists) {
+      print("ok");
+      Map<String, dynamic>? data = docSnapshot.data();
+      setState(() {
+        name = data?["First Name"];
+        //phone = data?["Phone"];
       });
     }
   }
@@ -106,12 +123,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     for (Transaction transaction in widget.transactions) {
       if (transaction.type == TransactionType.income) {
-        if(transaction.date.month == DateTime.now().month){
+        if (transaction.date.month == DateTime.now().month) {
           totalIncomeAmount += transaction.amount;
         }
       }
       if (transaction.type == TransactionType.expense) {
-        if(transaction.date.month == DateTime.now().month){
+        if (transaction.date.month == DateTime.now().month) {
           totalexpAmount += transaction.amount;
         }
       }
@@ -196,279 +213,405 @@ class _DashboardScreenState extends State<DashboardScreen> {
       return confirmed;
     }
 
+    if (check == 0) {
+      WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
+      check++;
+    }
+
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-        key: scaffoldKey,
-        extendBody: true,
-        drawer: const CustomDrawer(),
-        //backgroundColor: Colors.grey[100],
-        body: SingleChildScrollView(
-            child: SafeArea(
-                child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(children: [
-            Card(
-              elevation: 3,
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                      onPressed: () {
-                        scaffoldKey.currentState?.openDrawer();
-                      },
-                      icon: const ImageIcon(
-                        AssetImage("assets/images/menu.png"),
-                        size: 40,
-                      )),
-                  ShaderMask(
-                    shaderCallback: (bounds) => const LinearGradient(
-                      colors: [
-                        Color(0xff9B710F),
-                        Color.fromRGBO(243, 215, 42, 1),
-                        Color(0xff9B710F),
-                      ],
-                    ).createShader(bounds),
-                    child: const Text(
-                      "SNABB BUDGET",
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  IconButton(
-                      onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => const NotificationScreen(),
-                        ));
-                      },
-                      icon: const ImageIcon(
-                        AssetImage("assets/images/bell.png"),
-                        size: 40,
-                      ))
-                ],
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            Container(
-              height: 220,
-              width: size.width - 40,
-              decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    stops: [
-                      0.20,
-                      //0.40,
-                      0.50, 0.60, 0.70, 0.80, 0.90, 1
-                    ],
-                    colors: [
-                      Color(0xFF335BAA),
-                      //Color(0xFF2E77BB),
-                      Color(0xFF306CB5),
-                      Color(0xFF2D7CBE),
-                      Color(0xFF2C92C3),
-                      Color(0xFF31C3B6),
-                      Color(0xFF31C3B6),
-                      Color(0xFFFBFF2B),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(20)),
-              child: Padding(
-                padding: const EdgeInsets.all(14.0),
-                child: Column(
+      key: scaffoldKey,
+      extendBody: true,
+      drawer: const CustomDrawer(),
+      //backgroundColor: Colors.grey[100],
+      body: SingleChildScrollView(
+        child: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.all(8.0),
+            child: Column(children: [
+              Card(
+                elevation: 3,
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                AppLocalizations.of(context)!.totalAmount,
-                                style: const TextStyle(
-                                    color: Colors.white, fontSize: 14),
-                                textAlign: TextAlign.left,
-                              ),
-                              Text(
-                                  //"$currency0.00",
-                                  "$currency${calculateTotalBalance(widget.transactions)}",
-                                  style: const TextStyle(
-                                      letterSpacing: 3,
-                                      color: Colors.white,
-                                      fontSize: 22,
-                                      fontWeight: FontWeight.bold),
-                                  textAlign: TextAlign.left)
-                            ],
-                          ),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              Navigator.of(context).pushNamed(
-                                  TransactionsScreen.routeName); //By Ammar
-                            },
-                            icon: const ImageIcon(
-                              AssetImage("assets/images/dot-menu.png"),
-                              size: 20,
-                              color: Colors.white,
-                            ))
-                      ],
+                    IconButton(
+                        onPressed: () {
+                          scaffoldKey.currentState?.openDrawer();
+                        },
+                        icon: const ImageIcon(
+                          AssetImage("assets/images/menu.png"),
+                          size: 40,
+                        )),
+                    ShaderMask(
+                      shaderCallback: (bounds) => const LinearGradient(
+                        colors: [
+                          Color(0xff9B710F),
+                          Color.fromRGBO(243, 215, 42, 1),
+                          Color(0xff9B710F),
+                        ],
+                      ).createShader(bounds),
+                      child: const Text(
+                        "SNABB BUDGET",
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold),
+                      ),
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor:
-                                        Colors.white.withOpacity(0.3),
-                                    child: const Icon(
-                                      Icons.arrow_downward_rounded,
-                                      color: Colors.white,
-                                    )),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "${AppLocalizations.of(context)!.income} ${month[(DateTime.now().month) - 1]}",
-                                  style: const TextStyle(
-                                      fontSize: 14, color: Colors.white),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text(
-                              "$currency${totalIncomeAmount.toString()}",
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold),
-                              textAlign: TextAlign.right,
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                CircleAvatar(
-                                    radius: 20,
-                                    backgroundColor:
-                                        Colors.white.withOpacity(0.3),
-                                    child: const Icon(
-                                      Icons.arrow_upward_rounded,
-                                      color: Colors.white,
-                                    )),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  "${AppLocalizations.of(context)!.expense} ${month[(DateTime.now().month) - 1]}",
-                                  style: const TextStyle(
-                                      fontSize: 14, color: Colors.white),
-                                )
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 5,
-                            ),
-                            Text("$currency${totalexpAmount.toString()}",
-                                style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold)),
-                          ],
-                        )
-                      ],
-                    )
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => const NotificationScreen(),
+                          ));
+                        },
+                        icon: const ImageIcon(
+                          AssetImage("assets/images/bell.png"),
+                          size: 40,
+                        ))
                   ],
                 ),
               ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            SizedBox(
-              width: size.width - 40,
-              child: Column(
-                children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          " ${AppLocalizations.of(context)!.transactions}",
-                          style: const TextStyle(
-                              fontSize: 20,
-                              //color: Colors.black,
-                              fontWeight: FontWeight.bold),
-                        ),
-                        TextButton(
-                          child: const Text("See All",
-                              style:
-                                  TextStyle(fontSize: 13, color: Colors.grey)),
-                          onPressed: () {
-                            Navigator.of(context)
-                                .pushNamed(TransactionsScreen.routeName);
-                          },
-                        )
-                      ]),
-                  const SizedBox(
-                    height: 5,
+              const SizedBox(
+                height: 20,
+              ),
+              //previous card
+              // Container(
+              //   height: 220,
+              //   width: size.width - 40,
+              //   decoration: BoxDecoration(
+              //       gradient: const LinearGradient(
+              //         begin: Alignment.topLeft,
+              //         end: Alignment.bottomRight,
+              //         stops: [
+              //           0.20,
+              //           //0.40,
+              //           0.50, 0.60, 0.70, 0.80, 0.90, 1
+              //         ],
+              //         colors: [
+              //           Color(0xFF335BAA),
+              //           //Color(0xFF2E77BB),
+              //           Color(0xFF306CB5),
+              //           Color(0xFF2D7CBE),
+              //           Color(0xFF2C92C3),
+              //           Color(0xFF31C3B6),
+              //           Color(0xFF31C3B6),
+              //           Color(0xFFFBFF2B),
+              //         ],
+              //       ),
+              //       borderRadius: BorderRadius.circular(20)),
+              //   child: Padding(
+              //     padding: const EdgeInsets.all(14.0),
+              //     child: Column(
+              //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //       children: [
+              //         Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //           children: [
+              //             Padding(
+              //               padding: const EdgeInsets.only(left: 10),
+              //               child: Column(
+              //                 crossAxisAlignment: CrossAxisAlignment.start,
+              //                 children: [
+              //                   Text(
+              //                     AppLocalizations.of(context)!.totalAmount,
+              //                     style: const TextStyle(
+              //                         color: Colors.white, fontSize: 14),
+              //                     textAlign: TextAlign.left,
+              //                   ),
+              //                   Text(
+              //                       //"$currency0.00",
+              //                       "$currency${calculateTotalBalance(widget.transactions)}",
+              //                       style: const TextStyle(
+              //                           letterSpacing: 3,
+              //                           color: Colors.white,
+              //                           fontSize: 22,
+              //                           fontWeight: FontWeight.bold),
+              //                       textAlign: TextAlign.left)
+              //                 ],
+              //               ),
+              //             ),
+              //             IconButton(
+              //                 onPressed: () {
+              //                   Navigator.of(context).pushNamed(
+              //                       TransactionsScreen.routeName); //By Ammar
+              //                 },
+              //                 icon: const ImageIcon(
+              //                   AssetImage("assets/images/dot-menu.png"),
+              //                   size: 20,
+              //                   color: Colors.white,
+              //                 ))
+              //           ],
+              //         ),
+              //         Row(
+              //           mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //           children: [
+              //             Column(
+              //               children: [
+              //                 Row(
+              //                   children: [
+              //                     CircleAvatar(
+              //                         radius: 20,
+              //                         backgroundColor:
+              //                             Colors.white.withOpacity(0.3),
+              //                         child: const Icon(
+              //                           Icons.arrow_downward_rounded,
+              //                           color: Colors.white,
+              //                         )),
+              //                     const SizedBox(
+              //                       width: 5,
+              //                     ),
+              //                     Text(
+              //                       "${AppLocalizations.of(context)!.income} ${month[(DateTime.now().month) - 1]}",
+              //                       style: const TextStyle(
+              //                           fontSize: 14, color: Colors.white),
+              //                     )
+              //                   ],
+              //                 ),
+              //                 const SizedBox(
+              //                   height: 5,
+              //                 ),
+              //                 Text(
+              //                   "$currency${totalIncomeAmount.toString()}",
+              //                   style: const TextStyle(
+              //                       color: Colors.white,
+              //                       fontSize: 15,
+              //                       fontWeight: FontWeight.bold),
+              //                   textAlign: TextAlign.right,
+              //                 ),
+              //               ],
+              //             ),
+              //             Column(
+              //               children: [
+              //                 Row(
+              //                   children: [
+              //                     CircleAvatar(
+              //                         radius: 20,
+              //                         backgroundColor:
+              //                             Colors.white.withOpacity(0.3),
+              //                         child: const Icon(
+              //                           Icons.arrow_upward_rounded,
+              //                           color: Colors.white,
+              //                         )),
+              //                     const SizedBox(
+              //                       width: 5,
+              //                     ),
+              //                     Text(
+              //                       "${AppLocalizations.of(context)!.expense} ${month[(DateTime.now().month) - 1]}",
+              //                       style: const TextStyle(
+              //                           fontSize: 14, color: Colors.white),
+              //                     )
+              //                   ],
+              //                 ),
+              //                 const SizedBox(
+              //                   height: 5,
+              //                 ),
+              //                 Text("$currency${totalexpAmount.toString()}",
+              //                     style: const TextStyle(
+              //                         color: Colors.white,
+              //                         fontSize: 14,
+              //                         fontWeight: FontWeight.bold)),
+              //               ],
+              //             )
+              //           ],
+              //         )
+              //       ],
+              //     ),
+              //   ),
+              // ),
+              Card(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                elevation: 20,
+                child: Container(
+                  width: 330,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: Offset(0, 4),
+                      ),
+                    ],
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        Color(0xFFe4b33f),
+                        Color(0xFF3e198b),
+                      ],
+                    ),
                   ),
-                  if (widget.transactions.isNotEmpty)
-                    Column(
-                      children: [
-                        SizedBox(
-                          height: size.height/2,
-                          width: double.infinity,
-                          child: ListView.builder(
-                            itemCount: widget.transactions.length,
-                            itemBuilder: (context, index) {
-                              Transaction transaction =
-                                  widget.transactions[index];
-                              return Dismissible(
-                                confirmDismiss: (direction) async {
-                                  bool delete = await deleteTransaction(
-                                      context, transaction);
-                                  return delete;
-                                },
-                                key: Key(transaction.id),
-                                child:
-                                    TransactionCard(transaction: transaction),
-                              );
-                            },
+                  child: Stack(
+                    children: [
+                      Positioned(
+                        bottom: 16,
+                        right: 10,
+                        child: Image.asset(
+                          'assets/images/master.png',
+                          width: 60,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: 16,
+                        left: 10,
+                        child: Image.asset(
+                          'assets/images/crd.png',
+                          width: 60,
+                          height: 50,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      Positioned(
+                        top: 70,
+                        left: 16,
+                        child: Text(
+                          'SNABB CARD',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ],
-                    )
-                  else
-                    SizedBox(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Align(
-                              alignment: Alignment.center,
-                              child: Text(
-                                AppLocalizations.of(context)!.noTransactions,
-                                textAlign: TextAlign.center,
-                              )),
-                        ],
                       ),
-                    )
-                ],
+                      Positioned(
+                        bottom: 40,
+                        left: 16,
+                        child: Text(
+                          "Muhammad Atif ",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      Positioned(
+                        top: 110,
+                        left: 16,
+                        child: Row(
+                          children: [
+                            Text(
+                              '****',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              '****',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              '****',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              '1234',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
-            ),
-          ]),
-        ))));
+
+              SizedBox(
+                width: size.width - 40,
+                child: Column(
+                  children: [
+                    Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            " ${AppLocalizations.of(context)!.transactions}",
+                            style: const TextStyle(
+                                fontSize: 20,
+                                //color: Colors.black,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          TextButton(
+                            child: const Text("See All",
+                                style: TextStyle(
+                                    fontSize: 13, color: Colors.grey)),
+                            onPressed: () {
+                              Navigator.of(context)
+                                  .pushNamed(TransactionsScreen.routeName);
+                            },
+                          )
+                        ]),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    if (widget.transactions.isNotEmpty)
+                      Column(
+                        children: [
+                          SizedBox(
+                            height: size.height / 2,
+                            width: double.infinity,
+                            child: ListView.builder(
+                              itemCount: widget.transactions.length,
+                              itemBuilder: (context, index) {
+                                Transaction transaction =
+                                    widget.transactions[index];
+                                return Dismissible(
+                                  confirmDismiss: (direction) async {
+                                    bool delete = await deleteTransaction(
+                                        context, transaction);
+                                    return delete;
+                                  },
+                                  key: Key(transaction.id),
+                                  child:
+                                      TransactionCard(transaction: transaction),
+                                );
+                              },
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      SizedBox(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Align(
+                                alignment: Alignment.center,
+                                child: Text(
+                                  AppLocalizations.of(context)!.noTransactions,
+                                  textAlign: TextAlign.center,
+                                )),
+                          ],
+                        ),
+                      )
+                  ],
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ),
+    );
   }
 }
