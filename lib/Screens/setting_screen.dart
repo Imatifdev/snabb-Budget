@@ -140,72 +140,96 @@ class _SettingScreenState extends State<SettingScreen> {
     sheet.getRangeByName('B1').columnWidth = 25;
     sheet.getRangeByName('B1').rowHeight = 80;
 
-  final Range rangeA1C1 = sheet.getRangeByName('A1:G1');
-  rangeA1C1.cellStyle.backColor = '#87CEEB';
-  final Style cellStyle = sheet.getRangeByName('B1').cellStyle;
+    final Range rangeA1C1 = sheet.getRangeByName('A1:G1');
+    rangeA1C1.cellStyle.backColor = '#87CEEB';
+    final Style cellStyle = sheet.getRangeByName('B1').cellStyle;
 
     cellStyle.backColor = '#87CEEB';
     cellStyle.fontSize = 28;
 
-  // Replace with your desired color
-  sheet.getRangeByName('A1').cellStyle = cellStyle;
-  final Range rangeA2 = sheet.getRangeByIndex(2, 1);
-  rangeA2.setText('Serial Number');
-  rangeA2.cellStyle
-    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-    ..hAlign = HAlignType.center;
-  sheet.getRangeByIndex(1, 1).columnWidth = 15; // Increase width of column 1
+    // Replace with your desired color
+    sheet.getRangeByName('A1').cellStyle = cellStyle;
+    final Range rangeA2 = sheet.getRangeByIndex(2, 1);
+    rangeA2.setText('Serial Number');
+    rangeA2.cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(1, 1).columnWidth = 15; // Increase width of column 1
 
-  final Range rangeB2 = sheet.getRangeByIndex(2, 2);
-  rangeB2.setText('Date');
-  rangeB2.cellStyle
-    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-    ..hAlign = HAlignType.center;
-  sheet.getRangeByIndex(1, 2).columnWidth = 10; // Increase width of column 2
+    final Range rangeB2 = sheet.getRangeByIndex(2, 2);
+    rangeB2.setText('Date');
+    rangeB2.cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(1, 2).columnWidth = 10; // Increase width of column 2
 
-  final Range rangeC2 = sheet.getRangeByIndex(2, 3);
-  rangeC2.setText('Transaction Category');
-  rangeC2.cellStyle
-    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-    ..hAlign = HAlignType.center;
-  sheet.getRangeByIndex(1, 3).columnWidth = 20; // Increase width of column 3
+    final Range rangeC2 = sheet.getRangeByIndex(2, 3);
+    rangeC2.setText('Transaction Category');
+    rangeC2.cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(1, 3).columnWidth = 20; // Increase width of column 3
 
-  final Range rangeD2 = sheet.getRangeByIndex(2, 4);
-  rangeD2.setText('Amount');
-  rangeD2.cellStyle
-    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-    ..hAlign = HAlignType.center;
-  sheet.getRangeByIndex(1, 4).columnWidth = 8; // Increase width of column 4
+    final Range rangeD2 = sheet.getRangeByIndex(2, 4);
+    rangeD2.setText('Amount');
+    rangeD2.cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(1, 4).columnWidth = 8; // Increase width of column 4
 
-  final Range rangeE2 = sheet.getRangeByIndex(2, 5);
-  rangeE2.setText('Name');
-  rangeE2.cellStyle
-    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-    ..hAlign = HAlignType.center;
-  sheet.getRangeByIndex(1, 5).columnWidth = 15; // Increase width of column 5
+    final Range rangeE2 = sheet.getRangeByIndex(2, 5);
+    rangeE2.setText('Name');
+    rangeE2.cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(1, 5).columnWidth = 15; // Increase width of column 5
 
-  final Range rangeF2 = sheet.getRangeByIndex(2, 6);
-  rangeF2.setText('Type');
-  rangeF2.cellStyle
-    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-    ..hAlign = HAlignType.center;
-  sheet.getRangeByIndex(1, 6).columnWidth = 8; // Increase width of column 5
+    final Range rangeF2 = sheet.getRangeByIndex(2, 6);
+    rangeF2.setText('Type');
+    rangeF2.cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(1, 6).columnWidth = 8; // Increase width of column 5
 
-  final Range rangeG2 = sheet.getRangeByIndex(2, 7);
-  rangeG2.setText('Note');
-  rangeG2.cellStyle
-    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-    ..hAlign = HAlignType.center;
-  sheet.getRangeByIndex(1, 7).columnWidth = 8;
+    final Range rangeG2 = sheet.getRangeByIndex(2, 7);
+    rangeG2.setText('Note');
+    rangeG2.cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(1, 7).columnWidth = 8;
+    final Range rangeH2 = sheet.getRangeByIndex(2, 8);
+    rangeG2.setText('Credit');
+    rangeG2.cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(1, 7).columnWidth = 8;
+    final Range rangeI2 = sheet.getRangeByIndex(2, 9);
+    rangeG2.setText('Debit');
+    rangeG2.cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(1, 7).columnWidth = 8;
 
-  sheet.getRangeByIndex(2, 1).setText('Serial Number');
-  sheet.getRangeByIndex(2, 2).setText('Date');
-  sheet.getRangeByIndex(2, 3).setText('Transaction Category');
-  sheet.getRangeByIndex(2, 4).setText('Amount');
-  sheet.getRangeByIndex(2, 5).setText('Name');
-  sheet.getRangeByIndex(2, 6).setText("Type");
-  sheet.getRangeByIndex(2, 7).setText("Note");
+    sheet.getRangeByIndex(2, 1).setText('Serial Number');
+    sheet.getRangeByIndex(2, 2).setText('Date');
+    sheet.getRangeByIndex(2, 3).setText('Transaction Category');
+    sheet.getRangeByIndex(2, 4).setText('Amount');
+    sheet.getRangeByIndex(2, 5).setText('Name');
+    sheet.getRangeByIndex(2, 6).setText("Type");
+    sheet.getRangeByIndex(2, 7).setText("Note");
 
+    sheet.getRangeByIndex(2, 8).setText("Credit");
+
+    sheet.getRangeByIndex(2, 9).setText("Debit");
     // Add transaction data
     double totalIncome = 0;
     double totalExpense = 0;
@@ -228,40 +252,47 @@ class _SettingScreenState extends State<SettingScreen> {
       double amount = transaction.amount.toDouble();
       sheet.getRangeByIndex(row, 4).setNumber(amount);
 
-    // Note (if exists)
-    if (transaction.name.isNotEmpty) {
-      sheet.getRangeByIndex(row, 5).setText(transaction.name);
+      // Note (if exists)
+      if (transaction.name.isNotEmpty) {
+        sheet.getRangeByIndex(row, 5).setText(transaction.name);
+      }
+
+      sheet.getRangeByIndex(row, 6).setText(transaction.type.name.capitalize);
+
+      sheet.getRangeByIndex(row, 7).setText(transaction.notes);
+      if (transaction.type == TransactionType.income)
+        sheet.getRangeByIndex(row, 8).setNumber(amount);
+      if (transaction.type == TransactionType.expense)
+        sheet.getRangeByIndex(row, 9).setNumber(amount);
+
+      // Calculate total income and expense
+      if (transaction.type == TransactionType.income) {
+        totalIncome += transaction.amount;
+      } else {
+        totalExpense += transaction.amount;
+      }
     }
+    print("incomee: " + totalIncome.toString());
+    print("expenses: " + totalExpense.toString());
 
-    sheet.getRangeByIndex(row, 6).setText(transaction.type.name.capitalize);
-
-    sheet.getRangeByIndex(row,7).setText(transaction.notes);
-
-    // Calculate total income and expense
-    if(transaction.type == TransactionType.income){
-      totalIncome += transaction.amount;
-    }else{
-      totalExpense += transaction.amount;
-    }
-  }
-  print("incomee: "+totalIncome.toString());
-  print("expenses: "+totalExpense.toString());
-
-  // Add account details
-  final int startRow = transactions.length + 5;
-  sheet.getRangeByIndex(startRow, 1).setText('Serial Number');
-  sheet.getRangeByIndex(startRow, 1).cellStyle
-  ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-  ..hAlign = HAlignType.center;
-  sheet.getRangeByIndex(startRow, 2).setText('Account Amount');
-  sheet.getRangeByIndex(startRow, 2).cellStyle
-  ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-  ..hAlign = HAlignType.center;
-  sheet.getRangeByIndex(startRow-1, 2).columnWidth=15;
-  sheet.getRangeByIndex(startRow, 3).setText('Account Name');
-  sheet.getRangeByIndex(startRow, 3).cellStyle
-  ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
-  ..hAlign = HAlignType.center;
+    // Add account details
+    final int startRow = transactions.length + 5;
+    sheet.getRangeByIndex(startRow, 1).setText('Serial Number');
+    sheet.getRangeByIndex(startRow, 1).cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(startRow, 2).setText('Account Amount');
+    sheet.getRangeByIndex(startRow, 2).cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
+    sheet.getRangeByIndex(startRow - 1, 2).columnWidth = 15;
+    sheet.getRangeByIndex(startRow, 3).setText('Account Name');
+    sheet.getRangeByIndex(startRow, 3).cellStyle
+      ..backColorRgb =
+          const Color.fromARGB(255, 255, 234, 0) // Yellow background color
+      ..hAlign = HAlignType.center;
 
     for (int i = 0; i < accounts.length; i++) {
       final Account account = accounts[i];
@@ -272,14 +303,14 @@ class _SettingScreenState extends State<SettingScreen> {
       sheet.getRangeByIndex(row, 3).setText(account.name);
     }
 
-  // Calculate balance
-  final double balance = totalIncome - totalExpense;
+    // Calculate balance
+    final double balance = totalIncome - totalExpense;
 
     // Add total income, total expense, and balance
     sheet
         .getRangeByIndex(startRow + accounts.length + 2, 1)
         .setText('Total Income');
-        sheet
+    sheet
         .getRangeByIndex(startRow + accounts.length + 2, 1)
         .cellStyle
         .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
@@ -289,7 +320,7 @@ class _SettingScreenState extends State<SettingScreen> {
     sheet
         .getRangeByIndex(startRow + accounts.length + 3, 1)
         .setText('Total Expense');
-        sheet
+    sheet
         .getRangeByIndex(startRow + accounts.length + 3, 1)
         .cellStyle
         .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
@@ -297,56 +328,57 @@ class _SettingScreenState extends State<SettingScreen> {
         .getRangeByIndex(startRow + accounts.length + 3, 2)
         .setNumber(totalExpense);
     sheet.getRangeByIndex(startRow + accounts.length + 4, 1).setText('Balance');
-    sheet.getRangeByIndex(startRow + accounts.length + 4, 1).cellStyle
-    .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
+    sheet
+        .getRangeByIndex(startRow + accounts.length + 4, 1)
+        .cellStyle
+        .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
     sheet.getRangeByIndex(startRow + accounts.length + 4, 2).setNumber(balance);
 
-  final ChartCollection charts = ChartCollection(sheet);
-print("test6");
+    final ChartCollection charts = ChartCollection(sheet);
+    print("test6");
 // Add the chart.
-final Chart chart1 = charts.add();
-print("test7");
+    final Chart chart1 = charts.add();
+    print("test7");
 // Set Chart Type.
-chart1.chartType = ExcelChartType.pie;
-print("test8");
+    chart1.chartType = ExcelChartType.pie;
+    print("test8");
 // Set data range in the worksheet.
-chart1.dataRange = sheet.getRangeByName('A14:B15');
-print("test9");
-chart1.isSeriesInRows = false;
-print("test10");
-chart1.topRow = startRow + accounts.length + 6;
-  chart1.bottomRow = startRow + accounts.length + 20;
-  chart1.leftColumn = 1;
-  chart1.rightColumn = 8;
+    chart1.dataRange = sheet.getRangeByName('A14:B15');
+    print("test9");
+    chart1.isSeriesInRows = false;
+    print("test10");
+    chart1.topRow = startRow + accounts.length + 6;
+    chart1.bottomRow = startRow + accounts.length + 20;
+    chart1.leftColumn = 1;
+    chart1.rightColumn = 8;
 //set charts to worksheet.
-sheet.charts = charts;
-print("test11");
-  //   // Create an instance of chart collection
-  //   final ChartCollection charts = ChartCollection(sheet);
-  //   // Add the chart
-  //   final Chart chart = charts.add();
-  //   // Set Chart Type
-  //   chart.chartType = ExcelChartType.pie;
-  // // Set data range in the worksheet
-  // chart.dataRange = sheet.getRangeByName('A14:B15');
-  // chart.isSeriesInRows = true;
+    sheet.charts = charts;
+    print("test11");
+    //   // Create an instance of chart collection
+    //   final ChartCollection charts = ChartCollection(sheet);
+    //   // Add the chart
+    //   final Chart chart = charts.add();
+    //   // Set Chart Type
+    //   chart.chartType = ExcelChartType.pie;
+    // // Set data range in the worksheet
+    // chart.dataRange = sheet.getRangeByName('A14:B15');
+    // chart.isSeriesInRows = true;
 
+    // // Set chart position
+    // chart.topRow = startRow + accounts.length + 6;
+    // chart.bottomRow = startRow + accounts.length + 20;
+    // chart.leftColumn = 1;
+    // chart.rightColumn = 8;
 
-  // // Set chart position
-  // chart.topRow = startRow + accounts.length + 6;
-  // chart.bottomRow = startRow + accounts.length + 20;
-  // chart.leftColumn = 1;
-  // chart.rightColumn = 8;
+    // // Set chart title
+    // chart.chartTitle = 'Income & Expense';
 
-  // // Set chart title
-  // chart.chartTitle = 'Income & Expense';
+    //   // Set chart legend
+    //   chart.hasLegend = true;
+    //   chart.legend?.position = ExcelLegendPosition.right;
 
-  //   // Set chart legend
-  //   chart.hasLegend = true;
-  //   chart.legend?.position = ExcelLegendPosition.right;
-
-  //   // Set charts to worksheet
-  //   sheet.charts = charts;
+    //   // Set charts to worksheet
+    //   sheet.charts = charts;
 
     final List<int> bytes = workbook.saveAsStream();
     workbook.dispose();
