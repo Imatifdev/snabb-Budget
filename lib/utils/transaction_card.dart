@@ -1,4 +1,4 @@
-// ignore_for_file: unnecessary_string_interpolations
+// ignore_for_file: unnecessary_string_interpolations, prefer_const_constructors
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -26,43 +26,47 @@ class _TransactionCardState extends State<TransactionCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: Color(0xffeeeeee),
-      // color: Colors.white,
-      elevation: 5,
-      child: ListTile(
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) =>
-                  TransactionImageScreen(transaction: widget.transaction),
+    return Padding(
+      padding: const EdgeInsets.all(5.0),
+      child: Card(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        color: Color(0xffeeeeee),
+        // color: Colors.white,
+        elevation: 5,
+        child: ListTile(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) =>
+                    TransactionImageScreen(transaction: widget.transaction),
+              ),
+            );
+          },
+          leading: CircleAvatar(
+            backgroundColor: Colors.orange[300],
+            child: Text(
+              widget.transaction.date.month.toString(),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
-          );
-        },
-        leading: CircleAvatar(
-          backgroundColor: Colors.orange[300],
-          child: Text(
-            widget.transaction.date.month.toString(),
+          ),
+          title: Text(
+            widget.transaction.name,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
+          subtitle: Text('${widget.transaction.date.day.toString()}-' +
+              "${widget.transaction.date.month.toString()}-" +
+              "${widget.transaction.date.year.toString()}"),
+          trailing: Text(
+              widget.transaction.type == TransactionType.income
+                  ? "+$currency${widget.transaction.amount}"
+                  : "-$currency${widget.transaction.amount}",
+              style: TextStyle(
+                  color: widget.transaction.type == TransactionType.income
+                      ? Colors.green
+                      : Colors.red,
+                  fontWeight: FontWeight.bold)),
         ),
-        title: Text(
-          widget.transaction.name,
-          style: const TextStyle(fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text('${widget.transaction.date.day.toString()}-' +
-            "${widget.transaction.date.month.toString()}-" +
-            "${widget.transaction.date.year.toString()}"),
-        trailing: Text(
-            widget.transaction.type == TransactionType.income
-                ? "+$currency${widget.transaction.amount}"
-                : "-$currency${widget.transaction.amount}",
-            style: TextStyle(
-                color: widget.transaction.type == TransactionType.income
-                    ? Colors.green
-                    : Colors.red,
-                fontWeight: FontWeight.bold)),
       ),
     );
   }
