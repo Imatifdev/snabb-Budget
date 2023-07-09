@@ -420,20 +420,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
               // ),
               Stack(children: [
                 Positioned(
-                  child: Container(
-                    color: Colors.red,
-                    width: 300,
-                    height: 200,
-                  ),
-                ),
-                Positioned(
-                  child: Container(
-                    color: Colors.blue,
-                    width: 330,
-                    height: 200,
-                  ),
-                ),
-                Positioned(
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
