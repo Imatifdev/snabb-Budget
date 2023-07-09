@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart' hide Transaction;
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get/get.dart';
-import 'package:printing/printing.dart';
 import 'package:snabbudget/Screens/termsandcond.dart';
 import 'package:snabbudget/Screens/theme_screen.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
@@ -133,6 +132,7 @@ class _SettingScreenState extends State<SettingScreen> {
     final Worksheet sheet = workbook.worksheets[0];
     Style globalStyle = workbook.styles.add('style');
     globalStyle.backColor = '#37D8E9';
+    globalStyle.fontName = 'Montserrat';
 
     // Set header "Snabb Budget"
     sheet.getRangeByName('B1').setText('Snabb Budget');
@@ -152,56 +152,49 @@ class _SettingScreenState extends State<SettingScreen> {
   final Range rangeA2 = sheet.getRangeByIndex(2, 1);
   rangeA2.setText('Serial Number');
   rangeA2.cellStyle
-  ..fontColorRgb = const Color.fromARGB(255, 35, 35, 35)
-    ..backColor = '#FFFF00' // Yellow background color
+    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
     ..hAlign = HAlignType.center;
   sheet.getRangeByIndex(1, 1).columnWidth = 15; // Increase width of column 1
 
   final Range rangeB2 = sheet.getRangeByIndex(2, 2);
   rangeB2.setText('Date');
   rangeB2.cellStyle
-  ..fontColorRgb = const Color.fromARGB(255, 35, 35, 35)
-    ..backColor = '#FFFF00' // Yellow background color
+    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
     ..hAlign = HAlignType.center;
   sheet.getRangeByIndex(1, 2).columnWidth = 10; // Increase width of column 2
 
   final Range rangeC2 = sheet.getRangeByIndex(2, 3);
   rangeC2.setText('Transaction Category');
   rangeC2.cellStyle
-  ..fontColorRgb = const Color.fromARGB(255, 35, 35, 35)
-    ..backColor = '#FFFF00' // Yellow background color
+    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
     ..hAlign = HAlignType.center;
   sheet.getRangeByIndex(1, 3).columnWidth = 20; // Increase width of column 3
 
   final Range rangeD2 = sheet.getRangeByIndex(2, 4);
   rangeD2.setText('Amount');
   rangeD2.cellStyle
-  ..fontColorRgb = const Color.fromARGB(255, 35, 35, 35)
-    ..backColor = '#FFFF00' // Yellow background color
+    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
     ..hAlign = HAlignType.center;
   sheet.getRangeByIndex(1, 4).columnWidth = 8; // Increase width of column 4
 
   final Range rangeE2 = sheet.getRangeByIndex(2, 5);
   rangeE2.setText('Name');
   rangeE2.cellStyle
-  ..fontColorRgb = const Color.fromARGB(255, 35, 35, 35)
-    ..backColor = '#FFFF00' // Yellow background color
+    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
     ..hAlign = HAlignType.center;
   sheet.getRangeByIndex(1, 5).columnWidth = 15; // Increase width of column 5
 
   final Range rangeF2 = sheet.getRangeByIndex(2, 6);
   rangeF2.setText('Type');
   rangeF2.cellStyle
-  ..fontColorRgb = const Color.fromARGB(255, 35, 35, 35)
-    ..backColor = '#FFFF00' // Yellow background color
+    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
     ..hAlign = HAlignType.center;
   sheet.getRangeByIndex(1, 6).columnWidth = 8; // Increase width of column 5
 
   final Range rangeG2 = sheet.getRangeByIndex(2, 7);
   rangeG2.setText('Note');
   rangeG2.cellStyle
-    ..fontColorRgb = Color.fromARGB(255, 27, 27, 27)
-    ..backColor = '#FFFF00' // Yellow background color
+    ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
     ..hAlign = HAlignType.center;
   sheet.getRangeByIndex(1, 7).columnWidth = 8;
 
@@ -258,19 +251,16 @@ class _SettingScreenState extends State<SettingScreen> {
   final int startRow = transactions.length + 5;
   sheet.getRangeByIndex(startRow, 1).setText('Serial Number');
   sheet.getRangeByIndex(startRow, 1).cellStyle
-  ..fontColorRgb = const Color.fromARGB(255, 35, 35, 35)
-  ..backColor = '#FFFF00' // Yellow background color
+  ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
   ..hAlign = HAlignType.center;
   sheet.getRangeByIndex(startRow, 2).setText('Account Amount');
   sheet.getRangeByIndex(startRow, 2).cellStyle
-  ..fontColorRgb = const Color.fromARGB(255, 35, 35, 35)
-  ..backColor = '#FFFF00' // Yellow background color
+  ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
   ..hAlign = HAlignType.center;
   sheet.getRangeByIndex(startRow-1, 2).columnWidth=15;
   sheet.getRangeByIndex(startRow, 3).setText('Account Name');
   sheet.getRangeByIndex(startRow, 3).cellStyle
-  ..fontColorRgb = const Color.fromARGB(255, 35, 35, 35)
-  ..backColor = '#FFFF00' // Yellow background color
+  ..backColorRgb = const Color.fromARGB(255, 255, 234, 0) // Yellow background color
   ..hAlign = HAlignType.center;
 
     for (int i = 0; i < accounts.length; i++) {
@@ -289,16 +279,26 @@ class _SettingScreenState extends State<SettingScreen> {
     sheet
         .getRangeByIndex(startRow + accounts.length + 2, 1)
         .setText('Total Income');
+        sheet
+        .getRangeByIndex(startRow + accounts.length + 2, 1)
+        .cellStyle
+        .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
     sheet
         .getRangeByIndex(startRow + accounts.length + 2, 2)
         .setNumber(totalIncome);
     sheet
         .getRangeByIndex(startRow + accounts.length + 3, 1)
         .setText('Total Expense');
+        sheet
+        .getRangeByIndex(startRow + accounts.length + 3, 1)
+        .cellStyle
+        .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
     sheet
         .getRangeByIndex(startRow + accounts.length + 3, 2)
         .setNumber(totalExpense);
     sheet.getRangeByIndex(startRow + accounts.length + 4, 1).setText('Balance');
+    sheet.getRangeByIndex(startRow + accounts.length + 4, 1).cellStyle
+    .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
     sheet.getRangeByIndex(startRow + accounts.length + 4, 2).setNumber(balance);
 
   final ChartCollection charts = ChartCollection(sheet);

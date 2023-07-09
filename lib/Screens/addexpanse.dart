@@ -291,16 +291,16 @@ void initState() {
         "fileUrl": imageUrl,
         "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat),
       });
-    }
-    setState(() {
-      schedual = false;
-    });
-    Navigator.push(
+      Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ScheduleTransactions(),
       ),
     );
+    }
+    setState(() {
+      schedual = false;
+    });
   }
 
   final List<File> _selectedFiles = [];

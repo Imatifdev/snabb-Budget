@@ -135,7 +135,7 @@ class _AddIncomeState extends State<AddIncome> {
                 //getImage(ImgSource.Gallery);
                 pickImage = await picker.pickImage(
                   source: ImageSource.gallery,
-                  imageQuality: 30
+                  imageQuality: 15
                   );
                 
                 // Handle the picked image
@@ -153,7 +153,7 @@ class _AddIncomeState extends State<AddIncome> {
                 Navigator.of(context).pop();
                 pickImage = await picker.pickImage(
                   source: ImageSource.camera,
-                  imageQuality: 30
+                  imageQuality: 15
                   );
                 // Handle the picked image
                 if (pickImage != null) {
@@ -290,16 +290,17 @@ class _AddIncomeState extends State<AddIncome> {
         "fileUrl": imageUrl,
         "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat) ,
       });
-    }
-    setState(() {
-      schedual = false;
-    });
-    Navigator.push(
+      Navigator.push(
       context,
       MaterialPageRoute(
         builder: (context) => ScheduleTransactions(),
       ),
     );
+    }
+    setState(() {
+      schedual = false;
+    });
+    
   }
 
   CameraController? _cameraController;

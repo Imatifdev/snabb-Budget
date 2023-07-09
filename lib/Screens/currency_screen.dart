@@ -277,7 +277,7 @@ class _CurrencyScreenState extends State<CurrencyScreen> {
                       children: [
                         const Text("Pakistani Rupee", style: TextStyle(fontSize: 16)),
                         Radio(
-                            value: "₨", groupValue: currency, onChanged: changeCurrency),
+                            value: "PKR", groupValue: currency, onChanged: changeCurrency),
                       ],
                     ),
                     Row(
