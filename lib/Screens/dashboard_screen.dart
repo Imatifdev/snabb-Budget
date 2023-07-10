@@ -705,7 +705,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             bottom: 16,
                             right: 10,
                             child: Image.asset(
-                              'assets/images/master.png',
+                              'assets/images/icon.jpg',
                               width: 60,
                               height: 50,
                               fit: BoxFit.cover,
@@ -714,21 +714,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Positioned(
                             top: 16,
                             left: 10,
-                            child: Image.asset(
-                              'assets/images/crd.png',
-                              width: 60,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
+                            child: Text(
+                            "$currency${calculateTotalBalance(widget.transactions)}", 
+                            style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),)
                           ),
                           Positioned(
                             top: 70,
                             left: 16,
                             child: Text(
-                              'SNABB CARD',
+                              'SNABB BUDGET',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 24,
+                                fontSize: 22,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -740,7 +737,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               widget.name,
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 14,
+                                fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
@@ -754,7 +751,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   '****',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 25,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -763,7 +760,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   '****',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 25,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -772,13 +769,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   '****',
                                   style: TextStyle(
                                     color: Colors.white,
-                                    fontSize: 25,
+                                    fontSize: 20,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 SizedBox(width: 8),
                                 Text(
-                                  '1234',
+                                  '****',
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 20,

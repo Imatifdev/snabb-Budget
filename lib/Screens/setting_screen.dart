@@ -135,14 +135,14 @@ class _SettingScreenState extends State<SettingScreen> {
     globalStyle.fontName = 'Montserrat';
 
     // Set header "Snabb Budget"
-    sheet.getRangeByName('B1').setText('Snabb Budget');
+    sheet.getRangeByName('C1').setText('Snabb Budget');
 
-    sheet.getRangeByName('B1').columnWidth = 25;
-    sheet.getRangeByName('B1').rowHeight = 80;
+    sheet.getRangeByName('C1').columnWidth = 30;
+    sheet.getRangeByName('C1').rowHeight = 80;
 
-    final Range rangeA1C1 = sheet.getRangeByName('A1:G1');
+    final Range rangeA1C1 = sheet.getRangeByName('A1:I1');
     rangeA1C1.cellStyle.backColor = '#87CEEB';
-    final Style cellStyle = sheet.getRangeByName('B1').cellStyle;
+    final Style cellStyle = sheet.getRangeByName('C1').cellStyle;
 
     cellStyle.backColor = '#87CEEB';
     cellStyle.fontSize = 28;
@@ -205,15 +205,15 @@ class _SettingScreenState extends State<SettingScreen> {
       ..hAlign = HAlignType.center;
     sheet.getRangeByIndex(1, 7).columnWidth = 8;
     final Range rangeH2 = sheet.getRangeByIndex(2, 8);
-    rangeG2.setText('Credit');
-    rangeG2.cellStyle
+    rangeH2.setText('Credit');
+    rangeH2.cellStyle
       ..backColorRgb =
           const Color.fromARGB(255, 255, 234, 0) // Yellow background color
       ..hAlign = HAlignType.center;
     sheet.getRangeByIndex(1, 7).columnWidth = 8;
     final Range rangeI2 = sheet.getRangeByIndex(2, 9);
-    rangeG2.setText('Debit');
-    rangeG2.cellStyle
+    rangeI2.setText('Debit');
+    rangeI2.cellStyle
       ..backColorRgb =
           const Color.fromARGB(255, 255, 234, 0) // Yellow background color
       ..hAlign = HAlignType.center;
@@ -313,7 +313,7 @@ class _SettingScreenState extends State<SettingScreen> {
     sheet
         .getRangeByIndex(startRow + accounts.length + 2, 1)
         .cellStyle
-        .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
+        .backColorRgb = const Color.fromARGB(255, 122, 122, 233);
     sheet
         .getRangeByIndex(startRow + accounts.length + 2, 2)
         .setNumber(totalIncome);
@@ -323,7 +323,7 @@ class _SettingScreenState extends State<SettingScreen> {
     sheet
         .getRangeByIndex(startRow + accounts.length + 3, 1)
         .cellStyle
-        .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
+        .backColorRgb = const Color.fromARGB(255, 122, 122, 233);
     sheet
         .getRangeByIndex(startRow + accounts.length + 3, 2)
         .setNumber(totalExpense);
@@ -331,7 +331,7 @@ class _SettingScreenState extends State<SettingScreen> {
     sheet
         .getRangeByIndex(startRow + accounts.length + 4, 1)
         .cellStyle
-        .backColorRgb = const Color.fromRGBO(3, 3, 193, 1);
+        .backColorRgb = Color.fromARGB(255, 122, 122, 233);
     sheet.getRangeByIndex(startRow + accounts.length + 4, 2).setNumber(balance);
 
     final ChartCollection charts = ChartCollection(sheet);
@@ -343,7 +343,9 @@ class _SettingScreenState extends State<SettingScreen> {
     chart1.chartType = ExcelChartType.pie;
     print("test8");
 // Set data range in the worksheet.
-    chart1.dataRange = sheet.getRangeByName('A14:B15');
+    int A = startRow + accounts.length + 2;
+    int B = startRow + accounts.length + 3;
+    chart1.dataRange = sheet.getRangeByName("A$A:B$B");
     print("test9");
     chart1.isSeriesInRows = false;
     print("test10");
