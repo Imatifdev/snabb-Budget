@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/accounts.dart';
 import 'package:snabbudget/Screens/auth/login.dart';
 import 'package:snabbudget/Screens/deptsscreen.dart';
+import 'package:snabbudget/Screens/graphs_screen.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/Screens/preferences.dart';
 import 'package:snabbudget/Screens/setting_screen.dart';
@@ -80,6 +81,8 @@ class CustomDrawer extends StatelessWidget {
                       SettingScreen.routeName),
                   drawerTile(context, "assets/images/settings-2.png",
                       "Preferences", PreferencesScreen.routeName),
+                  drawerTile(context, "assets/images/settings-2.png",
+                      "Graph Screen", GraphScreen.routeName),    
                 ]),
               ],
             ),

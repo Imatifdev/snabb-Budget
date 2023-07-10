@@ -62,6 +62,7 @@ dependencies:
   permission_handler: ^10.4.1
   flutter_file_dialog: ^3.0.1
   syncfusion_officechart: ^22.1.37
+  fl_chart: ^0.63.0
 
 dev_dependencies:
   flutter_test:

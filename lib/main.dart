@@ -10,6 +10,7 @@ import 'package:snabbudget/Screens/addexpanse.dart';
 import 'package:snabbudget/Screens/budget_screen.dart';
 import 'package:snabbudget/Screens/calender.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
+import 'package:snabbudget/Screens/graphs_screen.dart';
 import 'package:snabbudget/Screens/home_screen.dart';
 import 'package:snabbudget/Screens/preferences.dart';
 import 'package:snabbudget/Screens/schedule_transactions.dart';
@@ -22,7 +23,6 @@ import 'package:snabbudget/utils/custom_drawer.dart';
 import 'Screens/accounts.dart';
 import 'Screens/addincome.dart';
 import 'Screens/deptsscreen.dart';
-import 'Screens/graphs_screen.dart';
 import 'Screens/setting_screen.dart';
 import 'controller/IncomeProvider.dart';
 import 'controller/balanceProvider.dart';
@@ -89,7 +89,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             home: FirebaseAuth.instance.currentUser != null
-                ? const GraphScreen()
+                ? const HomeScreen()
                 : Welcome(),
             supportedLocales: L10n.all,
             locale: _locale,
@@ -114,6 +114,7 @@ class _MyAppState extends State<MyApp> {
               SettingScreen.routeName: (ctx) => SettingScreen(),
               SummaryScreen.routeName: (ctx) => SummaryScreen(),
               TransactionsScreen.routeName: (ctx) => TransactionsScreen(),
+              GraphScreen.routeName: (ctx)=> GraphScreen(),
             },
           );
         },
