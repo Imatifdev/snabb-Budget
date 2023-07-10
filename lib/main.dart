@@ -22,6 +22,7 @@ import 'package:snabbudget/utils/custom_drawer.dart';
 import 'Screens/accounts.dart';
 import 'Screens/addincome.dart';
 import 'Screens/deptsscreen.dart';
+import 'Screens/graphs_screen.dart';
 import 'Screens/setting_screen.dart';
 import 'controller/IncomeProvider.dart';
 import 'controller/balanceProvider.dart';
@@ -88,7 +89,7 @@ class _MyAppState extends State<MyApp> {
               ),
             ),
             home: FirebaseAuth.instance.currentUser != null
-                ? const HomeScreen()
+                ? const GraphScreen()
                 : Welcome(),
             supportedLocales: L10n.all,
             locale: _locale,
