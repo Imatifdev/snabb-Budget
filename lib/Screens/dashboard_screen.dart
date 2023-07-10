@@ -422,8 +422,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
               height: 230,
               child: Stack(children: [
                 Positioned(
-                  left: 10,
-                  right: 10,
+                  left: 30,
+                  right: 30,
                   top:0,
                   child: Card(
                       shape: RoundedRectangleBorder(
@@ -446,8 +446,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             begin: Alignment.topLeft,
                             end: Alignment.bottomRight,
                             colors: [
-                              Color(0xFFe4b33f),
-                              Color(0xFF3e198b),
+                              Color.fromARGB(255, 4, 242, 198),
+                              Color.fromARGB(255, 233, 7, 30),
                             ],
                           ),
                         ),
@@ -547,8 +547,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 ),
                 Positioned(
                   top: 10,
-                  left: 10,
-                  right: 10,
+                  left: 20,
+                  right: 20,
                   child: Card(
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(16),
@@ -570,8 +570,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                           colors: [
-                            Color(0xFFe4b33f),
-                            Color(0xFF3e198b),
+                            Color.fromARGB(255, 33, 33, 33),
+                            Color.fromARGB(255, 246, 246, 246),
                           ],
                         ),
                       ),
