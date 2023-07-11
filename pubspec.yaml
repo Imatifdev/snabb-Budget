@@ -63,6 +63,7 @@ dependencies:
   flutter_file_dialog: ^3.0.1
   syncfusion_officechart: ^22.1.37
   fl_chart: ^0.63.0
+  font_awesome_flutter: ^10.5.0
 
 dev_dependencies:
   flutter_test:

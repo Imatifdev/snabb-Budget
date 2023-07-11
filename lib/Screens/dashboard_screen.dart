@@ -17,7 +17,10 @@ class DashboardScreen extends StatefulWidget {
   final List<Transaction> transactions;
   final num snabbWallet;
   DashboardScreen(
-      {super.key, required this.transactions, required this.snabbWallet, required this.name});
+      {super.key,
+      required this.transactions,
+      required this.snabbWallet,
+      required this.name});
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -105,8 +108,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
       check++;
     }
-     double totalIncomeAmount = 0;
-     double totalexpAmount = 0;
+    double totalIncomeAmount = 0;
+    double totalexpAmount = 0;
     // const List<String> month = [
     //   "Jan",
     //   "Feb",
@@ -424,126 +427,126 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 Positioned(
                   left: 30,
                   right: 30,
-                  top:0,
+                  top: 0,
                   child: Card(
-                      shape: RoundedRectangleBorder(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 20,
+                    child: Container(
+                      width: 330,
+                      height: 200,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 20,
-                      child: Container(
-                        width: 330,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 8,
-                              offset: Offset(0, 4),
-                            ),
-                          ],
-                          gradient: LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color.fromARGB(255, 4, 242, 198),
-                              Color.fromARGB(255, 233, 7, 30),
-                            ],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: Offset(0, 4),
                           ),
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              bottom: 16,
-                              right: 10,
-                              child: Image.asset(
-                                'assets/images/master.png',
-                                width: 60,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Positioned(
-                              top: 16,
-                              left: 10,
-                              child: Image.asset(
-                                'assets/images/crd.png',
-                                width: 60,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Positioned(
-                              top: 70,
-                              left: 16,
-                              child: Text(
-                                'SNABB CARD',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 40,
-                              left: 16,
-                              child: Text(
-                                "Muhammad Atif ",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              top: 110,
-                              left: 16,
-                              child: Row(
-                                children: [
-                                  Text(
-                                    '****',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    '****',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    '****',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    '1234',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                        ],
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color.fromARGB(255, 4, 242, 198),
+                            Color.fromARGB(255, 233, 7, 30),
                           ],
                         ),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            bottom: 16,
+                            right: 10,
+                            child: Image.asset(
+                              'assets/images/master.png',
+                              width: 60,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            top: 16,
+                            left: 10,
+                            child: Image.asset(
+                              'assets/images/crd.png',
+                              width: 60,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            top: 70,
+                            left: 16,
+                            child: Text(
+                              'SNABB CARD',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 40,
+                            left: 16,
+                            child: Text(
+                              "Muhammad Atif ",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 110,
+                            left: 16,
+                            child: Row(
+                              children: [
+                                Text(
+                                  '****',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  '****',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  '****',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  '1234',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                  ),
                 ),
                 Positioned(
                   top: 10,
@@ -705,19 +708,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             bottom: 16,
                             right: 10,
                             child: Image.asset(
-                              'assets/images/icon.jpg',
+                              'assets/images/logoicon.png',
                               width: 60,
                               height: 50,
                               fit: BoxFit.cover,
                             ),
                           ),
                           Positioned(
-                            top: 16,
-                            left: 10,
-                            child: Text(
-                            "$currency${calculateTotalBalance(widget.transactions)}", 
-                            style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),)
-                          ),
+                              top: 16,
+                              left: 10,
+                              child: Text(
+                                "$currency${calculateTotalBalance(widget.transactions)}",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold),
+                              )),
                           Positioned(
                             top: 70,
                             left: 16,
@@ -809,8 +815,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         ),
                         TextButton(
                           child: const Text("See All",
-                              style: TextStyle(
-                                  fontSize: 13, color: Colors.grey)),
+                              style:
+                                  TextStyle(fontSize: 13, color: Colors.grey)),
                           onPressed: () {
                             Navigator.of(context)
                                 .pushNamed(TransactionsScreen.routeName);
@@ -824,7 +830,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Column(
                       children: [
                         SizedBox(
-                          height: size.height / 2.1,
+                          height: size.height / 2.5,
                           width: double.infinity,
                           child: ListView.builder(
                             itemCount: widget.transactions.length,

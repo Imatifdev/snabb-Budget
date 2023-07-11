@@ -22,6 +22,7 @@ import 'package:snabbudget/utils/brighness_provider.dart';
 import 'package:snabbudget/utils/custom_drawer.dart';
 import 'Screens/accounts.dart';
 import 'Screens/addincome.dart';
+import 'Screens/auth/newwelcome.dart';
 import 'Screens/deptsscreen.dart';
 import 'Screens/setting_screen.dart';
 import 'controller/IncomeProvider.dart';
@@ -90,7 +91,7 @@ class _MyAppState extends State<MyApp> {
             ),
             home: FirebaseAuth.instance.currentUser != null
                 ? const HomeScreen()
-                : Welcome(),
+                : NewWelcome(),
             supportedLocales: L10n.all,
             locale: _locale,
             localizationsDelegates: const [
@@ -114,7 +115,7 @@ class _MyAppState extends State<MyApp> {
               SettingScreen.routeName: (ctx) => SettingScreen(),
               SummaryScreen.routeName: (ctx) => SummaryScreen(),
               TransactionsScreen.routeName: (ctx) => TransactionsScreen(),
-              GraphScreen.routeName: (ctx)=> GraphScreen(),
+              GraphScreen.routeName: (ctx) => GraphScreen(),
             },
           );
         },
