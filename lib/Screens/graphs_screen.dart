@@ -17,10 +17,9 @@ class GraphScreen extends StatefulWidget {
         Colors.pink,
         Colors.red,
       ];
-  final Color barBackgroundColor =
-      Colors.white.withOpacity(0.3);
+  final Color barBackgroundColor = Colors.white.withOpacity(0.3);
   final Color barColor = Colors.white;
-  final Color touchedBarColor = Colors.green;    
+  final Color touchedBarColor = Colors.green;
 
   @override
   State<GraphScreen> createState() => _GraphScreenState();
@@ -34,7 +33,8 @@ class _GraphScreenState extends State<GraphScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SafeArea(child: SizedBox(
+      body: SafeArea(
+          child: SizedBox(
         width: size.width,
         child: Column(
           children: [
@@ -42,8 +42,13 @@ class _GraphScreenState extends State<GraphScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const BackButton(),
-                const Text("All Cards", style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold) ,),
-                SizedBox(width: size.width/8,)
+                const Text(
+                  "All Cards",
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(
+                  width: size.width / 8,
+                )
               ],
             ),
             SizedBox(
@@ -52,126 +57,126 @@ class _GraphScreenState extends State<GraphScreen> {
                 Positioned(
                   left: 30,
                   right: 30,
-                  top:0,
+                  top: 0,
                   child: Card(
-                      shape: RoundedRectangleBorder(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    elevation: 20,
+                    child: Container(
+                      width: 330,
+                      height: 200,
+                      decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(16),
-                      ),
-                      elevation: 20,
-                      child: Container(
-                        width: 330,
-                        height: 200,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.2),
-                              blurRadius: 8,
-                              offset: const Offset(0, 4),
-                            ),
-                          ],
-                          gradient: const LinearGradient(
-                            begin: Alignment.topLeft,
-                            end: Alignment.bottomRight,
-                            colors: [
-                              Color.fromARGB(255, 4, 242, 198),
-                              Color.fromARGB(255, 233, 7, 30),
-                            ],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
                           ),
-                        ),
-                        child: Stack(
-                          children: [
-                            Positioned(
-                              bottom: 16,
-                              right: 10,
-                              child: Image.asset(
-                                'assets/images/master.png',
-                                width: 60,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Positioned(
-                              top: 16,
-                              left: 10,
-                              child: Image.asset(
-                                'assets/images/crd.png',
-                                width: 60,
-                                height: 50,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            const Positioned(
-                              top: 70,
-                              left: 16,
-                              child: Text(
-                                'SNABB CARD',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            const Positioned(
-                              bottom: 40,
-                              left: 16,
-                              child: Text(
-                                "Muhammad Atif ",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            ),
-                            const Positioned(
-                              top: 110,
-                              left: 16,
-                              child: Row(
-                                children: [
-                                  Text(
-                                    '****',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    '****',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    '****',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    '1234',
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
+                        ],
+                        gradient: const LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            Color.fromARGB(255, 4, 242, 198),
+                            Color.fromARGB(255, 233, 7, 30),
                           ],
                         ),
+                      ),
+                      child: Stack(
+                        children: [
+                          Positioned(
+                            bottom: 16,
+                            right: 10,
+                            child: Image.asset(
+                              'assets/images/master.png',
+                              width: 60,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Positioned(
+                            top: 16,
+                            left: 10,
+                            child: Image.asset(
+                              'assets/images/crd.png',
+                              width: 60,
+                              height: 50,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          const Positioned(
+                            top: 70,
+                            left: 16,
+                            child: Text(
+                              'SNABB CARD',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 24,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Positioned(
+                            bottom: 40,
+                            left: 16,
+                            child: Text(
+                              "Muhammad Atif ",
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const Positioned(
+                            top: 110,
+                            left: 16,
+                            child: Row(
+                              children: [
+                                Text(
+                                  '****',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  '****',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  '****',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 25,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                SizedBox(width: 8),
+                                Text(
+                                  '1234',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ),
+                  ),
                 ),
                 Positioned(
                   top: 10,
@@ -333,19 +338,22 @@ class _GraphScreenState extends State<GraphScreen> {
                             bottom: 16,
                             right: 10,
                             child: Image.asset(
-                              'assets/images/icon.jpg',
+                              'assets/images/logoicon.png',
                               width: 60,
                               height: 50,
                               fit: BoxFit.cover,
                             ),
                           ),
                           const Positioned(
-                            top: 16,
-                            left: 10,
-                            child: Text(
-                            "\$149", 
-                            style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold),)
-                          ),
+                              top: 16,
+                              left: 10,
+                              child: Text(
+                                "\$149",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 28,
+                                    fontWeight: FontWeight.bold),
+                              )),
                           const Positioned(
                             top: 70,
                             left: 16,
@@ -363,7 +371,7 @@ class _GraphScreenState extends State<GraphScreen> {
                             left: 16,
                             child: Text(
                               "Abdullah Ayaz",
-                              style:  TextStyle(
+                              style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
@@ -420,13 +428,18 @@ class _GraphScreenState extends State<GraphScreen> {
                 ),
               ]),
             ),
-            const SizedBox(height: 10,),
+            const SizedBox(
+              height: 10,
+            ),
             const Padding(
               padding: EdgeInsets.all(15.0),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Text("Spend", style: TextStyle(fontSize: 20),),
+                  Text(
+                    "Spend",
+                    style: TextStyle(fontSize: 20),
+                  ),
                 ],
               ),
             ),
@@ -435,86 +448,97 @@ class _GraphScreenState extends State<GraphScreen> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Row(children: [
-                    Card(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          const Text("Todays Stats"),
-                          SizedBox(
-                            height: 210,
-                            width: 100,
-                            child: AspectRatio(
-                              aspectRatio: 1,
-                              child: PieChart(
-                                PieChartData(
-                                  pieTouchData: PieTouchData(
-                                    touchCallback: (FlTouchEvent event, pieTouchResponse) {
-                                      setState(() {
-                                        if (!event.isInterestedForInteractions ||
-                                            pieTouchResponse == null ||
-                                            pieTouchResponse.touchedSection == null) {
-                                          touchedIndex = -1;
-                                          return;
-                                        }
-                                        touchedIndex = pieTouchResponse
-                                            .touchedSection!.touchedSectionIndex;
-                                      });
-                                    },
+                  Row(
+                    children: [
+                      Card(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            const Text("Todays Stats"),
+                            SizedBox(
+                              height: 210,
+                              width: 90,
+                              child: AspectRatio(
+                                aspectRatio: 1,
+                                child: PieChart(
+                                  PieChartData(
+                                    pieTouchData: PieTouchData(
+                                      touchCallback: (FlTouchEvent event,
+                                          pieTouchResponse) {
+                                        setState(() {
+                                          if (!event
+                                                  .isInterestedForInteractions ||
+                                              pieTouchResponse == null ||
+                                              pieTouchResponse.touchedSection ==
+                                                  null) {
+                                            touchedIndex = -1;
+                                            return;
+                                          }
+                                          touchedIndex = pieTouchResponse
+                                              .touchedSection!
+                                              .touchedSectionIndex;
+                                        });
+                                      },
+                                    ),
+                                    borderData: FlBorderData(
+                                      show: false,
+                                    ),
+                                    sectionsSpace: 0,
+                                    centerSpaceRadius: 30,
+                                    sections: showingSections(),
                                   ),
-                                  borderData: FlBorderData(
-                                    show: false,
-                                  ),
-                                  sectionsSpace: 0,
-                                  centerSpaceRadius: 30,
-                                  sections: showingSections(),
                                 ),
                               ),
                             ),
-                          ),
-                          const Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                               Indicator(
-                                color: Colors.red,
-                                text: 'Income',
-                                isSquare: true,
-                              ),
-                              SizedBox(width: 5,),
-                              Indicator(
+                            const Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Indicator(
+                                  color: Colors.red,
+                                  text: 'Income',
+                                  isSquare: true,
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Indicator(
                                   color: Colors.grey,
                                   text: 'Expense',
                                   isSquare: true,
-                          ),
-                            ],
-                          ),
-                           
-                        ],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Card(
-                    color: Colors.white,
-                      child: Column(
-                        children: [
-                          const Text("This Week"),
-                          SizedBox(
-                            height: 230,
-                            width: 213,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 8),
-                    child: BarChart(
-                      isPlaying ? randomData() : mainBarData(),
-                      swapAnimationDuration: animDuration,
-                    ),
+                      Card(
+                        color: Colors.white,
+                        child: Column(
+                          children: [
+                            const Text("This Week"),
+                            SizedBox(
+                              height: 230,
+                              width: 213,
+                              child: Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 8),
+                                child: BarChart(
+                                  isPlaying ? randomData() : mainBarData(),
+                                  swapAnimationDuration: animDuration,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ),
-                        ],
-                      ),
-                    ),
-                  ],),
                   const SizedBox(
-                    height: 200,
-                    child: Card(child: MyLineChart(isShowingMainData: true,)))
+                      height: 200,
+                      child: Card(
+                          child: MyLineChart(
+                        isShowingMainData: true,
+                      )))
                 ],
               ),
             )
@@ -523,7 +547,8 @@ class _GraphScreenState extends State<GraphScreen> {
       )),
     );
   }
-   BarChartGroupData makeGroupData(
+
+  BarChartGroupData makeGroupData(
     int x,
     double y, {
     bool isTouched = false,
@@ -850,7 +875,6 @@ class _GraphScreenState extends State<GraphScreen> {
     });
   }
 }
-
 
 class Indicator extends StatelessWidget {
   const Indicator({
