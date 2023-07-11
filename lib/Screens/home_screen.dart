@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:snabbudget/Screens/daily_stats.dart';
 import 'package:snabbudget/Screens/dashboard_screen.dart';
+import 'package:snabbudget/Screens/graphs_screen.dart';
 
 import '../models/transaction.dart';
 import '../models/transaction_controller.dart';
@@ -137,16 +138,17 @@ class _HomeScreenState extends State<HomeScreen> {
         transactions: transactionsList,
         snabbWallet: snabbWallet,
       ),
-      DailyStats(
-          transactions: transactionsList,
-          balance: snabbWallet,
-          credit: credit,
-          dept: dept,
-          expense: expense,
-          income: income,
-          cash: cash,
-          bankTransfer: bankTransfer,
-          creditCard: creditCard),
+      GraphScreen(),
+      // DailyStats(
+      //     transactions: transactionsList,
+      //     balance: snabbWallet,
+      //     credit: credit,
+      //     dept: dept,
+      //     expense: expense,
+      //     income: income,
+      //     cash: cash,
+      //     bankTransfer: bankTransfer,
+      //     creditCard: creditCard),
       ProfileView(),
     ];
     return Scaffold(

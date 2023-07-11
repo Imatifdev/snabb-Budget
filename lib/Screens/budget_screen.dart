@@ -25,78 +25,80 @@ class _BudgetScreenState extends State<BudgetScreen> {
     //currency = currencyData.currency;
     print(currency);
   }
+
   final String userId = FirebaseAuth.instance.currentUser!.uid;
   List<Transaction> transactions = [];
   List<Budget> budgetList = [];
   int check = 0;
 
   void fetchBudgets() async {
-  QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-      .collection("UserTransactions")
-      .doc(userId)
-      .collection("budgets")
-      .get();
-  if (querySnapshot.docs.isNotEmpty) {
-    setState(() {
-      for (DocumentSnapshot documentSnapshot in querySnapshot.docs) {
-      Map<String, dynamic> data = documentSnapshot.data() as Map<String, dynamic>;
-      Budget budget = Budget.fromJson(data, documentSnapshot.id);
-      budgetList.add(budget);
+    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("budgets")
+        .get();
+    if (querySnapshot.docs.isNotEmpty) {
+      setState(() {
+        for (DocumentSnapshot documentSnapshot in querySnapshot.docs) {
+          Map<String, dynamic> data =
+              documentSnapshot.data() as Map<String, dynamic>;
+          Budget budget = Budget.fromJson(data, documentSnapshot.id);
+          budgetList.add(budget);
+        }
+      });
     }
-    });
   }
-}
-  
-  void addBudget()async{
-     await showDialog(
+
+  void addBudget() async {
+    await showDialog(
       context: context,
       builder: (BuildContext context) => const AddNewBudget(),
     );
   }
-  
+
   Map<String, dynamic> calculate(
-    List<Transaction> transactions, Budget budget) {
-  double totalAmount = 0;
-  int transactionCount = 0;
-  for (Transaction transaction in transactions) {
-    print(transaction.amount);
-    print("after${transaction.date.isAfter(budget.startDate)}");
-    print("before${transaction.date.isBefore(budget.endDate)}");
-    print(transaction.category.toString());
-    print(budget.category.toString());
-    print("cattt"+ (transaction.category == budget.category).toString());
+      List<Transaction> transactions, Budget budget) {
+    double totalAmount = 0;
+    int transactionCount = 0;
+    for (Transaction transaction in transactions) {
+      print(transaction.amount);
+      print("after${transaction.date.isAfter(budget.startDate)}");
+      print("before${transaction.date.isBefore(budget.endDate)}");
+      print(transaction.category.toString());
+      print(budget.category.toString());
+      print("cattt" + (transaction.category == budget.category).toString());
 
-    if (transaction.category == budget.category) {
-          if(transaction.date.isAfter(budget.startDate) &&
-        transaction.date.isBefore(budget.endDate)){
-            print(transaction.name);
-      totalAmount = totalAmount + transaction.amount;
-      transactionCount++;
-          }
-          
+      if (transaction.category == budget.category) {
+        if (transaction.date.isAfter(budget.startDate) &&
+            transaction.date.isBefore(budget.endDate)) {
+          print(transaction.name);
+          totalAmount = totalAmount + transaction.amount;
+          transactionCount++;
+        }
+      }
     }
+
+    print("toooooooooooooootal: $totalAmount");
+    print("cccccount: ${transactionCount}");
+
+    return {
+      'totalAmount': totalAmount,
+      'transactionCount': transactionCount,
+    };
   }
 
-  print("toooooooooooooootal: $totalAmount");
-  print("cccccount: ${transactionCount}");
-
-  return {
-    'totalAmount': totalAmount,
-    'transactionCount': transactionCount,
-  };
-}
-
-  void deleteBudget(String id)async{
+  void deleteBudget(String id) async {
     await FirebaseFirestore.instance
-      .collection("UserTransactions")
-      .doc(userId)
-      .collection("budgets").doc(id).delete();
-      setState(() {
-        //check = 0;
-        budgetList.removeWhere((bodget) => bodget.id == id);
-      });
+        .collection("UserTransactions")
+        .doc(userId)
+        .collection("budgets")
+        .doc(id)
+        .delete();
+    setState(() {
+      //check = 0;
+      budgetList.removeWhere((bodget) => bodget.id == id);
+    });
   }
-
 
   @override
   void initState() {
@@ -131,178 +133,232 @@ class _BudgetScreenState extends State<BudgetScreen> {
     return Scaffold(
       key: scaffoldKey,
       drawer: const CustomDrawer(),
-      floatingActionButton: FloatingActionButton(onPressed: (){
-        addBudget();
-      }, child: const Icon(Icons.add)),
+      floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            addBudget();
+          },
+          child: const Icon(Icons.add)),
       body: SafeArea(
-        child: SizedBox(
-          width: size.width,
-          child: Column(children: [
-            Card(
-                      child: SizedBox(
-                    height: 50,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IconButton(
-                            onPressed: () {
-                              scaffoldKey.currentState?.openDrawer();
-                            },
-                            icon: const ImageIcon(
-                              AssetImage("assets/images/menu.png"),
-                              size: 40,
-                            )),
-                        Text(
-                          AppLocalizations.of(context)!.budget,
-                          style: const TextStyle(
-                              fontSize: 14, fontWeight: FontWeight.bold),
-                        ),
-                        const SizedBox(
-                          width: 50,
-                        )
-                      ],
-                    ),
-                  )),
-           StreamBuilder<List<Budget>>(
-      stream: getBudgetsStream(),
-      builder: (BuildContext context, AsyncSnapshot<List<Budget>> snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return CircularProgressIndicator();
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else {
-          final budgetList = snapshot.data ?? [];
-
-          return budgetList.isNotEmpty
-              ? Expanded(
-                  child: ListView.builder(
-                    itemCount: budgetList.length,
-                    itemBuilder: (context, index) {
-                      Budget budget = budgetList[index];
-                      return budgetCard(budget, context);
+          child: SizedBox(
+        width: size.width,
+        child: Column(children: [
+          Card(
+              child: SizedBox(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IconButton(
+                    onPressed: () {
+                      scaffoldKey.currentState?.openDrawer();
                     },
-                  ),
+                    icon: const ImageIcon(
+                      AssetImage("assets/images/menu.png"),
+                      size: 40,
+                    )),
+                Text(
+                  AppLocalizations.of(context)!.budget,
+                  style: const TextStyle(
+                      fontSize: 14, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(
+                  width: 50,
                 )
-              : Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Text("No Budget"),
-                );
-        }
-      },
-    )
-            // budgetList.isNotEmpty? Expanded(child: 
-            // ListView.builder(
-            //   itemCount: budgetList.length,
-            //   itemBuilder: (context, index) {
-            //     Budget budget = budgetList[index];
-            //     return budgetCard(budget, context);
-            //   },
-            //   )): const Padding(
-            //     padding: EdgeInsets.all(8.0),
-            //     child: Text("No Budget"),
-            //   )      
-          ]),
-        )
-      ),
+              ],
+            ),
+          )),
+          StreamBuilder<List<Budget>>(
+            stream: getBudgetsStream(),
+            builder:
+                (BuildContext context, AsyncSnapshot<List<Budget>> snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return CircularProgressIndicator();
+              } else if (snapshot.hasError) {
+                return Text('Error: ${snapshot.error}');
+              } else {
+                final budgetList = snapshot.data ?? [];
+
+                return budgetList.isNotEmpty
+                    ? Expanded(
+                        child: ListView.builder(
+                          itemCount: budgetList.length,
+                          itemBuilder: (context, index) {
+                            Budget budget = budgetList[index];
+                            return budgetCard(budget, context);
+                          },
+                        ),
+                      )
+                    : Padding(
+                        padding: EdgeInsets.all(8.0),
+                        child: Text("No Budget"),
+                      );
+              }
+            },
+          )
+          // budgetList.isNotEmpty? Expanded(child:
+          // ListView.builder(
+          //   itemCount: budgetList.length,
+          //   itemBuilder: (context, index) {
+          //     Budget budget = budgetList[index];
+          //     return budgetCard(budget, context);
+          //   },
+          //   )): const Padding(
+          //     padding: EdgeInsets.all(8.0),
+          //     child: Text("No Budget"),
+          //   )
+        ]),
+      )),
     );
   }
 
   double calculateSpentPercentage(double spentAmount, double totalAmount) {
-  if (totalAmount <= 0) {
-    return 0.0; // Avoid division by zero
+    if (totalAmount <= 0) {
+      return 0.0; // Avoid division by zero
+    }
+
+    double spentPercentage = (spentAmount / totalAmount) * 100;
+    return spentPercentage;
   }
 
-  double spentPercentage = (spentAmount / totalAmount) * 100;
-  return spentPercentage;
-}
-
-
   Padding budgetCard(Budget budget, BuildContext context) {
-    final result = calculate(transactions,budget);
+    final result = calculate(transactions, budget);
     return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Card(
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(budget.name, style: const TextStyle( fontSize: 18, fontWeight: FontWeight.bold),),
-                            Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(budget.category.name.capitalized, style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),
-                            Image.asset(budget.imgUrl),
-                          ],
-                        ),
-                            IconButton(onPressed: (){
-                              deleteBudget(budget.id);
-                            }, icon: const Icon(Icons.delete, color: Colors.red,))
-                          ],
-                        ),
-                        
-                        const SizedBox(height: 20,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Text("From", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                            Text("${budget.startDate.day}/${budget.startDate.month}/${budget.startDate.year}")
-                          ],
-                        ),
-                        const SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Text("To", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                            Text("${budget.endDate.day}/${budget.endDate.month}/${budget.endDate.year}")
-                          ],
-                        ),
-                        const SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Text("Transactions", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                            Text(result['transactionCount'].toString())
-                          ],
-                        ),
-                        const SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: [
-                            const Text("Budget Amount", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                            Text(currency! + budget.amount.toString())
-                          ],
-                        ),
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text("${currency}0"),
-                            Text("Spent ${calculateSpentPercentage(result['totalAmount'],budget.amount.toDouble()).toString()}%"),
-                            Text(currency! + budget.amount.toString())
-                          ],
-                        ),
-                        LinearProgressIndicator(minHeight: 8.0 ,color: Colors.red,value: calculateSpentPercentage(result['totalAmount'],budget.amount.toDouble())/100),
-                        SizedBox(height: 10,),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            const Text("Total", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
-                            Text(currency.toString()+result['totalAmount'].toString(), style: const TextStyle(color: Colors.red, fontSize: 16, fontWeight: FontWeight.bold),)
-                          ],
-                        ),
-                      ],
-                    ),
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    budget.name,
+                    style: const TextStyle(
+                        fontSize: 18, fontWeight: FontWeight.bold),
                   ),
-                ),
-              );
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        budget.category.name.capitalized,
+                        style: TextStyle(
+                            fontSize: 18,
+                            color: Theme.of(context).primaryColor),
+                      ),
+                      Image.asset(budget.imgUrl),
+                    ],
+                  ),
+                  IconButton(
+                      onPressed: () {
+                        deleteBudget(budget.id);
+                      },
+                      icon: const Icon(
+                        Icons.delete,
+                        color: Colors.red,
+                      ))
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Text(
+                    "From",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                      "${budget.startDate.day}/${budget.startDate.month}/${budget.startDate.year}")
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Text(
+                    "To",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                      "${budget.endDate.day}/${budget.endDate.month}/${budget.endDate.year}")
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Text(
+                    "Transactions",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(result['transactionCount'].toString())
+                ],
+              ),
+              const SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  const Text(
+                    "Budget Amount",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(currency! + budget.amount.toString())
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("${currency}0"),
+                  Text(
+                      "Spent ${calculateSpentPercentage(result['totalAmount'], budget.amount.toDouble()).toString()}%"),
+                  Text(currency! + budget.amount.toString())
+                ],
+              ),
+              LinearProgressIndicator(
+                  minHeight: 8.0,
+                  color: Colors.red,
+                  value: calculateSpentPercentage(
+                          result['totalAmount'], budget.amount.toDouble()) /
+                      100),
+              SizedBox(
+                height: 10,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Total",
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  Text(
+                    currency.toString() + result['totalAmount'].toString(),
+                    style: const TextStyle(
+                        color: Colors.red,
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
 class AddNewBudget extends StatefulWidget {
-
   const AddNewBudget({super.key});
 
   @override
@@ -351,24 +407,22 @@ class _AddNewBudgetState extends State<AddNewBudget> {
   }
 
   String getImgUrlForCategory(TransactionCat category) {
-  final Map<TransactionCat, String> categoryImgUrls = {
-    TransactionCat.travelling: 'assets/images/travel.png',
-    TransactionCat.shopping: 'assets/images/shopping.png',
-    TransactionCat.transport: 'assets/images/transport.png',
-    TransactionCat.home: 'assets/images/home.png',
-    TransactionCat.health: 'assets/images/health.png',
-    TransactionCat.family: 'assets/images/family.png',
-    TransactionCat.foodDrink: 'assets/images/food.png',
-    TransactionCat.others: 'assets/images/others.png',
-    TransactionCat.bank: 'assets/images/fiance.png',
-    TransactionCat.pets: 'assets/images/pets.png',
-    TransactionCat.cash: 'assets/images/income.png',
-  };
+    final Map<TransactionCat, String> categoryImgUrls = {
+      TransactionCat.travelling: 'assets/images/travel.png',
+      TransactionCat.shopping: 'assets/images/shopping.png',
+      TransactionCat.transport: 'assets/images/transportation.png',
+      TransactionCat.home: 'assets/images/home.png',
+      TransactionCat.health: 'assets/images/health.png',
+      TransactionCat.family: 'assets/images/family.png',
+      TransactionCat.foodDrink: 'assets/images/fooddrink.png',
+      TransactionCat.others: 'assets/images/others.png',
+      TransactionCat.bank: 'assets/images/financialincome.png',
+      TransactionCat.pets: 'assets/images/pet.png',
+      TransactionCat.cash: 'assets/images/income.png',
+    };
 
-  return categoryImgUrls[category] ?? '';
-}
-  
-
+    return categoryImgUrls[category] ?? '';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -379,8 +433,8 @@ class _AddNewBudgetState extends State<AddNewBudget> {
         child: Container(
           decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
           child: SizedBox(
-            height: size.height/2.1,
-            width: size.width-100,
+            height: size.height / 2.1,
+            width: size.width - 100,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
@@ -390,147 +444,162 @@ class _AddNewBudgetState extends State<AddNewBudget> {
                 ),
                 TextFormField(
                   controller: _name,
-                      keyboardType: TextInputType.name,
-                      decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                          border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.green),
-                              borderRadius: BorderRadius.circular(10)),
-                          labelText: 'Name',
-                          hintText: "Budget Name"),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter a name';
-                        }
-                        return null;
-                      },
-                    ),
+                  keyboardType: TextInputType.name,
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 10),
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(10)),
+                      labelText: 'Name',
+                      hintText: "Budget Name"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter a name';
+                    }
+                    return null;
+                  },
+                ),
                 TextFormField(
                   controller: _amount,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                          contentPadding:
-                              const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                          border: OutlineInputBorder(
-                              borderSide: const BorderSide(color: Colors.green),
-                              borderRadius: BorderRadius.circular(10)),
-                          labelText: 'Amount',
-                          hintText: "Budget Amount"),
-                      validator: (value) {
-                        if (value == null || value.isEmpty) {
-                          return 'Please enter an amount';
-                        }
-                        return null;
-                      },
-                    ),
-                
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                      contentPadding: const EdgeInsets.symmetric(
+                          vertical: 0, horizontal: 10),
+                      border: OutlineInputBorder(
+                          borderSide: const BorderSide(color: Colors.green),
+                          borderRadius: BorderRadius.circular(10)),
+                      labelText: 'Amount',
+                      hintText: "Budget Amount"),
+                  validator: (value) {
+                    if (value == null || value.isEmpty) {
+                      return 'Please enter an amount';
+                    }
+                    return null;
+                  },
+                ),
                 Column(
                   children: [
                     Text("Select Category"),
                     DropdownButton<TransactionCat>(
-      value: selectedCategory,
-      hint: Text('Select Category'),
-      onChanged: (TransactionCat? newValue) {
-        setState(() {
-          selectedCategory = newValue;
-        });
-      },
-      items: TransactionCat.values.map<DropdownMenuItem<TransactionCat>>(
-        (TransactionCat value) {
-          return DropdownMenuItem<TransactionCat>(
-            value: value,
-            child: Text(
-              value.toString().split('.').last,
-            ),
-          );
-        },
-      ).toList(),
-    ),
+                      value: selectedCategory,
+                      hint: Text('Select Category'),
+                      onChanged: (TransactionCat? newValue) {
+                        setState(() {
+                          selectedCategory = newValue;
+                        });
+                      },
+                      items: TransactionCat.values
+                          .map<DropdownMenuItem<TransactionCat>>(
+                        (TransactionCat value) {
+                          return DropdownMenuItem<TransactionCat>(
+                            value: value,
+                            child: Text(
+                              value.toString().split('.').last,
+                            ),
+                          );
+                        },
+                      ).toList(),
+                    ),
                   ],
                 ),
-                Text(errMsg, style: const TextStyle(color: Colors.red),),
+                Text(
+                  errMsg,
+                  style: const TextStyle(color: Colors.red),
+                ),
                 Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        GestureDetector(
-          onTap: () => _selectStartDate(context),
-          child: Container(
-            width: 100,
-            height: 50,
-            color:Theme.of(context).primaryColor.withOpacity(0.5),
-            child: Center(
-              child: Text(
-                startDate != null
-                    ? '${startDate!.day}/${startDate!.month}/${startDate!.year}'
-                    : 'Start Date',
-                style: TextStyle(),
-              ),
-            ),
-          ),
-        ),
-        GestureDetector(
-          onTap: () => _selectEndDate(context),
-          child: Container(
-            width: 100,
-            height: 50,
-            color: Theme.of(context).primaryColor.withOpacity(0.5),
-            child: Center(
-              child: Text(
-                endDate != null
-                    ? '${endDate!.day}/${endDate!.month}/${endDate!.year}'
-                    : 'End Date',
-              ),
-            ),
-          ),
-        ),
-      ],
-    ),
-                
-                !isLoading? SizedBox(
-                  width: size.width-150,
-                  child: ElevatedButton(
-                    onPressed: () async{
-                      if (_formKey.currentState!.validate() && selectedCategory!=null && startDate!=null && endDate != null) {
-                        setState(() {
-                          isLoading = true;
-                          errMsg = "";
-                        });
-                        Budget budget = Budget(
-                          id: "khbdne", 
-                          amount: num.parse(_amount.text),
-                          transactionNum: 0, 
-                          total: 0, 
-                          name: _name.text.trim(), 
-                          category: selectedCategory as TransactionCat, 
-                          startDate: startDate as DateTime, 
-                          endDate: endDate as DateTime, 
-                          imgUrl: getImgUrlForCategory(selectedCategory as TransactionCat));
-                        await FirebaseFirestore.instance.collection("UserTransactions").doc(userId).collection("budgets").add({
-                          "id":budget.id,
-                          "transactionNum":budget.transactionNum,
-                          "amount":budget.amount,
-                          "name":budget.name,
-                          "category": budget.category.toString() ,
-                          "startDate":budget.startDate,
-                          "endDate":budget.endDate,
-                          "total":0,
-                          "imgUrl":budget.imgUrl
-                        });
-                        setState(() {
-                          isLoading  =false;
-                        });
-                        Navigator.of(context).pop();  
-                      }else{
-                        setState(() {
-                          errMsg = "Select a category";
-                        });
-                      }
-                    },
-                    child: isLoading? const CircularProgressIndicator(color: Colors.white,):const Text('Add'),
-                  ),
-                ): const CircularProgressIndicator(),
-                
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    GestureDetector(
+                      onTap: () => _selectStartDate(context),
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        color: Theme.of(context).primaryColor.withOpacity(0.5),
+                        child: Center(
+                          child: Text(
+                            startDate != null
+                                ? '${startDate!.day}/${startDate!.month}/${startDate!.year}'
+                                : 'Start Date',
+                            style: TextStyle(),
+                          ),
+                        ),
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () => _selectEndDate(context),
+                      child: Container(
+                        width: 100,
+                        height: 50,
+                        color: Theme.of(context).primaryColor.withOpacity(0.5),
+                        child: Center(
+                          child: Text(
+                            endDate != null
+                                ? '${endDate!.day}/${endDate!.month}/${endDate!.year}'
+                                : 'End Date',
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                !isLoading
+                    ? SizedBox(
+                        width: size.width - 150,
+                        child: ElevatedButton(
+                          onPressed: () async {
+                            if (_formKey.currentState!.validate() &&
+                                selectedCategory != null &&
+                                startDate != null &&
+                                endDate != null) {
+                              setState(() {
+                                isLoading = true;
+                                errMsg = "";
+                              });
+                              Budget budget = Budget(
+                                  id: "khbdne",
+                                  amount: num.parse(_amount.text),
+                                  transactionNum: 0,
+                                  total: 0,
+                                  name: _name.text.trim(),
+                                  category: selectedCategory as TransactionCat,
+                                  startDate: startDate as DateTime,
+                                  endDate: endDate as DateTime,
+                                  imgUrl: getImgUrlForCategory(
+                                      selectedCategory as TransactionCat));
+                              await FirebaseFirestore.instance
+                                  .collection("UserTransactions")
+                                  .doc(userId)
+                                  .collection("budgets")
+                                  .add({
+                                "id": budget.id,
+                                "transactionNum": budget.transactionNum,
+                                "amount": budget.amount,
+                                "name": budget.name,
+                                "category": budget.category.toString(),
+                                "startDate": budget.startDate,
+                                "endDate": budget.endDate,
+                                "total": 0,
+                                "imgUrl": budget.imgUrl
+                              });
+                              setState(() {
+                                isLoading = false;
+                              });
+                              Navigator.of(context).pop();
+                            } else {
+                              setState(() {
+                                errMsg = "Select a category";
+                              });
+                            }
+                          },
+                          child: isLoading
+                              ? const CircularProgressIndicator(
+                                  color: Colors.white,
+                                )
+                              : const Text('Add'),
+                        ),
+                      )
+                    : const CircularProgressIndicator(),
                 TextButton(
                   onPressed: () {
                     Navigator.of(context).pop();

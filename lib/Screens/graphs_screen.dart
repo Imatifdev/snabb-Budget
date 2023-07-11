@@ -1,8 +1,10 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
+import 'package:velocity_x/velocity_x.dart';
 import '../utils/line_chart.dart';
 
 class GraphScreen extends StatefulWidget {
@@ -26,6 +28,8 @@ class GraphScreen extends StatefulWidget {
 }
 
 class _GraphScreenState extends State<GraphScreen> {
+  final String userId = FirebaseAuth.instance.currentUser!.uid;
+
   int touchedIndex = -1;
   final Duration animDuration = const Duration(milliseconds: 250);
   bool isPlaying = true;
@@ -33,518 +37,560 @@ class _GraphScreenState extends State<GraphScreen> {
   Widget build(BuildContext context) {
     Size size = MediaQuery.of(context).size;
     return Scaffold(
-      body: SafeArea(
-          child: SizedBox(
-        width: size.width,
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const BackButton(),
-                const Text(
-                  "All Cards",
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(
-                  width: size.width / 8,
-                )
-              ],
-            ),
-            SizedBox(
-              height: 230,
-              child: Stack(children: [
-                Positioned(
-                  left: 30,
-                  right: 30,
-                  top: 0,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 20,
-                    child: Container(
-                      width: 330,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color.fromARGB(255, 4, 242, 198),
-                            Color.fromARGB(255, 233, 7, 30),
-                          ],
-                        ),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            bottom: 16,
-                            right: 10,
-                            child: Image.asset(
-                              'assets/images/master.png',
-                              width: 60,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            top: 16,
-                            left: 10,
-                            child: Image.asset(
-                              'assets/images/crd.png',
-                              width: 60,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          const Positioned(
-                            top: 70,
-                            left: 16,
-                            child: Text(
-                              'SNABB CARD',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Positioned(
-                            bottom: 40,
-                            left: 16,
-                            child: Text(
-                              "Muhammad Atif ",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Positioned(
-                            top: 110,
-                            left: 16,
-                            child: Row(
-                              children: [
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '1234',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 10,
-                  left: 20,
-                  right: 20,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 20,
-                    child: Container(
-                      width: 330,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color.fromARGB(255, 33, 33, 33),
-                            Color.fromARGB(255, 246, 246, 246),
-                          ],
-                        ),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            bottom: 16,
-                            right: 10,
-                            child: Image.asset(
-                              'assets/images/master.png',
-                              width: 60,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          Positioned(
-                            top: 16,
-                            left: 10,
-                            child: Image.asset(
-                              'assets/images/crd.png',
-                              width: 60,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          const Positioned(
-                            top: 70,
-                            left: 16,
-                            child: Text(
-                              'SNABB CARD',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Positioned(
-                            bottom: 40,
-                            left: 16,
-                            child: Text(
-                              "Muhammad Atif ",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Positioned(
-                            top: 110,
-                            left: 16,
-                            child: Row(
-                              children: [
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 25,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '1234',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 20,
-                  left: 10,
-                  right: 10,
-                  child: Card(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(16),
-                    ),
-                    elevation: 20,
-                    child: Container(
-                      width: 330,
-                      height: 200,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(16),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 4),
-                          ),
-                        ],
-                        gradient: const LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            Color(0xFFe4b33f),
-                            Color(0xFF3e198b),
-                          ],
-                        ),
-                      ),
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            bottom: 16,
-                            right: 10,
-                            child: Image.asset(
-                              'assets/images/logoicon.png',
-                              width: 60,
-                              height: 50,
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          const Positioned(
-                              top: 16,
-                              left: 10,
-                              child: Text(
-                                "\$149",
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 28,
-                                    fontWeight: FontWeight.bold),
-                              )),
-                          const Positioned(
-                            top: 70,
-                            left: 16,
-                            child: Text(
-                              'SNABB BUDGET',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 22,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Positioned(
-                            bottom: 40,
-                            left: 16,
-                            child: Text(
-                              "Abdullah Ayaz",
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const Positioned(
-                            top: 110,
-                            left: 16,
-                            child: Row(
-                              children: [
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                SizedBox(width: 8),
-                                Text(
-                                  '****',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ]),
-            ),
-            const SizedBox(
-              height: 10,
-            ),
-            const Padding(
-              padding: EdgeInsets.all(15.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  Text(
-                    "Spend",
-                    style: TextStyle(fontSize: 20),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+      body: StreamBuilder<DocumentSnapshot>(
+          stream: FirebaseFirestore.instance
+              .collection('UsersData')
+              .doc(userId)
+              .snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            }
+
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return Center(child: CircularProgressIndicator());
+            }
+
+            final user = snapshot.data;
+            if (user == null) {
+              return Text('User not found');
+            }
+
+            final name = user['First Name'];
+            final email = user['Email'];
+
+            return SafeArea(
+              child: SizedBox(
+                width: size.width,
+                child: SingleChildScrollView(
+                  child: Column(
                     children: [
-                      Card(
-                        child: Column(
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const BackButton(),
+                          const Text(
+                            "Stats",
+                            style: TextStyle(
+                                fontSize: 20, fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            width: size.width / 8,
+                          )
+                        ],
+                      ),
+                      SizedBox(
+                        height: 230,
+                        child: Stack(children: [
+                          Positioned(
+                            left: 30,
+                            right: 30,
+                            top: 0,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 20,
+                              child: Container(
+                                width: 330,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color.fromARGB(255, 4, 242, 198),
+                                      Color.fromARGB(255, 233, 7, 30),
+                                    ],
+                                  ),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      bottom: 16,
+                                      right: 10,
+                                      child: Image.asset(
+                                        'assets/images/master.png',
+                                        width: 60,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 16,
+                                      left: 10,
+                                      child: Image.asset(
+                                        'assets/images/crd.png',
+                                        width: 60,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      top: 70,
+                                      left: 16,
+                                      child: Text(
+                                        'SNABB CARD',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      bottom: 40,
+                                      left: 16,
+                                      child: Text(
+                                        "Muhammad Atif ",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      top: 110,
+                                      left: 16,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            '1234',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 10,
+                            left: 20,
+                            right: 20,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 20,
+                              child: Container(
+                                width: 330,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color.fromARGB(255, 33, 33, 33),
+                                      Color.fromARGB(255, 246, 246, 246),
+                                    ],
+                                  ),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      bottom: 16,
+                                      right: 10,
+                                      child: Image.asset(
+                                        'assets/images/master.png',
+                                        width: 60,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      top: 16,
+                                      left: 10,
+                                      child: Image.asset(
+                                        'assets/images/crd.png',
+                                        width: 60,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      top: 70,
+                                      left: 16,
+                                      child: Text(
+                                        'SNABB CARD',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      bottom: 40,
+                                      left: 16,
+                                      child: Text(
+                                        "Muhammad Atif ",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      top: 110,
+                                      left: 16,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 25,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            '1234',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            top: 20,
+                            left: 10,
+                            right: 10,
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              elevation: 20,
+                              child: Container(
+                                width: 330,
+                                height: 200,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.2),
+                                      blurRadius: 8,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                  gradient: const LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Color(0xFFe4b33f),
+                                      Color(0xFF3e198b),
+                                    ],
+                                  ),
+                                ),
+                                child: Stack(
+                                  children: [
+                                    Positioned(
+                                      bottom: 16,
+                                      right: 10,
+                                      child: Image.asset(
+                                        'assets/images/logoicon.png',
+                                        width: 60,
+                                        height: 50,
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                    const Positioned(
+                                        top: 16,
+                                        left: 10,
+                                        child: Text(
+                                          "\$149",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 28,
+                                              fontWeight: FontWeight.bold),
+                                        )),
+                                    const Positioned(
+                                      top: 70,
+                                      left: 16,
+                                      child: Text(
+                                        'SNABB BUDGET',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    Positioned(
+                                      bottom: 40,
+                                      left: 16,
+                                      child: Text(
+                                        name,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                    const Positioned(
+                                      top: 110,
+                                      left: 16,
+                                      child: Row(
+                                        children: [
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            '****',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        ]),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.all(15.0),
+                        child: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            const Text("Todays Stats"),
-                            SizedBox(
-                              height: 210,
-                              width: 90,
-                              child: AspectRatio(
-                                aspectRatio: 1,
-                                child: PieChart(
-                                  PieChartData(
-                                    pieTouchData: PieTouchData(
-                                      touchCallback: (FlTouchEvent event,
-                                          pieTouchResponse) {
-                                        setState(() {
-                                          if (!event
-                                                  .isInterestedForInteractions ||
-                                              pieTouchResponse == null ||
-                                              pieTouchResponse.touchedSection ==
-                                                  null) {
-                                            touchedIndex = -1;
-                                            return;
-                                          }
-                                          touchedIndex = pieTouchResponse
-                                              .touchedSection!
-                                              .touchedSectionIndex;
-                                        });
-                                      },
-                                    ),
-                                    borderData: FlBorderData(
-                                      show: false,
-                                    ),
-                                    sectionsSpace: 0,
-                                    centerSpaceRadius: 30,
-                                    sections: showingSections(),
+                            Text(
+                              "Spend",
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                Expanded(
+                                  child: Card(
+                                    elevation: 5,
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      children: [
+                                        const Text("Todays Stats"),
+                                        SizedBox(
+                                          height: 200,
+                                          width: 90,
+                                          child: AspectRatio(
+                                            aspectRatio: 1,
+                                            child: PieChart(
+                                              PieChartData(
+                                                pieTouchData: PieTouchData(
+                                                  touchCallback:
+                                                      (FlTouchEvent event,
+                                                          pieTouchResponse) {
+                                                    setState(() {
+                                                      if (!event
+                                                              .isInterestedForInteractions ||
+                                                          pieTouchResponse ==
+                                                              null ||
+                                                          pieTouchResponse
+                                                                  .touchedSection ==
+                                                              null) {
+                                                        touchedIndex = -1;
+                                                        return;
+                                                      }
+                                                      touchedIndex =
+                                                          pieTouchResponse
+                                                              .touchedSection!
+                                                              .touchedSectionIndex;
+                                                    });
+                                                  },
+                                                ),
+                                                borderData: FlBorderData(
+                                                  show: false,
+                                                ),
+                                                sectionsSpace: 0,
+                                                centerSpaceRadius: 25,
+                                                sections: showingSections(),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        const Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Indicator(
+                                              color: Colors.red,
+                                              text: 'Income',
+                                              isSquare: true,
+                                            ),
+                                            SizedBox(
+                                              width: 5,
+                                            ),
+                                            Indicator(
+                                              color: Colors.grey,
+                                              text: 'Expense',
+                                              isSquare: true,
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ).p(5),
                                   ),
                                 ),
-                              ),
-                            ),
-                            const Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Indicator(
-                                  color: Colors.red,
-                                  text: 'Income',
-                                  isSquare: true,
-                                ),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Indicator(
-                                  color: Colors.grey,
-                                  text: 'Expense',
-                                  isSquare: true,
+                                Expanded(
+                                  child: Card(
+                                    elevation: 5,
+                                    color: Colors.white,
+                                    child: Column(
+                                      children: [
+                                        const Text("This Week"),
+                                        SizedBox(
+                                          height: 220,
+                                          width: 193,
+                                          child: Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 8),
+                                            child: BarChart(
+                                              isPlaying
+                                                  ? randomData()
+                                                  : mainBarData(),
+                                              swapAnimationDuration:
+                                                  animDuration,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
                                 ),
                               ],
                             ),
+                            const SizedBox(
+                                height: 220,
+                                child: Card(
+                                    child: MyLineChart(
+                                  isShowingMainData: true,
+                                )))
                           ],
                         ),
-                      ),
-                      Card(
-                        color: Colors.white,
-                        child: Column(
-                          children: [
-                            const Text("This Week"),
-                            SizedBox(
-                              height: 230,
-                              width: 213,
-                              child: Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 8),
-                                child: BarChart(
-                                  isPlaying ? randomData() : mainBarData(),
-                                  swapAnimationDuration: animDuration,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                      )
                     ],
-                  ),
-                  const SizedBox(
-                      height: 200,
-                      child: Card(
-                          child: MyLineChart(
-                        isShowingMainData: true,
-                      )))
-                ],
+                  ).p(5),
+                ),
               ),
-            )
-          ],
-        ),
-      )),
+            );
+          }),
     );
   }
 

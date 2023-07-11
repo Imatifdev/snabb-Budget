@@ -1,6 +1,7 @@
 // ignore_for_file: unnecessary_string_interpolations, prefer_const_constructors
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../models/currency_controller.dart';
@@ -44,14 +45,14 @@ class _TransactionCardState extends State<TransactionCard> {
             );
           },
           leading: CircleAvatar(
-            backgroundColor: Colors.orange[300],
-            child: Image.asset(widget.transaction.imgUrl)
-          ),
+              backgroundColor: Colors.orange[300],
+              child: Image.asset(widget.transaction.imgUrl)),
           title: Text(
             widget.transaction.name,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text('${widget.transaction.date.day.toString()}-' "${widget.transaction.date.month.toString()}-" +
+          subtitle: Text('${widget.transaction.date.day.toString()}-'
+                  "${widget.transaction.date.month.toString()}-" +
               "${widget.transaction.date.year.toString()}"),
           trailing: Text(
               widget.transaction.type == TransactionType.income
@@ -83,68 +84,190 @@ class TransactionImageScreen extends StatelessWidget {
       body: SafeArea(
         child: SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            padding: const EdgeInsets.all(20.0),
+            child: Card(
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20)),
+              elevation: 20,
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
                   children: [
-                    const Text("Transaction Name:"),
-                    Text(transaction.name),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text(
+                      "Transaction Sheet",
+                      style:
+                          TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    ListTile(
+                      leading: Image.asset(transaction.imgUrl),
+                      title: Text(
+                        "Transaction Name",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        transaction.name.toString(),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Icon(CupertinoIcons.right_chevron),
+                    ),
+                    ListTile(
+                      leading: Icon(
+                        Icons.price_change,
+                        size: 50,
+                      ),
+                      title: Text(
+                        "Transaction Amount",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        transaction.amount.toString(),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Icon(CupertinoIcons.right_chevron),
+                    ),
+                    ListTile(
+                      leading: Icon(
+                        Icons.type_specimen_rounded,
+                        size: 50,
+                      ),
+                      title: Text(
+                        "Transaction Type",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        transaction.type.name.toString(),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Icon(CupertinoIcons.right_chevron),
+                    ),
+                    ListTile(
+                      leading: Icon(
+                        Icons.calendar_month,
+                        size: 50,
+                      ),
+                      title: Text(
+                        "Transaction Date",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        '${transaction.date.day.toString()}/${transaction.date.month.toString()}/${transaction.date.year.toString()}',
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Icon(CupertinoIcons.right_chevron),
+                    ),
+                    ListTile(
+                      leading: Icon(
+                        Icons.watch_later,
+                        size: 50,
+                      ),
+                      title: Text(
+                        "Transaction Time",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        transaction.time.toString(),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Icon(CupertinoIcons.right_chevron),
+                    ),
+                    ListTile(
+                      leading: Icon(
+                        Icons.note_add,
+                        size: 50,
+                      ),
+                      title: Text(
+                        "Transaction Notes",
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      subtitle: Text(
+                        transaction.notes.toString(),
+                        style: TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      trailing: Icon(CupertinoIcons.right_chevron),
+                    ),
+                    SizedBox(
+                      height: 30,
+                    ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     const Text("Transaction Name:"),
+                    //     Text(transaction.category.toString()),
+                    //   ],
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     const Text("Transaction Amount:"),
+                    //     Text(transaction.amount.toString()),
+                    //   ],
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     const Text("Transaction Type:"),
+                    //     Text(transaction.type.name),
+                    //   ],
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     const Text("Transaction Date:"),
+                    //     Text(
+                    //         '${transaction.date.day.toString()}/${transaction.date.month.toString()}/${transaction.date.year.toString()}'),
+                    //   ],
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     const Text("Transaction Time:"),
+                    //     Text(transaction.time),
+                    //   ],
+                    // ),
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     const Text("Transaction Notes:"),
+                    //     Text(transaction.notes),
+                    //   ],
+                    // ),
+                    const Text("Transaction file:"),
+                    Center(
+                      child: transaction.fileUrl != ""
+                          ? Hero(
+                              tag: transaction.fileUrl,
+                              child: FadeInImage.assetNetwork(
+                                placeholder: 'assets/images/bell.png',
+                                image: transaction.fileUrl,
+                                placeholderErrorBuilder:
+                                    (context, error, stackTrace) {
+                                  return const CircularProgressIndicator();
+                                },
+                              ),
+                            )
+                          : const Text("No file for this transaction"),
+                    ),
                   ],
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Transaction Amount:"),
-                    Text(transaction.amount.toString()),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Transaction Type:"),
-                    Text(transaction.type.name),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Transaction Date:"),
-                    Text(transaction.date.toString()),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Transaction Time:"),
-                    Text(transaction.time),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text("Transaction Notes:"),
-                    Text(transaction.notes),
-                  ],
-                ),
-                const Text("Transaction file:"),
-                Center(
-                  child: transaction.fileUrl != ""
-                      ? Hero(
-                          tag: transaction.fileUrl,
-                          child: FadeInImage.assetNetwork(
-                            placeholder: 'assets/images/bell.png',
-                            image: transaction.fileUrl,
-                            placeholderErrorBuilder:
-                                (context, error, stackTrace) {
-                              return const CircularProgressIndicator();
-                            },
-                          ),
-                        )
-                      : const Text("No file for this transaction"),
-                ),
-              ],
+              ),
             ),
           ),
         ),
