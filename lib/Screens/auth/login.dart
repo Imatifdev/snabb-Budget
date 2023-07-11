@@ -96,7 +96,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       height: 20,
                     ),
                     Text(
-                      "Welcome back you’ve been missed!",
+                      "Welcome to Snabb Budget",
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 22, fontWeight: FontWeight.normal),
@@ -272,7 +272,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: _isLoggingIn
                           ? const CircularProgressIndicator().centered()
                           : const Text(
-                              'Sign In',
+                              'Log In',
                               style:
                                   TextStyle(color: Colors.white, fontSize: 18),
                             ).centered(),

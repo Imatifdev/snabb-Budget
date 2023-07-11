@@ -386,7 +386,7 @@ class _NewSignupScreenState extends State<NewSignupScreen> {
                         style: TextStyle(color: Colors.black, fontSize: 16),
                         children: <TextSpan>[
                           TextSpan(
-                            text: 'Sign in',
+                            text: 'Log in',
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 Navigator.push(
