@@ -10,9 +10,11 @@ class Budget {
   final DateTime endDate;
   final String imgUrl;
   final num total;
+  final num amount;
 
   Budget({
     required this.id,
+    required this.amount,
     required this.transactionNum,
     required this.total,
     required this.name,
@@ -26,6 +28,7 @@ class Budget {
     return Budget(
       id: id,
       name: json['name'],
+      amount: json['amount'],
       transactionNum: json['transactionNum'],
       total: json['total'],
       category: TransactionCat.values.firstWhere(

@@ -207,6 +207,16 @@ class _BudgetScreenState extends State<BudgetScreen> {
     );
   }
 
+  double calculateSpentPercentage(double spentAmount, double totalAmount) {
+  if (totalAmount <= 0) {
+    return 0.0; // Avoid division by zero
+  }
+
+  double spentPercentage = (spentAmount / totalAmount) * 100;
+  return spentPercentage;
+}
+
+
   Padding budgetCard(Budget budget, BuildContext context) {
     final result = calculate(transactions,budget);
     return Padding(
@@ -219,19 +229,20 @@ class _BudgetScreenState extends State<BudgetScreen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(budget.name, style: const TextStyle( fontSize: 20, fontWeight: FontWeight.bold),),
-                            IconButton(onPressed: (){
-                              deleteBudget(budget.id);
-                            }, icon: const Icon(Icons.delete, color: Colors.red,))
-                          ],
-                        ),
-                        Row(
+                            Text(budget.name, style: const TextStyle( fontSize: 18, fontWeight: FontWeight.bold),),
+                            Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(budget.category.name.capitalized, style: TextStyle(fontSize: 18, color: Theme.of(context).primaryColor),),
                             Image.asset(budget.imgUrl),
                           ],
                         ),
+                            IconButton(onPressed: (){
+                              deleteBudget(budget.id);
+                            }, icon: const Icon(Icons.delete, color: Colors.red,))
+                          ],
+                        ),
+                        
                         const SizedBox(height: 20,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -256,7 +267,25 @@ class _BudgetScreenState extends State<BudgetScreen> {
                             Text(result['transactionCount'].toString())
                           ],
                         ),
-                        const SizedBox(height: 20,),
+                        const SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            const Text("Budget Amount", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),),
+                            Text(currency! + budget.amount.toString())
+                          ],
+                        ),
+                        SizedBox(height: 10,),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text("${currency}0"),
+                            Text("Spent ${calculateSpentPercentage(result['totalAmount'],budget.amount.toDouble()).toString()}%"),
+                            Text(currency! + budget.amount.toString())
+                          ],
+                        ),
+                        LinearProgressIndicator(minHeight: 8.0 ,color: Colors.red,value: calculateSpentPercentage(result['totalAmount'],budget.amount.toDouble())/100),
+                        SizedBox(height: 10,),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
@@ -283,7 +312,8 @@ class AddNewBudget extends StatefulWidget {
 class _AddNewBudgetState extends State<AddNewBudget> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
-  TextEditingController _name = TextEditingController();
+  final TextEditingController _name = TextEditingController();
+  final TextEditingController _amount = TextEditingController();
   final String userId = FirebaseAuth.instance.currentUser!.uid;
   DateTime? startDate;
   DateTime? endDate;
@@ -371,6 +401,24 @@ class _AddNewBudgetState extends State<AddNewBudget> {
                           hintText: "Budget Name"),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
+                          return 'Please enter a name';
+                        }
+                        return null;
+                      },
+                    ),
+                TextFormField(
+                  controller: _amount,
+                      keyboardType: TextInputType.number,
+                      decoration: InputDecoration(
+                          contentPadding:
+                              const EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                          border: OutlineInputBorder(
+                              borderSide: const BorderSide(color: Colors.green),
+                              borderRadius: BorderRadius.circular(10)),
+                          labelText: 'Amount',
+                          hintText: "Budget Amount"),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
                           return 'Please enter an amount';
                         }
                         return null;
@@ -450,6 +498,7 @@ class _AddNewBudgetState extends State<AddNewBudget> {
                         });
                         Budget budget = Budget(
                           id: "khbdne", 
+                          amount: num.parse(_amount.text),
                           transactionNum: 0, 
                           total: 0, 
                           name: _name.text.trim(), 
@@ -460,6 +509,7 @@ class _AddNewBudgetState extends State<AddNewBudget> {
                         await FirebaseFirestore.instance.collection("UserTransactions").doc(userId).collection("budgets").add({
                           "id":budget.id,
                           "transactionNum":budget.transactionNum,
+                          "amount":budget.amount,
                           "name":budget.name,
                           "category": budget.category.toString() ,
                           "startDate":budget.startDate,
