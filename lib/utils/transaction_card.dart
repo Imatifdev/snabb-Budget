@@ -45,17 +45,13 @@ class _TransactionCardState extends State<TransactionCard> {
           },
           leading: CircleAvatar(
             backgroundColor: Colors.orange[300],
-            child: Text(
-              widget.transaction.date.month.toString(),
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+            child: Image.asset(widget.transaction.imgUrl)
           ),
           title: Text(
             widget.transaction.name,
             style: const TextStyle(fontWeight: FontWeight.bold),
           ),
-          subtitle: Text('${widget.transaction.date.day.toString()}-' +
-              "${widget.transaction.date.month.toString()}-" +
+          subtitle: Text('${widget.transaction.date.day.toString()}-' "${widget.transaction.date.month.toString()}-" +
               "${widget.transaction.date.year.toString()}"),
           trailing: Text(
               widget.transaction.type == TransactionType.income

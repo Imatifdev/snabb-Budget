@@ -830,7 +830,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     Column(
                       children: [
                         SizedBox(
-                          height: size.height / 2.5,
+                          height: size.height / 2.1,
                           width: double.infinity,
                           child: ListView.builder(
                             itemCount: widget.transactions.length,
