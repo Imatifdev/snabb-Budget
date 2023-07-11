@@ -938,7 +938,7 @@ class _BalanceScreenState extends State<BalanceScreen> {
                       ],
                     )
                   : SizedBox(
-                      height: height,
+                      height: height / 1.4,
                       width: size.width - 10,
                       child: StreamBuilder<QuerySnapshot>(
                         stream: FirebaseFirestore.instance
@@ -955,9 +955,10 @@ class _BalanceScreenState extends State<BalanceScreen> {
 
                             // Display the depts on the screen
                             return ListView.builder(
+                              scrollDirection: Axis.vertical,
                               itemCount: depts.length,
                               itemBuilder: (context, index) {
-                                Dept dept = depts[index];
+                                Dept dept = depts.reversed.toList()[index];
                                 return deptCard(dept, context);
                               },
                             );
