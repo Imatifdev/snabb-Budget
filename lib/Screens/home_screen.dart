@@ -59,14 +59,17 @@ class _HomeScreenState extends State<HomeScreen> {
         .doc("userData")
         .get();
     var docSnapshot3 = await FirebaseFirestore.instance
-    .collection('UserTransactions').doc(userId).collection("Accounts")
-    .doc("snabbWallet").get();
-    if(docSnapshot3.exists){
+        .collection('UserTransactions')
+        .doc(userId)
+        .collection("Accounts")
+        .doc("snabbWallet")
+        .get();
+    if (docSnapshot3.exists) {
       Map<String, dynamic>? data = docSnapshot3.data();
       setState(() {
         snabbWallet = data!["amount"];
       });
-    }   
+    }
     if (docSnapshot2.exists) {
       Map<String, dynamic>? data = docSnapshot2.data();
       setState(() {
@@ -129,9 +132,13 @@ class _HomeScreenState extends State<HomeScreen> {
       check++;
     }
     final List<Widget> pages = [
-      DashboardScreen(name: name, transactions: transactionsList,snabbWallet: snabbWallet,),
-      DailyStats(
+      DashboardScreen(
+        name: name,
         transactions: transactionsList,
+        snabbWallet: snabbWallet,
+      ),
+      DailyStats(
+          transactions: transactionsList,
           balance: snabbWallet,
           credit: credit,
           dept: dept,
@@ -140,12 +147,13 @@ class _HomeScreenState extends State<HomeScreen> {
           cash: cash,
           bankTransfer: bankTransfer,
           creditCard: creditCard),
-      ProfileView(name: name, email: email),
+      ProfileView(),
     ];
     return Scaffold(
       key: scaffoldKey,
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      floatingActionButton: ExpandableFloatingActionButton(balance: balance,snabbWallet: snabbWallet),
+      floatingActionButton: ExpandableFloatingActionButton(
+          balance: balance, snabbWallet: snabbWallet),
       body: PageView(
         controller: _pageController,
         children: pages,

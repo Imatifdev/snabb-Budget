@@ -223,6 +223,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
     }
 
     Size size = MediaQuery.of(context).size;
+    final height = MediaQuery.of(context).size.height;
+
+    final width = MediaQuery.of(context).size.width;
     return Scaffold(
       key: scaffoldKey,
       extendBody: true,
@@ -823,14 +826,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           },
                         )
                       ]),
-                  const SizedBox(
-                    height: 5,
+                  SizedBox(
+                    height: height / 200,
                   ),
                   if (widget.transactions.isNotEmpty)
                     Column(
                       children: [
                         SizedBox(
-                          height: size.height / 2.1,
+                          height: height / 2.3,
                           width: double.infinity,
                           child: ListView.builder(
                             itemCount: widget.transactions.length,

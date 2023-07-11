@@ -20,7 +20,8 @@ class AddExpanse extends StatefulWidget {
   static const routeName = "add-expense";
   final num balance;
   final num snabWallet;
-  const AddExpanse({super.key, required this.balance, required this.snabWallet});
+  const AddExpanse(
+      {super.key, required this.balance, required this.snabWallet});
 
   @override
   State<AddExpanse> createState() => _AddExpanseState();
@@ -58,82 +59,82 @@ class _AddExpanseState extends State<AddExpanse> {
   }
 
   Future<void> selectImage(BuildContext context) async {
-  final PermissionStatus status = await Permission.photos.request();
-  if (status.isGranted) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select Image'),
-          content: Text('Do you want to select an image from the gallery or take a picture?'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Gallery'),
-              onPressed: () async {
-                //Navigator.of(context).pop();
-                //getImage(ImgSource.Gallery);
-                pickImage = await picker.pickImage(
-                  source: ImageSource.gallery,
-                  imageQuality: 1
-                  );
-                
-                // Handle the picked image
-                if (pickImage != null) {
-                  _uploadPicture(pickImage as XFile);
-                  // Do something with the picked image
-                  // For example, you can display it in an Image widget
-                }
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Camera'),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                pickImage = await picker.pickImage(
-                  source: ImageSource.camera,
-                  imageQuality: 1
-                  );
-                // Handle the picked image
-                if (pickImage != null) {
-                  _uploadPicture(pickImage as XFile);
-                  // Do something with the picked image
-                  // For example, you can display it in an Image widget
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  } else {
-    // Handle the case where the user denied permission
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Permission Denied'),
-          content: Text('Please grant permission to access photos.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () async {
-                await Permission.photos.request();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    final PermissionStatus status = await Permission.photos.request();
+    if (status.isGranted) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Select Image'),
+            content: Text(
+                'Do you want to select an image from the gallery or take a picture?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Gallery'),
+                onPressed: () async {
+                  //Navigator.of(context).pop();
+                  //getImage(ImgSource.Gallery);
+                  pickImage = await picker.pickImage(
+                      source: ImageSource.gallery, imageQuality: 1);
+
+                  // Handle the picked image
+                  if (pickImage != null) {
+                    _uploadPicture(pickImage as XFile);
+                    // Do something with the picked image
+                    // For example, you can display it in an Image widget
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text('Camera'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  pickImage = await picker.pickImage(
+                      source: ImageSource.camera, imageQuality: 1);
+                  // Handle the picked image
+                  if (pickImage != null) {
+                    _uploadPicture(pickImage as XFile);
+                    // Do something with the picked image
+                    // For example, you can display it in an Image widget
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Handle the case where the user denied permission
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Permission Denied'),
+            content: Text('Please grant permission to access photos.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () async {
+                  await Permission.photos.request();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
-}
-  
-  void getInfo()async{
+
+  void getInfo() async {
     var docSnapshot3 = await FirebaseFirestore.instance
-    .collection('UserTransactions').doc(userId).collection("Accounts")
-    .doc("snabbWallet").get();
-    if(docSnapshot3.exists){
+        .collection('UserTransactions')
+        .doc(userId)
+        .collection("Accounts")
+        .doc("snabbWallet")
+        .get();
+    if (docSnapshot3.exists) {
       Map<String, dynamic>? data = docSnapshot3.data();
       setState(() {
         snabWalletBalance = data!["amount"];
@@ -141,12 +142,12 @@ class _AddExpanseState extends State<AddExpanse> {
     }
   }
 
-@override
-void initState() {
-  super.initState();
-  getInfo();
-  getCurrency();
-}
+  @override
+  void initState() {
+    super.initState();
+    getInfo();
+    getCurrency();
+  }
 
   Future<void> _uploadPicture(XFile img) async {
     // final picker = ImagePicker();
@@ -196,7 +197,6 @@ void initState() {
     }
   }
 
-
 //function for storing data and passing to another screen
   void _saveExpense() async {
     if (_formKey.currentState!.validate() && selectedCategory != null) {
@@ -207,9 +207,8 @@ void initState() {
       double amount = double.parse(_amountController.text);
       String name = _nameController.text.isNotEmpty
           ? _nameController.text
-          : selectedCategory!.name.capitalized; // Use category name if name is not provided
-      
-      
+          : selectedCategory!
+              .name.capitalized; // Use category name if name is not provided
 
       String imageUrl = "";
       if (pathFile.isNotEmpty) {
@@ -233,9 +232,9 @@ void initState() {
         "time": formatTime,
         "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat),
         "fileUrl": imageUrl,
-        "notes":_noteController.text // Use the obtained image URL
+        "notes": _noteController.text // Use the obtained image URL
       });
-      num updatedSnabBalance = snabWalletBalance-amount;
+      num updatedSnabBalance = snabWalletBalance - amount;
       // Update user's balance
       await FirebaseFirestore.instance
           .collection("UserTransactions")
@@ -244,11 +243,11 @@ void initState() {
           .doc("userData")
           .update({"balance": widget.balance - amount});
       await FirebaseFirestore.instance
-        .collection("UserTransactions")
-        .doc(userId)
-        .collection("Accounts")
-        .doc("snabbWallet")
-        .update({'amount': updatedSnabBalance});    
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("Accounts")
+          .doc("snabbWallet")
+          .update({'amount': updatedSnabBalance});
 
       setState(() {
         _nameController.clear();
@@ -292,11 +291,11 @@ void initState() {
         "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat),
       });
       Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ScheduleTransactions(),
-      ),
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => ScheduleTransactions(),
+        ),
+      );
     }
     setState(() {
       schedual = false;
@@ -321,30 +320,30 @@ void initState() {
       _selectedFiles.removeAt(index);
     });
   }
-  
+
   Future<bool> _onWillPop() async {
-    if(isLoading){
+    if (isLoading) {
       return false;
-    }else{
+    } else {
       return true;
     }
   }
+
   final Map<TransactionCat, String> categoryImgUrls = {
     TransactionCat.travelling: 'assets/images/travel.png',
     TransactionCat.shopping: 'assets/images/shopping.png',
-    TransactionCat.transport: 'assets/images/transport.png',
+    TransactionCat.transport: 'assets/images/transportation.png',
     TransactionCat.home: 'assets/images/home.png',
     TransactionCat.health: 'assets/images/health.png',
     TransactionCat.family: 'assets/images/family.png',
-    TransactionCat.foodDrink: 'assets/images/food.png',
+    TransactionCat.foodDrink: 'assets/images/fooddrink.png',
     TransactionCat.others: 'assets/images/others.png',
-    //TransactionCat.bank: 'assets/images/fiance.png',
-    TransactionCat.pets: 'assets/images/pets.png',
+    TransactionCat.pets: 'assets/images/pet.png',
     //TransactionCat.cash: 'assets/images/income.png',
   };
   String getImgUrlForCategory(TransactionCat category) {
-  return categoryImgUrls[category] ?? 'assets/images/others.png';
-}
+    return categoryImgUrls[category] ?? 'assets/images/others.png';
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -371,7 +370,7 @@ void initState() {
                   backgroundColor: Colors.white,
                   child: InkWell(
                       onTap: () {
-                        if(!isLoading){
+                        if (!isLoading) {
                           Navigator.pop(context);
                         }
                       },
@@ -418,8 +417,8 @@ void initState() {
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             errorStyle: TextStyle(color: Colors.black),
-                            contentPadding:
-                                EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 20),
                             fillColor: Colors.black.withOpacity(0.2),
                             hintText: AppLocalizations.of(context)!.addExpense,
                             alignLabelWithHint: true,
@@ -479,7 +478,13 @@ void initState() {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(currency.toString(), style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15, fontWeight: FontWeight.bold),),
+                              child: Text(
+                                currency.toString(),
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ],
                         ),
@@ -495,35 +500,38 @@ void initState() {
                           height: height / 80,
                         ),
                         SizedBox(
-  width: width / 1.3,
-  child: DropdownButtonFormField<TransactionCat>(
-    value: selectedCategory,
-    hint: Text(AppLocalizations.of(context)!.category),
-    onChanged: (TransactionCat? newValue) {
-      setState(() {
-        selectedCategory = newValue;
-      });
-    },
-    items: categoryImgUrls.keys.map((TransactionCat category) {
-      return DropdownMenuItem<TransactionCat>(
-        value: category,
-        child: Row(
-          children: [
-            Image.asset(
-              categoryImgUrls[category]!,
-              width: 30,
-              height: 30,
-            ),
-            SizedBox(width: 10),
-            Text(category.toString().split('.').last.capitalized),
-          ],
-        ),
-      );
-    }).toList(),
-  ),
-),
-
-
+                          width: width / 1.3,
+                          child: DropdownButtonFormField<TransactionCat>(
+                            value: selectedCategory,
+                            hint: Text(AppLocalizations.of(context)!.category),
+                            onChanged: (TransactionCat? newValue) {
+                              setState(() {
+                                selectedCategory = newValue;
+                              });
+                            },
+                            items: categoryImgUrls.keys
+                                .map((TransactionCat category) {
+                              return DropdownMenuItem<TransactionCat>(
+                                value: category,
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      categoryImgUrls[category]!,
+                                      width: 50,
+                                      height: 50,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(category
+                                        .toString()
+                                        .split('.')
+                                        .last
+                                        .capitalized),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                         SizedBox(
                           height: height / 30,
                         ),
@@ -611,17 +619,17 @@ void initState() {
                               width: 20,
                             ),
                             ElevatedButton(
-                                onPressed:(){
+                                onPressed: () {
                                   //_takePicture();
                                   selectImage(context);
-                                   },
-                                child:
-                                    Text(AppLocalizations.of(context)!.addFile)),
+                                },
+                                child: Text(
+                                    AppLocalizations.of(context)!.addFile)),
                             SizedBox(width: 5),
                             SizedBox(
                                 width: 200,
                                 child: Text(
-                                  pickImage !=null? pickImage!.name:"",
+                                  pickImage != null ? pickImage!.name : "",
                                   softWrap: true,
                                 )),
                           ],
@@ -663,7 +671,8 @@ void initState() {
                                 },
                                 style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50))),
+                                        borderRadius:
+                                            BorderRadius.circular(50))),
                                 child: Text(AppLocalizations.of(context)!.add),
                               ),
                             ),

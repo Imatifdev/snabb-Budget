@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:snabbudget/Screens/addexpanse.dart';
 import 'package:snabbudget/Screens/budget_screen.dart';
@@ -76,7 +77,7 @@ class _MyAppState extends State<MyApp> {
       ],
       child: Consumer<BrightnessProvider>(
         builder: (context, brightnessProvider, _) {
-          return MaterialApp(
+          return GetMaterialApp(
             debugShowCheckedModeBanner: false,
             title: 'Snabb Budget',
             theme: ThemeData(

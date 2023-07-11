@@ -47,17 +47,21 @@ class _AddIncomeState extends State<AddIncome> {
   List<IncomeData> incomeDatList = [];
   final picker = ImagePicker();
   int check = 0;
-  void getInfo()async{
+  void getInfo() async {
     var docSnapshot3 = await FirebaseFirestore.instance
-    .collection('UserTransactions').doc(userId).collection("Accounts")
-    .doc("snabbWallet").get();
-    if(docSnapshot3.exists){
+        .collection('UserTransactions')
+        .doc(userId)
+        .collection("Accounts")
+        .doc("snabbWallet")
+        .get();
+    if (docSnapshot3.exists) {
       Map<String, dynamic>? data = docSnapshot3.data();
       setState(() {
         snabWalletBalance = data!["amount"];
       });
     }
   }
+
   getCurrency() async {
     CurrencyData currencyData = CurrencyData();
     String? currencyThis = await currencyData.fetchCurrency(userId);
@@ -117,78 +121,76 @@ class _AddIncomeState extends State<AddIncome> {
       });
     });
   }
-  
+
   Future<void> selectImage(BuildContext context) async {
-  final PermissionStatus status = await Permission.photos.request();
-  if (status.isGranted) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Select Image'),
-          content: Text('Do you want to select an image from the gallery or take a picture?'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Gallery'),
-              onPressed: () async {
-                //Navigator.of(context).pop();
-                //getImage(ImgSource.Gallery);
-                pickImage = await picker.pickImage(
-                  source: ImageSource.gallery,
-                  imageQuality: 15
-                  );
-                
-                // Handle the picked image
-                if (pickImage != null) {
-                  _uploadPicture(pickImage as XFile);
-                  // Do something with the picked image
-                  // For example, you can display it in an Image widget
-                }
-                Navigator.of(context).pop();
-              },
-            ),
-            TextButton(
-              child: Text('Camera'),
-              onPressed: () async {
-                Navigator.of(context).pop();
-                pickImage = await picker.pickImage(
-                  source: ImageSource.camera,
-                  imageQuality: 15
-                  );
-                // Handle the picked image
-                if (pickImage != null) {
-                  _uploadPicture(pickImage as XFile);
-                  // Do something with the picked image
-                  // For example, you can display it in an Image widget
-                }
-              },
-            ),
-          ],
-        );
-      },
-    );
-  } else {
-    // Handle the case where the user denied permission
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Permission Denied'),
-          content: Text('Please grant permission to access photos.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('OK'),
-              onPressed: () async {
-                await Permission.photos.request();
-                Navigator.of(context).pop();
-              },
-            ),
-          ],
-        );
-      },
-    );
+    final PermissionStatus status = await Permission.photos.request();
+    if (status.isGranted) {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Select Image'),
+            content: Text(
+                'Do you want to select an image from the gallery or take a picture?'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('Gallery'),
+                onPressed: () async {
+                  //Navigator.of(context).pop();
+                  //getImage(ImgSource.Gallery);
+                  pickImage = await picker.pickImage(
+                      source: ImageSource.gallery, imageQuality: 15);
+
+                  // Handle the picked image
+                  if (pickImage != null) {
+                    _uploadPicture(pickImage as XFile);
+                    // Do something with the picked image
+                    // For example, you can display it in an Image widget
+                  }
+                  Navigator.of(context).pop();
+                },
+              ),
+              TextButton(
+                child: Text('Camera'),
+                onPressed: () async {
+                  Navigator.of(context).pop();
+                  pickImage = await picker.pickImage(
+                      source: ImageSource.camera, imageQuality: 15);
+                  // Handle the picked image
+                  if (pickImage != null) {
+                    _uploadPicture(pickImage as XFile);
+                    // Do something with the picked image
+                    // For example, you can display it in an Image widget
+                  }
+                },
+              ),
+            ],
+          );
+        },
+      );
+    } else {
+      // Handle the case where the user denied permission
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text('Permission Denied'),
+            content: Text('Please grant permission to access photos.'),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () async {
+                  await Permission.photos.request();
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        },
+      );
+    }
   }
-}
+
 //function for storing data and passing to another screen
   void _saveIncome() async {
     if (_formKey.currentState!.validate() && selectedCategory != null) {
@@ -217,7 +219,7 @@ class _AddIncomeState extends State<AddIncome> {
       }
 
       // Save data to Firestore
-      num updatedSnabBalance = snabWalletBalance+amount;
+      num updatedSnabBalance = snabWalletBalance + amount;
       DocumentReference transactionRef = await FirebaseFirestore.instance
           .collection("UserTransactions")
           .doc(userId)
@@ -243,16 +245,16 @@ class _AddIncomeState extends State<AddIncome> {
           .update({"balance": widget.balance + amount});
 
       await FirebaseFirestore.instance
-        .collection("UserTransactions")
-        .doc(userId)
-        .collection("Accounts")
-        .doc("snabbWallet")
-        .update({'amount': updatedSnabBalance});    
+          .collection("UserTransactions")
+          .doc(userId)
+          .collection("Accounts")
+          .doc("snabbWallet")
+          .update({'amount': updatedSnabBalance});
 
       setState(() {
         _nameController.clear();
         _amountController.clear();
-        isLoading = false; 
+        isLoading = false;
       });
 
       Navigator.push(
@@ -288,19 +290,18 @@ class _AddIncomeState extends State<AddIncome> {
         "date": _selectedDate,
         "time": formatTime,
         "fileUrl": imageUrl,
-        "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat) ,
+        "imgUrl": getImgUrlForCategory(selectedCategory as TransactionCat),
       });
       Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ScheduleTransactions(),
-      ),
-    );
+        context,
+        MaterialPageRoute(
+          builder: (context) => ScheduleTransactions(),
+        ),
+      );
     }
     setState(() {
       schedual = false;
     });
-    
   }
 
   CameraController? _cameraController;
@@ -352,13 +353,15 @@ class _AddIncomeState extends State<AddIncome> {
     //_cameraController!.dispose();
     super.dispose();
   }
+
   Future<bool> _onWillPop() async {
-    if(isLoading){
+    if (isLoading) {
       return false;
-    }else{
+    } else {
       return true;
     }
   }
+
   final Map<TransactionCat, String> categoryImgUrls = {
     //TransactionCat.travelling: 'assets/images/travel.png',
     //TransactionCat.shopping: 'assets/images/shopping.png',
@@ -368,24 +371,24 @@ class _AddIncomeState extends State<AddIncome> {
     //TransactionCat.family: 'assets/images/family.png',
     //TransactionCat.foodDrink: 'assets/images/food.png',
     TransactionCat.others: 'assets/images/others.png',
-    TransactionCat.bank: 'assets/images/fiance.png',
+    TransactionCat.bank: 'assets/images/financialincome.png',
     //TransactionCat.pets: 'assets/images/pets.png',
     TransactionCat.cash: 'assets/images/income.png',
   };
   String getImgUrlForCategory(TransactionCat category) {
-  return categoryImgUrls[category] ?? 'assets/images/others.png';
-}
+    return categoryImgUrls[category] ?? 'assets/images/others.png';
+  }
 
   @override
   Widget build(BuildContext context) {
-  if (check == 0) {
+    if (check == 0) {
       WidgetsBinding.instance.addPostFrameCallback((_) => getInfo());
       check++;
     }
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
-  
-  return WillPopScope(
+
+    return WillPopScope(
       onWillPop: _onWillPop,
       child: Scaffold(
         appBar: AppBar(
@@ -402,9 +405,9 @@ class _AddIncomeState extends State<AddIncome> {
                   backgroundColor: Colors.white,
                   child: InkWell(
                       onTap: () {
-                        if(!isLoading){
-                        Navigator.pop(context);
-                      }
+                        if (!isLoading) {
+                          Navigator.pop(context);
+                        }
                       },
                       child: Icon(Icons.arrow_back_rounded)))
               .p(10),
@@ -446,8 +449,8 @@ class _AddIncomeState extends State<AddIncome> {
                           keyboardType: TextInputType.text,
                           decoration: InputDecoration(
                             errorStyle: TextStyle(color: Colors.black),
-                            contentPadding:
-                                EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                            contentPadding: EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 20),
                             fillColor: Colors.black.withOpacity(0.2),
                             hintText:
                                 "${AppLocalizations.of(context)!.incomeName} (optional) ",
@@ -493,7 +496,8 @@ class _AddIncomeState extends State<AddIncome> {
                                   contentPadding: EdgeInsets.symmetric(
                                       vertical: 0, horizontal: 20),
                                   fillColor: Colors.black.withOpacity(0.2),
-                                  hintText: AppLocalizations.of(context)!.amount,
+                                  hintText:
+                                      AppLocalizations.of(context)!.amount,
                                   alignLabelWithHint: true,
                                   enabledBorder: OutlineInputBorder(
                                     borderRadius: BorderRadius.circular(10),
@@ -508,7 +512,13 @@ class _AddIncomeState extends State<AddIncome> {
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(currency.toString(), style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 15, fontWeight: FontWeight.bold),),
+                              child: Text(
+                                currency.toString(),
+                                style: TextStyle(
+                                    color: Theme.of(context).primaryColor,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold),
+                              ),
                             ),
                           ],
                         ),
@@ -524,33 +534,38 @@ class _AddIncomeState extends State<AddIncome> {
                           height: height / 80,
                         ),
                         SizedBox(
-  width: width / 1.3,
-  child: DropdownButtonFormField<TransactionCat>(
-    value: selectedCategory,
-    hint: Text(AppLocalizations.of(context)!.category),
-    onChanged: (TransactionCat? newValue) {
-      setState(() {
-        selectedCategory = newValue;
-      });
-    },
-    items: categoryImgUrls.keys.map((TransactionCat category) {
-      return DropdownMenuItem<TransactionCat>(
-        value: category,
-        child: Row(
-          children: [
-            Image.asset(
-              categoryImgUrls[category]!,
-              width: 30,
-              height: 30,
-            ),
-            SizedBox(width: 10),
-            Text(category.toString().split('.').last.capitalized),
-          ],
-        ),
-      );
-    }).toList(),
-  ),
-),
+                          width: width / 1.3,
+                          child: DropdownButtonFormField<TransactionCat>(
+                            value: selectedCategory,
+                            hint: Text(AppLocalizations.of(context)!.category),
+                            onChanged: (TransactionCat? newValue) {
+                              setState(() {
+                                selectedCategory = newValue;
+                              });
+                            },
+                            items: categoryImgUrls.keys
+                                .map((TransactionCat category) {
+                              return DropdownMenuItem<TransactionCat>(
+                                value: category,
+                                child: Row(
+                                  children: [
+                                    Image.asset(
+                                      categoryImgUrls[category]!,
+                                      width: 30,
+                                      height: 30,
+                                    ),
+                                    SizedBox(width: 10),
+                                    Text(category
+                                        .toString()
+                                        .split('.')
+                                        .last
+                                        .capitalized),
+                                  ],
+                                ),
+                              );
+                            }).toList(),
+                          ),
+                        ),
                         SizedBox(
                           height: height / 30,
                         ),
@@ -640,17 +655,19 @@ class _AddIncomeState extends State<AddIncome> {
                               width: 20,
                             ),
                             ElevatedButton(
-                                onPressed:() async{
-                                 //_takePicture();
-                                 selectImage(context);
-                                  },
-                                child:
-                                    Text(AppLocalizations.of(context)!.addFile)),
-                            SizedBox(width: 5,),
+                                onPressed: () async {
+                                  //_takePicture();
+                                  selectImage(context);
+                                },
+                                child: Text(
+                                    AppLocalizations.of(context)!.addFile)),
+                            SizedBox(
+                              width: 5,
+                            ),
                             SizedBox(
                                 width: 200,
                                 child: Text(
-                                  pickImage!=null? pickImage!.name:"",
+                                  pickImage != null ? pickImage!.name : "",
                                   softWrap: true,
                                 )),
                           ],
@@ -692,7 +709,8 @@ class _AddIncomeState extends State<AddIncome> {
                                 },
                                 style: ElevatedButton.styleFrom(
                                     shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(50))),
+                                        borderRadius:
+                                            BorderRadius.circular(50))),
                                 child: Text(AppLocalizations.of(context)!.add),
                               ),
                             ),
